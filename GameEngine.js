@@ -42,15 +42,15 @@ GameEngine.prototype.addEntity = function (entity) {
     this.entities.push(entity);
 }
 
-GameEngine.prototype.removeEntity = function (entity) {
-	
-}
-
 GameEngine.prototype.draw = function () {
     this.game_ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
     this.game_ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
-        this.entities[i].draw(this.ctx);
+    	if (this.entities[i].removeMe) {
+    		entities.splice(i,1);
+    	} else {
+        	this.entities[i].draw(this.ctx);
+        }
     }
     this.game_ctx.restore();
 }
