@@ -22,8 +22,8 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.game_ctx = game_ctx;
 	this.game_ctx = background_ctx;
 	this.overlay_ctx = overlay_ctx;
-    this.surfaceWidth = this.ctx.canvas.width;
-    this.surfaceHeight = this.ctx.canvas.height;
+    this.surfaceWidth = this.game_ctx.canvas.width;
+    this.surfaceHeight = this.game_ctx.canvas.height;
     this.timer = new Timer();
     console.log('game initialized');
 }
@@ -33,7 +33,7 @@ GameEngine.prototype.start = function () {
     var that = this;
     (function gameLoop() {
         that.loop();
-        requestAnimFrame(gameLoop, that.ctx.canvas);
+        requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
 }
 
@@ -47,12 +47,12 @@ GameEngine.prototype.removeEntity = function (entity) {
 }
 
 GameEngine.prototype.draw = function () {
-    this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
-    this.ctx.save();
+    this.game_ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
+    this.game_ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
-    this.ctx.restore();
+    this.game_ctx.restore();
 }
 
 GameEngine.prototype.update = function () {
