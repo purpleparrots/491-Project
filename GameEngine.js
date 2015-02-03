@@ -101,7 +101,7 @@ GameEngine.prototype.getX = function(animation, x) {
 	} else {
 		width = animation.frameWidth;
 	}
-	return (this.surfaceWidth / 2) + x - (width / 2);
+	return (this.surfaceWidth / 2) + x //- (width / 2);
 	
 }
 
@@ -112,7 +112,7 @@ GameEngine.prototype.getY = function(animation, y) {
 	} else {
 		width = animation.frameHeight;
 	}
-	return (this.surfaceHeight / 2) + y - (animation.height / 2);
+	return (this.surfaceHeight / 2) + y //- (animation.height / 2);
 }
 
 GameEngine.prototype.end = function() {

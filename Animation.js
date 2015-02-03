@@ -51,6 +51,7 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
 	}
     
 
+<<<<<<< Updated upstream
   console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
     
     //void ctx.drawImage(image, 
@@ -59,6 +60,10 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     //                   dx, dy, 
     //                   dWidth, 
     //                   dHeight);
+=======
+  //console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
+
+>>>>>>> Stashed changes
     ctx.drawImage(this.spriteSheet,
                  xstart, ystart,  // selection start point
                  currentFrameWidth, this.frameHeight, //selection rect
