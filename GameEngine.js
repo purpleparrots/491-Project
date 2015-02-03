@@ -63,6 +63,15 @@ GameEngine.prototype.loop = function () {
     this.draw();
 }
 
+GameEngine.prototype.getX(animation, x) {
+	return (this.surfaceWidth / 2) + x - (animation.frameWidth / 2);
+	
+}
+
+GameEngine.prototype.getY(animation, y) {
+	return (this.surfaceHeight / 2) + y - (animation.frameWidth / 2);
+}
+
 function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;

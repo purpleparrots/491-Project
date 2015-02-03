@@ -10,7 +10,7 @@ columns - the number of frames in a single row of the sprite sheet
 frames - the total number of frames to draw
 loop - should the animation loop at the end
 reverse - should it go in reverse
-/*
+*/
 
 function Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse) {
     this.spriteSheet = spriteSheet;
