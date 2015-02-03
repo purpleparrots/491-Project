@@ -16,6 +16,9 @@ function GameEngine() {
 	this.overlay_ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
+    this.wave = 0;
+    this.score = 0;
+    this.active = true;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -25,6 +28,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.surfaceWidth = this.game_ctx.canvas.width;
     this.surfaceHeight = this.game_ctx.canvas.height;
     this.timer = new Timer();
+	this.wave = 1;
     console.log('game initialized');
 }
 
@@ -47,6 +51,7 @@ GameEngine.prototype.draw = function () {
     this.game_ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
     	if (this.entities[i].removeMe) {
+    		this.increment("score", this.entities[i].value);
     		entities.splice(i,1);
     	} else {
         	this.entities[i].draw(this.ctx);
@@ -60,13 +65,16 @@ GameEngine.prototype.update = function () {
 
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
-
         entity.update();
     }
 }
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
+    if (this.entities.length < 5) {
+    	this.increment("wave",1);
+    	this.generateWave();
+    }
     this.update();
     this.draw();
 }
@@ -78,6 +86,26 @@ GameEngine.prototype.getX = function(animation, x) {
 
 GameEngine.prototype.getY = function(animation, y) {
 	return (this.surfaceHeight / 2) + y //- (animation.frameHeight / 2);
+}
+
+GameEngine.prototype.end = function() {
+	this.changeState();
+}
+
+GameEngine.prototype.increment = function(target, amount) {
+	this.target += amount;
+}
+
+GameEngine.prototype.changeState = function() {
+	if(active) {
+		this.wave = 0;
+		this.score = 0;
+	}
+	active = !active;
+}
+
+GameEngine.prototype.generateWave = function() {
+	waveValue = this.wave * 110;
 }
 
 function Timer() {
