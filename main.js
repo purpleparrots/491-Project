@@ -4,6 +4,8 @@ var AM = new AssetManager();
 
 
 AM.queueDownload("./images/playership.png");
+AM.queueDownload("./images/asteroid.png");
+AM.queueDownload("./images/asteroid_explosion.png");
 
 
 

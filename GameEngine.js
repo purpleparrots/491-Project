@@ -96,23 +96,23 @@ GameEngine.prototype.loop = function () {
 
 GameEngine.prototype.getX = function(animation, x) {
 	var width = 0;
-	if (typof animation === "image") {
+	if (typeof animation === "image") {
 		width = animation.width ;
 	} else {
 		width = animation.frameWidth;
 	}
-	return (this.surfaceWidth / 2) + x - (width / 2);
+	return (this.surfaceWidth / 2) + x //- (width / 2);
 	
 }
 
 GameEngine.prototype.getY = function(animation, y) {
 	var height = 0;
-	if (typof animation === "image") {
+	if (typeof animation === "image") {
 		width = animation.height ;
 	} else {
 		width = animation.frameHeight;
 	}
-	return (this.surfaceHeight / 2) + y - (animation.height / 2);
+	return (this.surfaceHeight / 2) + y //- (animation.height / 2);
 }
 
 GameEngine.prototype.end = function() {
