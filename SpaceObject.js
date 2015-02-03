@@ -1,6 +1,6 @@
 //initial angle given in radians, velocity is {x: , y: } vector
 //x, y given in game coords
-function SpaceObject(game, angle, velocity, animation, x, y) {
+function SpaceObject(game, angle, velocity, animation, x, y, value) {
 
 	this.animation = animation;
 	this.game = game;
@@ -10,6 +10,7 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 	this.velocty = velocity;
 	this.angle = angle;
 	this.removeMe = false;
+	this.value = value;
 	
 	this.update = function() {
 		
@@ -23,8 +24,8 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 
 }
 
-function AlienShip(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
+	SpaceObject.call(this, game, angle, velocity, animation,x, y, value);
 	
 	this.weapon = weapon;
 	
@@ -32,7 +33,7 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon) {
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
 	
 	this.shield = 100;
 	this.lives = 3;
@@ -50,7 +51,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 
 function Asteroid(game, angle, velocity, x, y, size) {
-	SpaceObject.call(this, game, angle, velocity, null,x, y);
+	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
 	this.state = "normal";
 	this.animations = {normal: new Animation(AM.getAsset("asteroid.png"), 8,52, 32, 32,.01,8, 64, true, false),
 					   exploding: new Animation(AM.getAsset("asteroid_explosion.png"), 
@@ -69,7 +70,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 }
 
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
 	
 	this.getPowerUp = function() {
 	}
