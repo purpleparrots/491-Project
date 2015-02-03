@@ -11,12 +11,14 @@ window.requestAnimFrame = (function () {
 
 function GameEngine() {
     this.entities = [];
+    this.newEntities = [];
     this.game_ctx = null;
 	this.background_ctx = null;
 	this.overlay_ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.wave = 0;
+    this.waveTick = 0;
     this.score = 0;
     this.active = true;
 }
@@ -71,7 +73,11 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
-    if (this.entities.length < 5) {
+    this.waveTick += 1;
+    
+    // 500x + 8000
+    if (this.waveTick > (500 * this.wave) + 8000) {
+    	this.waveTick = 0;
     	this.increment("wave",1);
     	this.generateWave();
     }
@@ -105,7 +111,47 @@ GameEngine.prototype.changeState = function() {
 }
 
 GameEngine.prototype.generateWave = function() {
-	waveValue = this.wave * 110;
+	//points worth of enemies generated this wave.
+	waveValue = (this.wave * 15) + 11;
+	//chance an alien can spawn. this is < 0 until wave 3.
+	alienChance = (this.wave * 1.5) - 3;
+	//chance a powerup can spawn. this is < 0 until wave 2.
+	powerupChance = (this.wave * 2) - 2);
+	while (waveValue > 0) {
+		type = getRandomInt(1,100);
+		angle = Math.random() * 2 * Math.PI;
+		velx = getRandomInt(1,4);
+		vely = getRandomInt(1,4);
+		x = randOffScreenPoint();
+		y = randOffScreenPoint();
+
+		if (type - alienChance > 0) {
+			velocity = {x: velx + 1, y: vely + 1};
+			value = getRandomInt(2,4) * 10;
+			this.addEntity(new AlienShip(this, angle, velocity, null, x, y, null, value));
+			waveValue -= value;
+		} else {
+			size = getRandomInt(1,3);
+			this.addEntity(new Asteroid(this, angle, velocity, x, y, size));
+			waveValue -= size;
+		}
+		if (type - powerChance > 0) {
+			this.addEntity(new PowerUp(this, angle, velocity, null, x, y, null));
+		}
+	}
+}
+
+GameEngine.prototype.getRandomInt = function(min, max) {
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+GameEngine.prototype.randOffScreenPoint = function() {
+	side = Math.round(Math.random());
+	if (side === 0) {
+		return 0 - getRandomInt(50, 100);
+	} else {
+		return 800 + getRandomInt(50, 100);
+	}
 }
 
 function Timer() {
