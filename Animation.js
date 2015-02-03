@@ -1,4 +1,4 @@
-<script>
+
 
 /* Animation Class. This has been modified from the code provided in class so that it can handle almost any sprite sheet.
 startingX - the x pixel that is in the upper left hand corner of the first frame
@@ -63,7 +63,6 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
 Animation.prototype.currentFrame = function () {
     return Math.floor(this.elapsedTime / this.frameDuration);
 }
-</script>
 
 Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
