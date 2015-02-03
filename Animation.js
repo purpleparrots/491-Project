@@ -51,7 +51,7 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
 	}
     
 
-  console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
+ // console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
     
     //void ctx.drawImage(image, 
     //                   sx, sy, 

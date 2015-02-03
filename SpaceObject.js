@@ -52,18 +52,28 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
+	this.size = size;
 	this.state = "normal";
 	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, false),
 					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 
 												2,2, 85, 84,.2,4, 16, false, false)};
 	this.animation = this.animations[this.state];
-	this.size = size;
+	
 	
 	this.split = function() {
 	}
 	
 	this.update = function() {
 		this.animation = this.animations[this.state];
+	}
+	
+	this.draw = function() {
+		this.ctx.save();
+		this.ctx.scale(1, 1);
+		this.animation.drawFrame(this.game.clockTick, this.ctx, 
+								game.getX(this.animation, this.x), 
+								game.getY(this.animation, this.y));
+		this.ctx.restore();
 	}
 
 	
