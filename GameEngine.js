@@ -31,6 +31,9 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.surfaceHeight = this.game_ctx.canvas.height;
     this.timer = new Timer();
 	this.wave = 1;
+	// temp function to show basic animations for prototype. remove for final
+	this.makeProtoEnemies();
+
     console.log('game initialized');
 }
 
@@ -73,9 +76,15 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
-    this.waveTick += 1;
-    
+    // reenable waveTick incrememnt went moving past prototype
+    //this.waveTick += 1;
+
     // 500x + 8000
+    // first wave gets 26 waves points. if each of these is an asteroid that means
+    // 26 asteroids are created. average of 5 seconds to kill each one means 130
+    // seconds to kill all, this equals 7800 ticks, round to 8000 and add 500 ticks
+    // to each wave. wave points increase by 15 each time or about 3x the increased time
+    // so the game gets harder in several ways each wave.
     if (this.waveTick > (500 * this.wave) + 8000) {
     	this.waveTick = 0;
     	this.increment("wave",1);
@@ -116,22 +125,22 @@ GameEngine.prototype.generateWave = function() {
 	//chance an alien can spawn. this is < 0 until wave 3.
 	alienChance = (this.wave * 1.5) - 3;
 	//chance a powerup can spawn. this is < 0 until wave 2.
-	powerupChance = (this.wave * 2) - 2);
+	powerupChance = (this.wave * 2) - 2;
 	while (waveValue > 0) {
-		type = getRandomInt(1,100);
+		type = this.getRandomInt(1,100);
 		angle = Math.random() * 2 * Math.PI;
-		velx = getRandomInt(1,4);
-		vely = getRandomInt(1,4);
+		velx = this.getRandomInt(1,4);
+		vely = this.getRandomInt(1,4);
 		x = randOffScreenPoint();
 		y = randOffScreenPoint();
 
 		if (type - alienChance > 0) {
 			velocity = {x: velx + 1, y: vely + 1};
-			value = getRandomInt(2,4) * 10;
+			value = this.getRandomInt(2,4) * 10;
 			this.addEntity(new AlienShip(this, angle, velocity, null, x, y, null, value));
 			waveValue -= value;
 		} else {
-			size = getRandomInt(1,3);
+			size = this.getRandomInt(1,3);
 			this.addEntity(new Asteroid(this, angle, velocity, x, y, size));
 			waveValue -= size;
 		}
@@ -141,17 +150,34 @@ GameEngine.prototype.generateWave = function() {
 	}
 }
 
-GameEngine.prototype.getRandomInt = function(min, max) {
-	return Math.floor(Math.random() * (max - min)) + min;
-}
+
 
 GameEngine.prototype.randOffScreenPoint = function() {
 	side = Math.round(Math.random());
 	if (side === 0) {
-		return 0 - getRandomInt(50, 100);
+		return 0 - this.getRandomInt(50, 100);
 	} else {
-		return 800 + getRandomInt(50, 100);
+		return 800 + this.getRandomInt(50, 100);
 	}
+}
+
+GameEngine.prototype.makeProtoEnemies = function() {
+	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
+									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
+									   300, 500, 3));
+	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
+									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
+									   200, 200, 2));
+	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
+									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
+									   600, 700, 3));
+	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
+									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
+									   100, 600, 1));
+}
+
+GameEngine.prototype.getRandomInt = function(min, max) {
+	return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function Timer() {
