@@ -20,7 +20,7 @@ function GameEngine() {
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.game_ctx = game_ctx;
-	this.game_ctx = background_ctx;
+	this.background_ctx = background_ctx;
 	this.overlay_ctx = overlay_ctx;
     this.surfaceWidth = this.game_ctx.canvas.width;
     this.surfaceHeight = this.game_ctx.canvas.height;
