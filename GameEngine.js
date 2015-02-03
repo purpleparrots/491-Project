@@ -96,7 +96,7 @@ GameEngine.prototype.loop = function () {
 
 GameEngine.prototype.getX = function(animation, x) {
 	var width = 0;
-	if (typof animation === "image") {
+	if (typeof animation === "image") {
 		width = animation.width ;
 	} else {
 		width = animation.frameWidth;
@@ -107,7 +107,7 @@ GameEngine.prototype.getX = function(animation, x) {
 
 GameEngine.prototype.getY = function(animation, y) {
 	var height = 0;
-	if (typof animation === "image") {
+	if (typeof animation === "image") {
 		width = animation.height ;
 	} else {
 		width = animation.frameHeight;
