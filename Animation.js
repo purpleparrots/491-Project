@@ -22,7 +22,7 @@ function Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, f
     this.elapsedTime = 0;
     this.loop = loop;
     this.reverse = reverse;
-    this.startingY = startingY;
+	this.startingY = startingY;
 	this.startingX = startingX;
 	this.columns = columns;
 }
@@ -35,27 +35,29 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     var frame = this.currentFrame() % this.frames;
 	
     var xindex = 0;
-    var yindex = this.startingY;
-    var xstart = this.startingX;
+
+    var yindex = Math.floor(frame / (this.frames / this.columns));
+	var ystart = yindex * this.frameHeight +  this.startingY;
+	var xstart = this.startingX;
     xindex = frame % this.columns;
+	var currentFrameWidth = this.frameWidth;
 	if (Array.isArray(this.frameWidth)) {
 		currentFrameWidth = this.frameWidth[xindex];
 		for(var i = 0; i < xindex;i++) {
 			xstart += this.frameWidth[i];
 		}
-	} else {
-		xstart = xindex * currentFrameWidth
-		currentFrameWidth = this.frameWidth;
+	} else {	
+		xstart = xindex * currentFrameWidth + xstart
 	}
     
 
-  // console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ yindex)
+  console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
 
     ctx.drawImage(this.spriteSheet,
-                 xstart, yindex,  // selection start point
+                 xstart, ystart,  // selection start point
                  currentFrameWidth, this.frameHeight, //selection rect
                  x, y, //image placement
-                 currentFrameWidth, //drawing window
+                 this.frameWidth, //drawing window
                  this.frameHeight); //drawing height
 
 }
