@@ -176,16 +176,16 @@ GameEngine.prototype.randOffScreenPoint = function() {
 GameEngine.prototype.makeProtoEnemies = function() {
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   300, 500, 3));
+									   -100, 50, 3));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   200, 200, 2));
+									   -200, 200, 2));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   600, 700, 3));
+									   -100, -150, 3));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   100, 600, 1));
+									   200, 300, 1));
 }
 
 GameEngine.prototype.getRandomInt = function(min, max) {
