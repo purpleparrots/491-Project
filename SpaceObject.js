@@ -24,21 +24,22 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 }
 
 function AlienShip(game, angle, velocity, animation, x, y, weapon) {
-	this.weapon = weapon;
-	this.prototype = new SpaceObject(game, angle, velocity, animation,x, y);
 	SpaceObject.call(this, game, angle, velocity, animation,x, y);
-	this.prototype = SpaceObject();
+	
+	this.weapon = weapon;
+	
 	
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+	
 	this.shield = 100;
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
 	
-	SpaceObject.call(this, game, angle, velocity, animation,x, y);
-	this.prototype = SpaceObject();
+
 	this.draw = function() {
 		this.ctx.rotate(angle);
 		this.ctx.drawImage(animation, game.getX(this.animation, this.x), 
@@ -49,12 +50,14 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 
 function Asteroid(game, angle, velocity, animation, x, y, size) {
-	this.size = size;
 	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+	
+	
+	this.size = size;
 	
 	this.split = function() {
 	}
-	this.prototype = SpaceObject();
+
 	
 }
 
@@ -63,7 +66,7 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	
 	this.getPowerUp = function() {
 	}
-	this.prototype = SpaceObject();
+
 }
 
 
