@@ -13,14 +13,24 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	this.value = value;
 	
 	this.update = function() {
-		this.x += Math.floor(this.velocity.x * game.timer.gameTime);
-		this.y += Math.floor(this.velocity.y * game.timer.gameTime);
+		this.x += this.velocity.x;
+		this.y += this.velocity.y;
+		if (this.y >= document.getElementById("gameWorld").height) {
+			this.y = 0;
+		} 
+		if (this.x >= document.getElementById("gameWorld").width) {
+			this.x = 0;
+		}
+		if (this.y < 0) {
+			this.y = document.getElementById("gameWorld").height / 2;
+		}
+		if (this.x < 0) {
+			this. x = document.getElementById("gameWorld").width / 2;
+		}
 	}
 	
 	this.draw = function() {
-		this.animation.drawFrame(this.game.clockTick, this.ctx, 
-								game.getX(this.animation, this.x), 
-								game.getY(this.animation, this.y));
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.x,this.y);
 	}
 
 }

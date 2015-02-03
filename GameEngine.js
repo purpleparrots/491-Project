@@ -96,22 +96,12 @@ GameEngine.prototype.loop = function () {
 
 GameEngine.prototype.getX = function(animation, x) {
 	var width = 0;
-	if (typeof animation === "image") {
-		width = animation.width ;
-	} else {
-		width = animation.frameWidth;
-	}
 	return (this.surfaceWidth / 2) + x //- (width / 2);
 	
 }
 
 GameEngine.prototype.getY = function(animation, y) {
 	var height = 0;
-	if (typeof animation === "image") {
-		width = animation.height ;
-	} else {
-		width = animation.frameHeight;
-	}
 	return (this.surfaceHeight / 2) + y //- (animation.height / 2);
 }
 
@@ -176,16 +166,16 @@ GameEngine.prototype.randOffScreenPoint = function() {
 GameEngine.prototype.makeProtoEnemies = function() {
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   -100, 50, 3));
+									   this.getX(null, -100), this.getY(null, 50), 3));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   -200, 200, 2));
+									   this.getX(null,-200), this.getY(null,200), 2));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   -100, -150, 3));
+									   this.getX(null,-100), this.getY(null,-150), 3));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
-									   200, 300, 1));
+									   this.getX(null,200), this.getY(null,300), 1));
 }
 
 GameEngine.prototype.getRandomInt = function(min, max) {
