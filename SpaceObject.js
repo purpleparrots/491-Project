@@ -4,6 +4,7 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 
 	this.animation = animation;
 	this.game = game;
+
 	this.x = x;
 	this.y = y;
 	this.velocty = velocity;
