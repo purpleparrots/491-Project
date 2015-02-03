@@ -1,6 +1,5 @@
 // Main starts here
 var AM = new AssetManager();
-var game = new GameEngine();
 
 
 
