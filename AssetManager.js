@@ -1,5 +1,3 @@
-<script>
-
 function AssetManager() {
     this.successCount = 0;
     this.errorCount = 0;
@@ -44,5 +42,3 @@ AssetManager.prototype.downloadAll = function (callback) {
 AssetManager.prototype.getAsset = function (path) {
     return this.cache[path];
 }
-
-</script>
