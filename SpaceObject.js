@@ -11,7 +11,7 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 	this.removeMe = false;
 	
 
-	this.draw() {
+	this.draw = function() {
 		this.animation.drawFrame(this.game.clockTick, this.ctx, 
 								game.getX(this.animation, this.x), 
 								game.getY(this.animation, this.y));
@@ -44,8 +44,7 @@ function Asteroid(game, angle, velocity, animation, x, y, size) {
 }
 
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
-	this.getPowerUp() {
-		return function();
+	this.getPowerUp = function() {
 	}
 }
 
