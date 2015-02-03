@@ -11,13 +11,17 @@ window.requestAnimFrame = (function () {
 
 function GameEngine() {
     this.entities = [];
-    this.ctx = null;
+    this.game_ctx = null;
+	this.background_ctx = null;
+	this.overlay_ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
 }
 
-GameEngine.prototype.init = function (ctx) {
-    this.ctx = ctx;
+GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
+    this.game_ctx = game_ctx;
+	this.game_ctx = background_ctx;
+	this.overlay_ctx = overlay_ctx;
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.timer = new Timer();
