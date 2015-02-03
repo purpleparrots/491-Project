@@ -4,7 +4,7 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 
 	this.animation = animation;
 	this.game = game;
-
+	this.ctx = this.game.game_ctx;
 	this.x = x;
 	this.y = y;
 	this.velocty = velocity;
@@ -40,8 +40,10 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y);
 	this.prototype = SpaceObject();
 	this.draw = function() {
-		this.game.game_ctx.drawImage(animation, game.getX(this.animation, this.x), 
+		this.ctx.rotate(angle);
+		this.ctx.drawImage(animation, game.getX(this.animation, this.x), 
 			game.getY(this.animation, this.y));
+		this.ctx.restore();
 	}
 }
 
