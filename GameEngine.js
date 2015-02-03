@@ -72,12 +72,12 @@ GameEngine.prototype.loop = function () {
 }
 
 GameEngine.prototype.getX = function(animation, x) {
-	return (this.surfaceWidth / 2) + x - (animation.frameWidth / 2);
+	return (this.surfaceWidth / 2) + x //- (animation.frameWidth / 2);
 	
 }
 
 GameEngine.prototype.getY = function(animation, y) {
-	return (this.surfaceHeight / 2) + y - (animation.frameHeight / 2);
+	return (this.surfaceHeight / 2) + y //- (animation.frameHeight / 2);
 }
 
 function Timer() {
