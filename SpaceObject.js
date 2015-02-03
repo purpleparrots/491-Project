@@ -11,7 +11,10 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 	this.angle = angle;
 	this.removeMe = false;
 	
-
+	this.update = function() {
+		
+	}
+	
 	this.draw = function() {
 		this.animation.drawFrame(this.game.clockTick, this.ctx, 
 								game.getX(this.animation, this.x), 
@@ -23,6 +26,8 @@ function SpaceObject(game, angle, velocity, animation, x, y) {
 function AlienShip(game, angle, velocity, animation, x, y, weapon) {
 	this.weapon = weapon;
 	this.prototype = new SpaceObject(game, angle, velocity, animation,x, y);
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+	this.prototype = SpaceObject();
 	
 }
 
@@ -31,23 +36,34 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
-	this.prototype = new SpaceObject(game, angle, velocity, animation,x, y);
 	
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+	this.prototype = SpaceObject();
+	this.draw = function() {
+		this.game.game_ctx.drawImage(animation, game.getX(this.animation, this.x), 
+			game.getY(this.animation, this.y));
+	}
 }
+
 
 function Asteroid(game, angle, velocity, animation, x, y, size) {
 	this.size = size;
-	this.prototype = new SpaceObject(game, angle, velocity, animation,x, y);
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
 	
 	this.split = function() {
 	}
+	this.prototype = SpaceObject();
 	
 }
 
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
+	
 	this.getPowerUp = function() {
 	}
+	this.prototype = SpaceObject();
 }
+
 
 
 
