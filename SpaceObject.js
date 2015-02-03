@@ -1,6 +1,5 @@
-//initial angle given in radians, velocity is [x,y] vector
+//initial angle given in radians, velocity is {x: , y: } vector
 //x, y given in game coords
-
 function SpaceObject(game, angle, velocity, animation, x, y) {
 
 	this.animation = animation;
