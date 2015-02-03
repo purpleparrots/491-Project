@@ -77,7 +77,7 @@ GameEngine.prototype.getX = function(animation, x) {
 }
 
 GameEngine.prototype.getY = function(animation, y) {
-	return (this.surfaceHeight / 2) + y - (animation.frameWidth / 2);
+	return (this.surfaceHeight / 2) + y - (animation.frameHeight / 2);
 }
 
 function Timer() {

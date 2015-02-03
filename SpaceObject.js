@@ -42,8 +42,8 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 	this.draw = function() {
 		this.ctx.rotate(angle);
-		this.ctx.drawImage(animation, game.getX(this.animation, this.x), 
-			game.getY(this.animation, this.y));
+		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
+			game.getY(this.animation, this.y), 50, 50);
 		this.ctx.restore();
 	}
 }

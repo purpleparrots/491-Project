@@ -19,7 +19,5 @@ AM.downloadAll(function () {
     game.start();
 	game.addEntity(new PlayerShip(game, 0, {x:0,y:0}, 
 		AM.getAsset("./images/playership.png"), 0,0, null));
-	console.log(game.entities);
-
 });
 
