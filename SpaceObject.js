@@ -1,6 +1,6 @@
 //initial angle given in radians, velocity is {x: , y: } vector
 //x, y given in game coords
-function SpaceObject(game, angle, velocity, animation, x, y, value) {
+function SpaceObject(game, angle, velocity, animation, x, y) {
 
 	this.animation = animation;
 	this.game = game;
@@ -10,7 +10,6 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	this.velocty = velocity;
 	this.angle = angle;
 	this.removeMe = false;
-	this.value = value;
 	
 	this.update = function() {
 		
@@ -24,8 +23,8 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 
 }
 
-function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y, value);
+function AlienShip(game, angle, velocity, animation, x, y, weapon) {
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
 	
 	this.weapon = weapon;
 	
@@ -33,7 +32,7 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
 	
 	this.shield = 100;
 	this.lives = 3;
@@ -51,7 +50,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 
 function Asteroid(game, angle, velocity, animation, x, y, size) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y, size * 2);
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
 	
 	
 	this.size = size;
@@ -63,7 +62,7 @@ function Asteroid(game, angle, velocity, animation, x, y, size) {
 }
 
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
+	SpaceObject.call(this, game, angle, velocity, animation,x, y);
 	
 	this.getPowerUp = function() {
 	}
