@@ -202,6 +202,7 @@ GameEngine.prototype.makeProtoEnemies = function() {
 
 GameEngine.prototype.getRandomInt = function(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
+}
 	
 GameEngine.prototype.resultVec(orig_vec, force_vec) {
 	var ret = {};
@@ -210,15 +211,14 @@ GameEngine.prototype.resultVec(orig_vec, force_vec) {
 	return ret;	
 }
 
-GameEngine.prototype.resolveVec(angle, force) {
+GameEngine.prototype.resolveVec(angle, mag) {
 	var ret = {};
-	ret.x = Math.cos(angle);
-	ret.y = Math.sin(angle);
+	ret.x = mag * Math.cos(angle);
+	ret.y = mag * Math.sin(angle);
 	return ret;
 }
 
 }
-
 
 function Timer() {
     this.gameTime = 0;
@@ -235,5 +235,3 @@ Timer.prototype.tick = function () {
     this.gameTime += gameDelta;
     return gameDelta;
 }
-
-
