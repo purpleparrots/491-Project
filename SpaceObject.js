@@ -73,7 +73,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			this.velocity = {x:0, y:-2};
+			this.velocity = {x:0, y:0};
 			this.y -= 1;
 		}
 		
@@ -94,20 +94,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			null;
 		}
 		
-		this.x += this.velocity.x;
-		this.y += this.velocity.y;
-		if (this.y >= game.surfaceHeight + 50) {
-			this.y = -game.surfaceHeight - 50;
-		} 
-		if (this.x >= game.surfaceWidth + 50) {
-			this.x = -game.surfaceWidth - 50;
-		}
-		if (this.y < -game.surfaceHeight - 50) {
-			this.y = game.surfaceHeight + 50;
-		}
-		if (this.x < -game.surfaceWidth - 50) {
-			this. x = game.surfaceWidth + 50;
-		}
+		SpaceObject.prototype.update.call(this);
 	};
 
 	this.draw = function() {
@@ -116,30 +103,39 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		// we'll need to use this to make the ship rotate in place.
 
 		if(this.rotateLeft) {
-			this.ctx.save();
-			this.ctx.rotate(this.angle*Math.PI/180);
-			//this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
-			//		game.getY(this.animation, this.y), 50, 50);
-			//this.ctx.restore();
+			drawRotatedImage(this.ctx, this.animation, this.x, this.y, this.angle);
 			this.rotateLeft = false;
 		}
-		if(this.rotateRight) {
-			this.ctx.save();
-			this.ctx.rotate(this.angle*Math.PI/180);
-			//this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
-			//		game.getY(this.animation, this.y), 50, 50);
-			//this.ctx.restore();
+		else if(this.rotateRight) {
+			drawRotatedImage(this.ctx, this.animation, this.x, this.y, this.angle);
 			this.rotateRight = false;
+		} else {
+			this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), game.getY(this.animation, this.y), 50, 50);
+			//this.ctx.restore();
 		}
-		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), game.getY(this.animation, this.y), 50, 50);
-		this.ctx.restore();
-
-	}
+	};
 	
-	this.update = function() {
-		SpaceObject.prototype.update.call(this);
+	var TO_RADIANS = Math.PI/180; 
+	function drawRotatedImage(context, image, x, y, angle) { 
+	 
+		// save the current co-ordinate system 
+		// before we screw with it
+		context.save(); 
+	 
+		// move to the middle of where we want to draw our image
+		context.translate(x, y);
+	 
+		// rotate around that point, converting our 
+		// angle from degrees to radians 
+		context.rotate(angle * TO_RADIANS);
+	 
+		// draw it up and to the left by half the width
+		// and height of the image 
+		context.drawImage(image, -(x/2), -(y/2));
+	 
+		// and restore the co-ords to how they were when we began
+		context.restore(); 
 	}
-
 }
 
 
