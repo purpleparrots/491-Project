@@ -26,7 +26,7 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 			this.y = game.surfaceHeight + border;
 		}
 		if (this.x < -game.surfaceWidth - border) {
-			this. x = game.surfaceWidth + border;
+			this. x = game.surfaceWidth + b;
 			
 		}
 	}
@@ -176,7 +176,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		}
 		
 		//remove this code after prototyping
-		if (Math.random() < .1) {
+		if (Math.random() < .005) {
 			this.state = "exploding";
 		}
 	}
