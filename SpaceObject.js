@@ -13,19 +13,20 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	this.value = value;
 	
 	SpaceObject.prototype.update = function() {
+		var border = .05 * Math.max(game.surfaceHeight, game.surfaceWidth);
 		this.x += this.velocity.x;
 		this.y += this.velocity.y;
-		if (this.y >= game.surfaceHeight + 50) {
-			this.y = -game.surfaceHeight - 50;
+		if (this.y >= game.surfaceHeight + border) {
+			this.y = -game.surfaceHeight - border;
 		} 
-		if (this.x >= game.surfaceWidth + 50) {
-			this.x = -game.surfaceWidth - 50;
+		if (this.x >= game.surfaceWidth + border) {
+			this.x = -game.surfaceWidth - border;
 		}
-		if (this.y < -game.surfaceHeight - 50) {
-			this.y = game.surfaceHeight + 50;
+		if (this.y < -game.surfaceHeight - border) {
+			this.y = game.surfaceHeight + border;
 		}
-		if (this.x < -game.surfaceWidth - 50) {
-			this. x = game.surfaceWidth + 50;
+		if (this.x < -game.surfaceWidth - border) {
+			this. x = game.surfaceWidth + border;
 			
 		}
 	}
