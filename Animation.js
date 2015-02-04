@@ -40,8 +40,11 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     var frame = this.currentFrame() % this.frames;
 	
     var xindex = 0;
-
-    var yindex = Math.floor(frame / (this.frames / this.columns));
+	var yindex = 0;
+	if (this.frames != this.columns) {
+	    yindex = Math.floor(frame / (this.frames / this.columns));
+		
+	}
 	var ystart = yindex * this.frameHeight +  this.startingY;
 	var xstart = this.startingX;
     xindex = frame % this.columns;

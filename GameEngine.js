@@ -195,7 +195,7 @@ GameEngine.prototype.makeProtoEnemies = function() {
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)}, -100,-150, 3));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},  200, 300, 1));
     this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:-1}, AM.getAsset("./images/alienship.png"), 75, 75, null, 100));
-    this.addEntity(new Weapon(this, 0, {x:0,y:-1},AM.getAsset("./images/weapon2.png"), -100, 0));
+    this.addEntity(new Weapon(this, 0, {x:0,y:-1},AM.getAsset("./images/weapon2.png"), 0, 0));
   //  this.generateWave();
 
 }
