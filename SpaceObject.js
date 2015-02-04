@@ -30,7 +30,7 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 		}
 	}
 	
-	this.draw = function() {
+	SpaceObject.prototype.draw = function() {
 		this.animation.drawFrame(this.game.clockTick, this.ctx, game.getX(this.animation, this.x), 
 			game.getY(this.animation, this.y));
 	}
@@ -41,17 +41,24 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y, value);
 	
 	this.weapon = weapon;
+
+	this.draw = function() {
+		//this.ctx.rotate(angle);
+		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
+			game.getY(this.animation, this.y), 50, 50);
+		//this.ctx.restore();
+	}
 	
 	
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	console.log("In PlayerShip");
-	//SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
-	this.game = game;
+	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
+	/*this.game = game;
 	this.animation = animation;
 	this.x = x;
-	this.y = y;
+	this.y = y;*/
 	
 	this.shield = 100;
 	this.lives = 3;
@@ -88,28 +95,43 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		}
 	}
 
-	PlayerShip.prototype.draw = function() {
+	/*PlayerShip.prototype.draw = function() {
 		var that = this;
 		if (this.moveForward) {
 	        
 	    }
 		
-		/*this.ctx.rotate(angle);
+		this.ctx.rotate(angle);
 		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 			game.getY(this.animation, this.y), 50, 50);
-		this.ctx.restore();*/
+		this.ctx.restore();
+	}*/
+	
+	this.draw = function() {
+		//this.ctx.rotate(angle);
+		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
+			game.getY(this.animation, this.y), 50, 50);
+		//this.ctx.restore();
 	}
 }
 
 
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
+	
 	this.state = "normal";
 	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, false),
 					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 
 												2,2, 85, 84,.2,4, 16, false, false)};
 	this.animation = this.animations[this.state];
 	this.size = size;
+	
+	this.draw = function() {
+		this.ctx.save();
+		this.ctx.scale(size, size);
+		SpaceObject.prototype.draw.call(this);
+		this.ctx.restore();
+	}
 	
 	this.split = function() {
 	}
@@ -122,6 +144,8 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	}
 
 }
+
+
 
 
 
