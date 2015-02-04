@@ -74,8 +74,8 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			this.velocity = {x:0, y:-2};
-			this.y -= 1;
+			var thrustVel = this.game.resolveVec(angle, 1);
+			this.velocity = this.game.resolveVectory(this.velocity, thrustVel);
 		}
 		
 		
