@@ -31,8 +31,8 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	}
 	
 	SpaceObject.prototype.draw = function() {
-		this.animation.drawFrame(this.game.clockTick, this.ctx, game.getX(this.animation, this.x), 
-			game.getY(this.animation, this.y));
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(this.animation, this.x), 
+			this.game.getY(this.animation, this.y));
 	}
 
 }
@@ -175,12 +175,22 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		}
 		
 		//remove this code after prototyping
-		if (Math.abs(this.x) < 50 && Math.abs(this.y) < 50) {
+		if (Math.random() < .1) {
 			this.state = "exploding";
 		}
 	}
 	
 	this.split = function() {
+		var available_size = this.size
+		while (available_size > 1) {
+			new_size = this.game.getRandomInt(1, available_size);
+			available_size -= new_size;
+			if (new_size > 0) {
+				this.game.addEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(1,4), y: this.game.getRandomInt(1,4)},  this.x, this.y, 
+				new_size));
+			}
+			
+		}
 	}
 }
 
