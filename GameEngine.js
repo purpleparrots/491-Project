@@ -168,7 +168,7 @@ GameEngine.prototype.generateWave = function() {
         velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
         size = this.getRandomInt(1,3);
 
-        this.addEntity(new Asteroid(this, Math.random() * 2 * Math.PI, velocity, this.randOffScreenPoint(), this.randOffScreenPoint(), size));
+        this.addEntity(new Asteroid(this, Math.random() * 2 * Math.PI, velocity, this.getX(null, this.randOffScreenPoint()), this.getY(null, this.randOffScreenPoint()), size));
         waveValue -= size;
 	}
 }
