@@ -168,23 +168,27 @@ function Asteroid(game, angle, velocity, x, y, size) {
 			SpaceObject.prototype.update.call(this);
 		} else {
 			if (this.animation.isDone()) {
-				this.split();
+				this.removeMe = true;
+				if (this.size > 1) {
+					this.split();
+				}
+				
 			}
 		}
 		
 		//remove this code after prototyping
-		if (Math.random() < .1) {
+		if (Math.random() < .0005) {
 			this.state = "exploding";
 		}
 	}
 	
 	this.split = function() {
 		var available_size = this.size
-		while (available_size > 1) {
+		while (available_size >= 1) {
 			new_size = this.game.getRandomInt(1, available_size);
 			available_size -= new_size;
 			if (new_size > 0) {
-				this.game.addEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(1,4), y: this.game.getRandomInt(1,4)},  this.x, this.y, 
+				this.game.addEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(-4,4), y: this.game.getRandomInt(-4,4)},  this.x, this.y, 
 				new_size));
 			}
 			

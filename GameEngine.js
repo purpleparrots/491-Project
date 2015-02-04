@@ -74,7 +74,7 @@ GameEngine.prototype.draw = function () {
     for (var i = 0; i < this.entities.length; i++) {
     	if (this.entities[i].removeMe) {
     		this.increment("score", this.entities[i].value);
-    		entities.splice(i,1);
+    		this.entities.splice(i,1);
     	} else {
         	this.entities[i].draw(this.ctx);
         }
