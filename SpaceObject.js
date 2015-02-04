@@ -43,10 +43,10 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 	this.weapon = weapon;
 
 	this.draw = function() {
-		this.ctx.save();
-		this.ctx.scale(1, 1);
-		SpaceObject.prototype.draw.call(this);
-		this.ctx.restore();
+		//this.ctx.rotate(angle);
+		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
+			game.getY(this.animation, this.y), 50, 50);
+		//this.ctx.restore();
 	}
 	
 	
