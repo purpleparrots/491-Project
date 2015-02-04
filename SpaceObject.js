@@ -21,11 +21,19 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 		if (this.x >= document.getElementById("gameWorld").width - 50) {
 			this.x = -50;
 		}
+<<<<<<< HEAD
 		if (this.y < 0) {
 			this.y = (document.getElementById("gameWorld").height / 2) + 50;
 		}
 		if (this.x < 0) {
 			this. x = (document.getElementById("gameWorld").width / 2) + 50;
+=======
+		if (this.y < -50) {
+			this.y = document.getElementById("gameWorld").height + 50;
+		}
+		if (this.x < -50) {
+			this. x = document.getElementById("gameWorld").width + 50;
+>>>>>>> more changes
 		}
 	}
 	

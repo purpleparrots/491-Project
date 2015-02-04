@@ -178,17 +178,20 @@ GameEngine.prototype.generateWave = function() {
 GameEngine.prototype.randOffScreenPoint = function() {
 	side = Math.round(Math.random());
 	if (side === 0) {
-		return 0 - this.getRandomInt(25, 50);
+		return -(document.getElementById("gameWorld").width / 2) - this.getRandomInt(25, 50);
 	} else {
-		return 800 + this.getRandomInt(25, 50);
+		return (document.getElementById("gameWorld").width / 2) + this.getRandomInt(25, 50);
 	}
 }
 
 GameEngine.prototype.makeProtoEnemies = function() {
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
-									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
+									   {x: -2, y: -1},
 									   this.getX(null, -100), this.getY(null, 50), 3));
-	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
+    this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
+                                       {x: 2, y: 1},
+                                       this.getX(null, -100), this.getY(null, 50), 3));
+	/*this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
 									   this.getX(null,-200), this.getY(null,200), 2));
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
@@ -197,7 +200,7 @@ GameEngine.prototype.makeProtoEnemies = function() {
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
 									   this.getX(null,200), this.getY(null,300), 1));
-    this.generateWave();
+    this.generateWave();*/
 }
 
 GameEngine.prototype.getRandomInt = function(min, max) {
