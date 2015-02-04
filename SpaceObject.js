@@ -64,7 +64,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
     this.rotateLeft = false;
     this.moveForward = false;
     this.rotateRight = false;
-    this.angle = 0;
+    angle = 0;
 	
 	this.update = function() {
 		
