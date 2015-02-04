@@ -130,8 +130,6 @@ GameEngine.prototype.generateWave = function() {
 	powerupChance = (this.wave * 2) - 2;
 	while (waveValue > 0) {
 		type = this.getRandomInt(1,100);
-		velx = this.getRandomInt(1,4);
-		vely = this.getRandomInt(1,4);
 /*
 		if (type - alienChance > 0) {
 			velocity = {x: velx + 1, y: vely + 1};
@@ -150,8 +148,9 @@ GameEngine.prototype.generateWave = function() {
 			this.addEntity(new PowerUp(this, angle, velocity, null, x, y, null));
 		}
         */
-        velocity = {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)};
+        velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
         size = this.getRandomInt(1,3);
+
         this.addEntity(new Asteroid(this, Math.random() * 2 * Math.PI, velocity, this.randOffScreenPoint(), this.randOffScreenPoint(), size));
         waveValue -= size;
 	}
