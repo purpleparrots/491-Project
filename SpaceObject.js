@@ -73,7 +73,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			this.velocity = {x:0, y:0};
+			this.velocity = {x:0, y:-2};
 			this.y -= 1;
 		}
 		
@@ -98,7 +98,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	};
 
 	this.draw = function() {
-		
+		this.ctx.save();
 		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
 		// we'll need to use this to make the ship rotate in place.
 
@@ -150,8 +150,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 
 	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, false),
 					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, true),
-					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 
-												2,2, 85, 84,.2,4, 16, false, false)};
+						"exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2,2, 85, 84,.2,4, 16, false, false)};
 	this.animation = this.animations[this.state];
 	this.size = size;
 	
@@ -200,13 +199,13 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 function Weapon(game, angle, velocity, animation, x, y) {
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 	// Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse) {
-	this.animation = new Animation(animation, 7, 4, [19, 17, 20, 19, 22, 24, 23, 21, 29, 34], 30, .05, 10, 10, false, false);
+	this.animation = new Animation(animation, 7, 4, [19, 17, 20, 19, 22, 24, 23, 21, 29, 34], 30, .05, 10, 10, true, false);
 
 	this.draw = function() {
-		this.ctx.save();
-		this.ctx.scale(10, 10);
+		//this.ctx.save();
+		//this.ctx.scale(10, 10);
 		SpaceObject.prototype.draw.call(this);
-		this.ctx.restore();
+		//this.ctx.restore();
 	}
 	
 	this.update = function() {
