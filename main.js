@@ -6,13 +6,16 @@ var AM = new AssetManager();
 AM.queueDownload("./images/playership.png");
 AM.queueDownload("./images/asteroid.png");
 AM.queueDownload("./images/asteroid_explosion.png");
+AM.queueDownload("./images/alienship.png");
+AM.queueDownload("./images/background1.jpg")
 
 
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
-	
+	var bkgrndCtx = document.getElementById("background").getContext("2d");
+	bkgrndCtx.drawImage(AM.getAsset("./images/background1.jpg"), 0,0, bkgrndCtx.canvas.width, bkgrndCtx.canvas.height);
     var game = new GameEngine();
 	
 	game.init(document.getElementById("gameWorld").getContext("2d"), 
