@@ -133,22 +133,30 @@ GameEngine.prototype.generateWave = function() {
 		angle = Math.random() * 2 * Math.PI;
 		velx = this.getRandomInt(1,4);
 		vely = this.getRandomInt(1,4);
-		x = randOffScreenPoint();
-		y = randOffScreenPoint();
-
+		x = this.randOffScreenPoint();
+		y = this.randOffScreenPoint();
+/*
 		if (type - alienChance > 0) {
 			velocity = {x: velx + 1, y: vely + 1};
 			value = this.getRandomInt(2,4) * 10;
 			this.addEntity(new AlienShip(this, angle, velocity, null, x, y, null, value));
 			waveValue -= value;
+
 		} else {
+          velocity = {x: velx, y: vely};
 			size = this.getRandomInt(1,3);
 			this.addEntity(new Asteroid(this, angle, velocity, x, y, size));
 			waveValue -= size;
 		}
-		if (type - powerChance > 0) {
+		if (type - powerupChance > 0) {
+            velocity = {x: velx, y: vely};
 			this.addEntity(new PowerUp(this, angle, velocity, null, x, y, null));
 		}
+        */
+        velocity = {x: velx, y: vely};
+        size = this.getRandomInt(1,3);
+        this.addEntity(new Asteroid(this, angle, velocity, x, y, size));
+        waveValue -= size;
 	}
 }
 
@@ -157,9 +165,9 @@ GameEngine.prototype.generateWave = function() {
 GameEngine.prototype.randOffScreenPoint = function() {
 	side = Math.round(Math.random());
 	if (side === 0) {
-		return 0 - this.getRandomInt(50, 100);
+		return 0 - this.getRandomInt(25, 50);
 	} else {
-		return 800 + this.getRandomInt(50, 100);
+		return 800 + this.getRandomInt(25, 50);
 	}
 }
 
@@ -176,6 +184,7 @@ GameEngine.prototype.makeProtoEnemies = function() {
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), 
 									   {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},
 									   this.getX(null,200), this.getY(null,300), 1));
+    this.generateWave();
 }
 
 GameEngine.prototype.getRandomInt = function(min, max) {
