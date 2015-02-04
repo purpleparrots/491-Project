@@ -30,7 +30,12 @@ function Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, f
 Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     this.elapsedTime += tick;
     if (this.isDone()) {
-        if (this.loop) this.elapsedTime = 0;
+        if (this.loop) {
+			this.elapsedTime = 0;
+		}else{
+			return;
+		}
+
     } 
     var frame = this.currentFrame() % this.frames;
 	

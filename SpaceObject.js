@@ -12,7 +12,7 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	this.removeMe = false;
 	this.value = value;
 	
-	this.update = function() {
+	SpaceObject.prototype.update = function() {
 		this.x += this.velocity.x;
 		this.y += this.velocity.y;
 		if (this.y >= game.surfaceHeight + 50) {
@@ -47,6 +47,10 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 			game.getY(this.animation, this.y), 50, 50);
 		//this.ctx.restore();
+	}
+	
+	this.update = function() {
+		SpaceObject.prototype.update.call(this);
 	}
 	
 	
@@ -127,18 +131,29 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			//this.ctx.restore();
 			this.rotateRight = false;
 		}
-		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
-				game.getY(this.animation, this.y), 50, 50);
+		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), game.getY(this.animation, this.y), 50, 50);
 		this.ctx.restore();
-	};
+
+	}
+	
+	this.update = function() {
+		SpaceObject.prototype.update.call(this);
+	}
+
 }
 
 
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
 	
-	this.state = "normal";
+	if (Math.random() < .5) {
+		this.state = "normal";
+	} else {
+		this.state = "reverse";
+	}
+
 	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, false),
+					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, true),
 					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 
 												2,2, 85, 84,.2,4, 16, false, false)};
 	this.animation = this.animations[this.state];
@@ -151,6 +166,22 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		this.ctx.restore();
 	}
 	
+	this.update = function() {
+		this.animation = this.animations[this.state];
+		if (this.state != "exploding") {
+			SpaceObject.prototype.update.call(this);
+		} else {
+			if (this.animation.isDone()) {
+				this.split();
+			}
+		}
+		
+		//remove this code after prototyping
+		if (Math.abs(this.x) < 50 && Math.abs(this.y) < 50) {
+			this.state = "exploding";
+		}
+	}
+	
 	this.split = function() {
 	}
 }
@@ -161,6 +192,13 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	this.getPowerUp = function() {
 	}
 
+	this.update = function() {
+		SpaceObject.prototype.update.call(this);
+	}
+	
+	this.draw = function() {
+		SpaceObject.prototype.draw.call(this);
+	}
 }
 
 function Weapon(game, angle, velocity, animation, x, y) {
