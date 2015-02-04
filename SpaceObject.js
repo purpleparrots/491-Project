@@ -94,13 +94,16 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(this.game.leftkey) this.rotateLeft = true;
 		if(this.rotateLeft) {
-			this.angle -= 10;
-			
+			this.angle -= Math.PI / 360 % 2 * Math.PI;
+			//console.log(this.angle);
+			this.rotateLeft = false;
 		}
 		
 		if(this.game.rightkey) this.rotateRight = true;
 		if(this.rotateRight) {
-			this.angle += 10;
+			this.angle += Math.PI / 360 % 2 * Math.PI;
+			//console.log(this.angle);
+			this.rotateRight = false;
 			
 		}
 		if(this.game.spacebar) this.shoot = true;
@@ -112,44 +115,34 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	};
 
 	this.draw = function() {
-		this.ctx.save();
+		
 		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
 		// we'll need to use this to make the ship rotate in place.
 
-		if(this.rotateLeft) {
-			drawRotatedImage(this.ctx, this.animation, this.x, this.y, this.angle);
-			this.rotateLeft = false;
-		}
-		else if(this.rotateRight) {
-			drawRotatedImage(this.ctx, this.animation, this.x, this.y, this.angle);
-			this.rotateRight = false;
-		} else {
-			this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), game.getY(this.animation, this.y), 50, 50);
-			//this.ctx.restore();
-		}
-	};
-	
-	var TO_RADIANS = Math.PI/180; 
-	function drawRotatedImage(context, image, x, y, angle) { 
-	 
 		// save the current co-ordinate system 
 		// before we screw with it
-		context.save(); 
-	 
+	 	this.ctx.save();
+
 		// move to the middle of where we want to draw our image
-		context.translate(x, y);
+		//this.ctx.translate(this.game.getX(this.x), this.game.getY(this.y));
+		this.ctx.translate(25, 25);
 	 
 		// rotate around that point, converting our 
 		// angle from degrees to radians 
-		context.rotate(angle * TO_RADIANS);
-	 
+		//console.log(angle);
+		this.ctx.rotate(this.angle);
+
 		// draw it up and to the left by half the width
 		// and height of the image 
-		context.drawImage(image, -(x/2), -(y/2));
+
+		this.ctx.drawImage(this.animation, this.x, this.y, 50, 50);
+
+		this.ctx.restore(); 
 	 
 		// and restore the co-ords to how they were when we began
-		context.restore(); 
-	}
+				
+	};
+
 }
 
 
