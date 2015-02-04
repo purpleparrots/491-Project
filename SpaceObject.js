@@ -64,7 +64,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
     this.rotateLeft = false;
     this.moveForward = false;
     this.rotateRight = false;
-    angle = 0;
 	
 	this.update = function() {
 		
@@ -74,16 +73,18 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			this.y -= 1;
 		}
 		
+		
 		if(this.game.leftkey) this.rotateLeft = true;
 		if(this.rotateLeft) {
-			angle -= 10;
+			this.angle -= 10;
+			
 		}
 		
 		if(this.game.rightkey) this.rotateRight = true;
 		if(this.rotateRight) {
-			angle += 10;
+			this.angle += 10;
+			
 		}
-		
 		if(this.game.spacebar) this.shoot = true;
 		if(this.shoot) {
 			null;
@@ -107,19 +108,24 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 	this.draw = function() {
 		
+		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
+		// we'll need to use this to make the ship rotate in place.
+		
 		if(this.rotateLeft) {
 			this.ctx.save();
-			this.ctx.rotate(angle*Math.PI/180);
+			this.ctx.rotate(this.angle*Math.PI/180);
 			//this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 			//		game.getY(this.animation, this.y), 50, 50);
 			//this.ctx.restore();
+			this.rotateLeft = false;
 		}
 		if(this.rotateRight) {
 			this.ctx.save();
-			this.ctx.rotate(angle*Math.PI/180);
+			this.ctx.rotate(this.angle*Math.PI/180);
 			//this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 			//		game.getY(this.animation, this.y), 50, 50);
 			//this.ctx.restore();
+			this.rotateRight = false;
 		}
 		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 				game.getY(this.animation, this.y), 50, 50);
