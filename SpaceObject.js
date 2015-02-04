@@ -208,7 +208,7 @@ function Weapon(game, angle, velocity, animation, x, y) {
 
 	this.draw = function() {
 		this.ctx.save();
-		this.ctx.scale(1, 1);
+		this.ctx.scale(10, 10);
 		SpaceObject.prototype.draw.call(this);
 		this.ctx.restore();
 	}
