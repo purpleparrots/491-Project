@@ -50,13 +50,23 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
+	this.shoot = false;
+    this.rotateLeft = false;
+    this.moveforward = false;
+    this.rotateright = false;
 	
+	PlayerShip.prototype.update = function() {
+		if (this.game.upkey) this.moveforward = true;
+		if(moveforward) {
+			this.y = -5;
+		}
+	}
 
 	this.draw = function() {
-		this.ctx.rotate(angle);
+		//this.ctx.rotate(angle);
 		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 			game.getY(this.animation, this.y), 50, 50);
-		this.ctx.restore();
+		//this.ctx.restore();
 	}
 }
 

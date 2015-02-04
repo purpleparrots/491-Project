@@ -29,6 +29,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
 	this.overlay_ctx = overlay_ctx;
     this.surfaceWidth = this.game_ctx.canvas.width;
     this.surfaceHeight = this.game_ctx.canvas.height;
+    this.startInput();
     this.timer = new Timer();
 	this.wave = 1;
 	// temp function to show basic animations for prototype. remove for final
@@ -44,6 +45,22 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
+}
+
+GameEngine.prototype.startInput = function () {
+    console.log('Starting input');
+    var that = this;
+
+    this.game_ctx.canvas.addEventListener("keydown", function (e) {
+        if (String.fromCharCode(e.which) === ' ') that.spacebar = true;
+        if (e.keyCode === 37) that.leftkey = true;
+        if (e.keyCode === 38) that.upkey = true;
+        if (e.keyCode === 39) that.rightkey = true;
+        console.log(e);
+        e.preventDefault();
+    }, false);
+
+    console.log('Input started');
 }
 
 GameEngine.prototype.addEntity = function (entity) {
