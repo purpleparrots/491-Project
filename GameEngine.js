@@ -56,6 +56,7 @@ GameEngine.prototype.startInput = function () {
         if (e.keyCode === 37) that.leftkey = true;
         if (e.keyCode === 38) that.upkey = true;
         if (e.keyCode === 39) that.rightkey = true;
+        if (e.keyCode === 40) that.downkey = true;
         console.log(e);
         e.preventDefault();
     }, false);
@@ -112,6 +113,7 @@ GameEngine.prototype.loop = function () {
     this.spacebar = null;
     this.leftkey = null;
     this.upkey = null;
+    this.downkey = null;
     this.rightkey = null;
 }
 
@@ -207,15 +209,19 @@ GameEngine.prototype.getRandomInt = function(min, max) {
 GameEngine.prototype.resultVector = function(orig_vec, force_vec) {
 	var ret = {};
 	ret.x = orig_vec.x + force_vec.x;
-	ret.y = orig_vec.x + force_vec.y;
+	ret.y = orig_vec.y + force_vec.y;
 	return ret;	
 }
 
 GameEngine.prototype.resolveVec = function(angle, mag) {
 	var ret = {};
-	ret.x = mag * Math.cos(angle);
-	ret.y = mag * Math.sin(angle);
+	ret.x = Math.floor(mag * Math.cos(angle));
+	ret.y = Math.floor(mag * Math.sin(angle));
 	return ret;
+}
+
+GameEngine.prototype.velocityMag = function(vel) {
+    return Math.sqrt(vel.x * vel.x + vel.y * vel.y);
 }
 
 

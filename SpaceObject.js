@@ -74,9 +74,22 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			var thrustVel = this.game.resolveVec(angle, 1);
-			this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			if (this.game.velocityMag(this.velocity) <= 6) {
+				var thrustVel = this.game.resolveVec(angle, 1);
+				this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			}
+			this.moveForward = false;
 		}
+
+		if(this.game.downkey) this.moveBackward = true;
+		if(this.moveBackward) {
+			if(this.game.velocityMag(this.velocity) <= 6) {
+				var thrustVel = this.game.resolveVec(Math.PI + angle, 1);
+				this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			}
+			this.moveBackward = false;
+		}
+
 		
 		
 		if(this.game.leftkey) this.rotateLeft = true;
