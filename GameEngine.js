@@ -204,21 +204,20 @@ GameEngine.prototype.getRandomInt = function(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 	
-GameEngine.prototype.resultVec(orig_vec, force_vec) {
+GameEngine.prototype.resultVec = function(orig_vec, force_vec) {
 	var ret = {};
 	ret.x = orig_vec.x + force_vec.x;
 	ret.y = orig_vec.x + force_vec.y;
 	return ret;	
 }
 
-GameEngine.prototype.resolveVec(angle, mag) {
+GameEngine.prototype.resolveVec = function(angle, mag) {
 	var ret = {};
 	ret.x = mag * Math.cos(angle);
 	ret.y = mag * Math.sin(angle);
 	return ret;
 }
 
-}
 
 function Timer() {
     this.gameTime = 0;
