@@ -51,7 +51,7 @@ GameEngine.prototype.startInput = function () {
     console.log('Starting input');
     var that = this;
 
-    this.game_ctx.canvas.addEventListener("keydown", function (e) {
+    that.game_ctx.canvas.addEventListener("keydown", function (e) {
         if (String.fromCharCode(e.which) === ' ') that.spacebar = true;
         if (e.keyCode === 37) that.leftkey = true;
         if (e.keyCode === 38) that.upkey = true;
@@ -109,6 +109,10 @@ GameEngine.prototype.loop = function () {
     }
     this.update();
     this.draw();
+    this.spacebar = null;
+    this.leftkey = null;
+    this.upkey = null;
+    this.rightkey = null;
 }
 
 GameEngine.prototype.getX = function(animation, x) {

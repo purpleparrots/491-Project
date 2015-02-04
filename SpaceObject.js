@@ -46,29 +46,58 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
+	console.log("In PlayerShip");
+	//SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
+	this.game = game;
+	this.animation = animation;
+	this.x = x;
+	this.y = y;
 	
 	this.shield = 100;
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
+	
 	this.shoot = false;
     this.rotateLeft = false;
-    this.moveforward = false;
-    this.rotateright = false;
+    this.moveForward = false;
+    this.rotateRight = false;
 	
 	PlayerShip.prototype.update = function() {
-		if (this.game.upkey) this.moveforward = true;
-		if(moveforward) {
-			this.y = -5;
+		//console.log("In update for PlayerShip");
+		
+		if(this.game.upkey) this.moveForward = true;
+		if(this.moveForward) {
+			this.y = -1;
+			console.log("moveForward");
+		}
+		
+		if(this.game.leftkey) this.rotateLeft = true;
+		if(this.rotateLeft) {
+			null;
+		}
+		
+		if(this.game.rightkey) this.rotateRight = true;
+		if(this.rotateRight) {
+			null;
+		}
+		
+		if(this.game.spacebar) this.shoot = true;
+		if(this.shoot) {
+			null;
 		}
 	}
 
-	this.draw = function() {
-		//this.ctx.rotate(angle);
+	PlayerShip.prototype.draw = function() {
+		var that = this;
+		if (this.moveForward) {
+	        
+	    }
+		
+		/*this.ctx.rotate(angle);
 		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 			game.getY(this.animation, this.y), 50, 50);
-		//this.ctx.restore();
+		this.ctx.restore();*/
 	}
 }
 
