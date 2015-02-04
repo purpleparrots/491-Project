@@ -53,12 +53,7 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
-	console.log("In PlayerShip");
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
-	/*this.game = game;
-	this.animation = animation;
-	this.x = x;
-	this.y = y;*/
 	
 	this.shield = 100;
 	this.lives = 3;
@@ -69,50 +64,67 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
     this.rotateLeft = false;
     this.moveForward = false;
     this.rotateRight = false;
+    this.angle = 0;
 	
-	PlayerShip.prototype.update = function() {
-		//console.log("In update for PlayerShip");
+	this.update = function() {
 		
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			this.y = -1;
-			console.log("moveForward");
+			this.velocity = {x:0, y:-2};
+			this.y -= 1;
 		}
 		
 		if(this.game.leftkey) this.rotateLeft = true;
 		if(this.rotateLeft) {
-			null;
+			angle -= 10;
 		}
 		
 		if(this.game.rightkey) this.rotateRight = true;
 		if(this.rotateRight) {
-			null;
+			angle += 10;
 		}
 		
 		if(this.game.spacebar) this.shoot = true;
 		if(this.shoot) {
 			null;
 		}
-	}
-
-	/*PlayerShip.prototype.draw = function() {
-		var that = this;
-		if (this.moveForward) {
-	        
-	    }
 		
-		this.ctx.rotate(angle);
-		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
-			game.getY(this.animation, this.y), 50, 50);
-		this.ctx.restore();
-	}*/
-	
+		this.x += this.velocity.x;
+		this.y += this.velocity.y;
+		if (this.y >= game.surfaceHeight + 50) {
+			this.y = -game.surfaceHeight - 50;
+		} 
+		if (this.x >= game.surfaceWidth + 50) {
+			this.x = -game.surfaceWidth - 50;
+		}
+		if (this.y < -game.surfaceHeight - 50) {
+			this.y = game.surfaceHeight + 50;
+		}
+		if (this.x < -game.surfaceWidth - 50) {
+			this. x = game.surfaceWidth + 50;
+		}
+	};
+
 	this.draw = function() {
-		//this.ctx.rotate(angle);
+		
+		if(this.rotateLeft) {
+			this.ctx.save();
+			this.ctx.rotate(angle*Math.PI/180);
+			//this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
+			//		game.getY(this.animation, this.y), 50, 50);
+			//this.ctx.restore();
+		}
+		if(this.rotateRight) {
+			this.ctx.save();
+			this.ctx.rotate(angle*Math.PI/180);
+			//this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
+			//		game.getY(this.animation, this.y), 50, 50);
+			//this.ctx.restore();
+		}
 		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
-			game.getY(this.animation, this.y), 50, 50);
-		//this.ctx.restore();
-	}
+				game.getY(this.animation, this.y), 50, 50);
+		this.ctx.restore();
+	};
 }
 
 

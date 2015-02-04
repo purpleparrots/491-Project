@@ -51,7 +51,7 @@ GameEngine.prototype.startInput = function () {
     console.log('Starting input');
     var that = this;
 
-    that.game_ctx.canvas.addEventListener("keydown", function (e) {
+    that.overlay_ctx.canvas.addEventListener("keydown", function (e) {
         if (String.fromCharCode(e.which) === ' ') that.spacebar = true;
         if (e.keyCode === 37) that.leftkey = true;
         if (e.keyCode === 38) that.upkey = true;
