@@ -29,13 +29,12 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 			this. x = game.surfaceWidth + border;
 			
 		}
-	}
+	};
 	
 	SpaceObject.prototype.draw = function() {
 		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(this.animation, this.x), 
 			this.game.getY(this.animation, this.y));
-	}
-
+	};
 }
 
 function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
@@ -48,13 +47,11 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
 			game.getY(this.animation, this.y), 50, 50);
 		//this.ctx.restore();
-	}
+	};
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
-	}
-	
-	
+	};
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
@@ -86,7 +83,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			this.moveBackward = false;
 		}
 
-		
 		if(this.game.leftkey) this.rotateLeft = true;
 		if(this.rotateLeft) {
 			this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
@@ -107,10 +103,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		SpaceObject.prototype.update.call(this);
 	};
 
-		
-		 
-
-		
 	this.draw = function() {
 		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
 		// we'll need to use this to make the ship rotate in place.
@@ -130,7 +122,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		// and height of the image
 		this.ctx.drawImage(this.animation, -25, -25, 50, 50);
 		this.ctx.restore();
-	}
+	};
 
 }
 
@@ -155,7 +147,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		this.ctx.scale(size, size);
 		SpaceObject.prototype.draw.call(this);
 		this.ctx.restore();
-	}
+	};
 	
 	this.update = function() {
 		this.animation = this.animations[this.state];
@@ -175,10 +167,10 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		if (Math.random() < .005) {
 			this.state = "exploding";
 		}
-	}
+	};
 	
 	this.split = function() {
-		var available_size = this.size
+		var available_size = this.size;
 		while (available_size >= 1) {
 			new_size = this.game.getRandomInt(1, available_size);
 			available_size -= new_size;
@@ -188,22 +180,22 @@ function Asteroid(game, angle, velocity, x, y, size) {
 			}
 			
 		}
-	}
+	};
 }
 
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
 	
 	this.getPowerUp = function() {
-	}
+	};
 
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
-	}
+	};
 	
 	this.draw = function() {
 		SpaceObject.prototype.draw.call(this);
-	}
+	};
 }
 
 function Weapon(game, angle, velocity, animation, x, y) {
@@ -219,12 +211,11 @@ function Weapon(game, angle, velocity, animation, x, y) {
 		//this.ctx.scale(10, 10);
 		SpaceObject.prototype.draw.call(this);
 		//this.ctx.restore();
-	}
+	};
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
-	}
-
+	};
 }
 
 
