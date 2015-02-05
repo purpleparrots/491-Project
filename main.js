@@ -7,7 +7,7 @@ AM.queueDownload("./images/asteroid.png");
 AM.queueDownload("./images/asteroid_explosion.png");
 AM.queueDownload("./images/alienship.png");
 AM.queueDownload("./images/background1.jpg");
-AM.queueDownload("./images/weapon3.png");
+AM.queueDownload("./images/weapon2.png");
 
 
 AM.downloadAll(function () {
