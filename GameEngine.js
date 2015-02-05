@@ -202,8 +202,8 @@ GameEngine.prototype.getRandomInt = function(min, max) {
 	
 GameEngine.prototype.resultVector = function(orig_vec, force_vec) {
 	var ret = {};
-	ret.x = Math.round(orig_vec.x + force_vec.x);
-	ret.y = Math.round(orig_vec.y + force_vec.y);
+	ret.x = orig_vec.x + force_vec.x;
+	ret.y = orig_vec.y + force_vec.y;
 	return ret;	
 }
 
