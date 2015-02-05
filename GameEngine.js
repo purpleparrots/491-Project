@@ -82,24 +82,9 @@ GameEngine.prototype.update = function () {
 
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
-        for (var j = i + 1; j < entitiesCount - 1; j++) {
-            var otherEntity = this.entities[j];
-            if (this.checkCollision(entity, otherEntity)) {
-                entity.collide(otherEntity, true);
-            }               
-        }
+        entity.update();
     }
-    entity.update();
 }
-
-GameEngine.prototype.checkCollision = function(entity1, entity2) {
-    return this.absoluteDistance(entity1, entity2) <= entity1.radius + entity2.radius;
-}
-
-GameEngine.prototype.absoluteDistance = function(entity1, entity2) {
-    return Math.sqrt(Math.pow((entity1.x - entity2.x), 2) + Math.pow((entity1.y - entity2.y), 2));
-}
-
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
