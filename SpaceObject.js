@@ -122,7 +122,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.draw = function() {
 		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
 		// we'll need to use this to make the ship rotate in place.
-		console.log(typeof this.animation);
+		//console.log(typeof this.animation);
 		// save the current co-ordinate system 
 		// before we mess with it
 	 	this.ctx.save();
@@ -219,7 +219,9 @@ function Weapon(game, angle, velocity, animation, x, y) {
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 	// Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse) {
 	this.animation = new Animation(animation, 7, 4, [19, 17, 20, 19, 22, 24, 23, 21, 29, 34], 30, .05, 10, 10, true, false);
+	//this.animation = new Animation(animation, 7, 4, [19, 17, 20, 19, 22, 24, 23, 21, 29, 34], 30, .05, 10, 10, true, false);
 
+	
 	this.draw = function() {
 		//this.ctx.save();
 		//this.ctx.scale(10, 10);
