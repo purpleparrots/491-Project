@@ -32,8 +32,8 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	};
 	
 	SpaceObject.prototype.draw = function() {
-		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(this.animation, this.x), 
-			this.game.getY(this.animation, this.y));
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(this.animation.frameWidth, this.x), 
+			this.game.getY(this.animation.frameHeight, this.y));
 	};
 }
 
@@ -44,8 +44,7 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 
 	this.draw = function() {
 		//this.ctx.rotate(angle);
-		this.ctx.drawImage(this.animation, game.getX(this.animation, this.x), 
-			game.getY(this.animation, this.y), 50, 50);
+		this.ctx.drawImage(this.animation, game.getX(25, this.x), game.getY(25, this.y), 50, 50);
 		//this.ctx.restore();
 	};
 	
@@ -112,7 +111,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		// before we mess with it
 	 	this.ctx.save();
 		// move to the middle of where we want to draw our image
-		this.ctx.translate(this.game.getX(null, Math.round(this.x)), this.game.getY(null, Math.round(this.y)));
+		this.ctx.translate(this.game.getX(25, Math.round(this.x)), this.game.getY(25, Math.round(this.y)));
 		this.ctx.translate(25, 25);
 	 
 		// rotate around that point, converting our 
