@@ -74,18 +74,20 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			if (this.velocity.x + this.velocity.y <= 6) {
-				var thrustVel = this.game.resolveVec(angle, 1);
-				this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			var thrustVel = this.game.resolveVec(this.angle, 1);
+			var newVel = this.game.resultVector(this.velocity, thrustVel);
+			if (game.velocityMag(newVel) < 4) {
+				this.velocity = newVel;
 			}
 			this.moveForward = false;
 		}
 
 		if(this.game.downkey) this.moveBackward = true;
 		if(this.moveBackward) {
-			if(this.velocity.x + this.velocity.y >= -6) {
-				var thrustVel = this.game.resolveVec(Math.PI + angle, 1);
-				this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			var thrustVel = this.game.resolveVec(Math.PI + this.angle, 1);
+			var newVel= this.game.resultVector(this.velocity, thrustVel);
+			if (game.velocityMag(newVel) < 4) {
+				this.velocity = newVel;
 			}
 			this.moveBackward = false;
 		}
