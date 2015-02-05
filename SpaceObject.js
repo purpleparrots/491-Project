@@ -97,7 +97,8 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		}
 		if(this.game.spacebar) this.shoot = true;
 		if(this.shoot) {
-			null;
+			this.game.addEntity(new Weapon(this.game, this.angle, null, AM.getAsset("./images/weapon3.png"), this.x, this.y))
+			this.shoot = false;
 		}
 		
 		SpaceObject.prototype.update.call(this);
@@ -201,11 +202,11 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 function Weapon(game, angle, velocity, animation, x, y) {
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 	// Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse) {
-	this.animation = new Animation(animation, 0, 0, 31, 44, .4, 10, 10, true, false);
+	this.animation = new Animation(animation, 0, 0, 31, 44, .4, 10, 10, false, false);
 	//this.animation = new Animation(animation, 105, 2, 23.5, 33, .4, 4, 4, true, false);
 	//this.animation = new Animation(animation, 8, 10, 17, 20, .05, 8, 8, true, false);
 	//this.animation = new Animation(animation, 7, 4, [19, 17, 20, 19, 22, 24, 23, 21, 29, 34], 30, .05, 10, 10, true, false);
-
+	this.velocity = {x: 3 * Math.cos(this.angle), y: 3 * Math.sin(this.angle)};
 
 	
 	this.draw = function() {
@@ -217,6 +218,9 @@ function Weapon(game, angle, velocity, animation, x, y) {
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
+		if (this.animation.isDone()) {
+			this.removeMe = true;
+		}
 	};
 }
 
