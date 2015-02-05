@@ -256,6 +256,8 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 
 function Weapon(game, angle, velocity, animation, x, y) {
 	this.radius = 6;
+
+	
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 
 	this.animation = new Animation(animation, 0, 0, 31, 44, .4, 10, 10, false, false);
