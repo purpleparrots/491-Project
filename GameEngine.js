@@ -112,12 +112,12 @@ GameEngine.prototype.loop = function () {
 }
 
 GameEngine.prototype.getX = function(width, x) {
-	return this.surfaceWidth + x - (width / 2);
+	return this.surfaceWidth + x + (width / 2);
 	
 }
 
 GameEngine.prototype.getY = function(height, y) {
-	return this.surfaceHeight + y - (height / 2);
+	return this.surfaceHeight + y + (height / 2);
 }
 
 GameEngine.prototype.end = function() {
