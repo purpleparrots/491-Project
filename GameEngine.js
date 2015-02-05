@@ -35,11 +35,9 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
 	// temp function to show basic animations for prototype. remove for final
 	this.makeProtoEnemies();
 
-    console.log('game initialized');
 }
 
 GameEngine.prototype.start = function () {
-    console.log("starting game");
     var that = this;
     (function gameLoop() {
         that.loop();
@@ -48,7 +46,6 @@ GameEngine.prototype.start = function () {
 }
 
 GameEngine.prototype.startInput = function () {
-    console.log('Starting input');
     var that = this;
 
     that.overlay_ctx.canvas.addEventListener("keydown", function (e) {
@@ -57,15 +54,12 @@ GameEngine.prototype.startInput = function () {
         if (e.keyCode === 38) that.upkey = true;
         if (e.keyCode === 39) that.rightkey = true;
         if (e.keyCode === 40) that.downkey = true;
-        console.log(e);
         e.preventDefault();
     }, false);
 
-    console.log('Input started');
 }
 
 GameEngine.prototype.addEntity = function (entity) {
-    console.log('added entity');
     this.entities.push(entity);
 }
 

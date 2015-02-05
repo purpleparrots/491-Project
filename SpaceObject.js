@@ -94,15 +94,14 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(this.game.leftkey) this.rotateLeft = true;
 		if(this.rotateLeft) {
-			this.angle -= Math.PI / 360 % 2 * Math.PI;
+			this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
 			//console.log(this.angle);
 			this.rotateLeft = false;
 		}
 		
 		if(this.game.rightkey) this.rotateRight = true;
 		if(this.rotateRight) {
-			this.angle += Math.PI / 360 % 2 * Math.PI;
-			//console.log(this.angle);
+			this.angle += 4 * Math.PI / 360 % 2 * Math.PI;
 			this.rotateRight = false;
 			
 		}
@@ -114,34 +113,31 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		SpaceObject.prototype.update.call(this);
 	};
 
-	this.draw = function() {
 		
+		 
+
+		
+	this.draw = function() {
 		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
 		// we'll need to use this to make the ship rotate in place.
-
+		console.log(typeof this.animation);
 		// save the current co-ordinate system 
-		// before we screw with it
+		// before we mess with it
 	 	this.ctx.save();
 
 		// move to the middle of where we want to draw our image
-		//this.ctx.translate(this.game.getX(this.x), this.game.getY(this.y));
+		this.ctx.translate(this.game.getX(null, this.x), this.game.getY(null, this.y));
 		this.ctx.translate(25, 25);
 	 
 		// rotate around that point, converting our 
-		// angle from degrees to radians 
-		//console.log(angle);
+
 		this.ctx.rotate(this.angle);
 
 		// draw it up and to the left by half the width
-		// and height of the image 
-
-		this.ctx.drawImage(this.animation, this.x, this.y, 50, 50);
-
-		this.ctx.restore(); 
-	 
-		// and restore the co-ords to how they were when we began
-				
-	};
+		// and height of the image
+		this.ctx.drawImage(this.animation, -25, -25, 50, 50);
+		this.ctx.restore();
+	}
 
 }
 
@@ -183,7 +179,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		}
 		
 		//remove this code after prototyping
-		if (Math.random() < .0005) {
+		if (Math.random() < .005) {
 			this.state = "exploding";
 		}
 	}
