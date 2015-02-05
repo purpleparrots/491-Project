@@ -75,29 +75,21 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
 			var thrustVel = this.game.resolveVec(this.angle, 1);
-			var newVel = this.game.resultVector(this.velocity, thrustVel);
-			if (game.velocityMag(newVel) < 4) {
-				this.velocity = newVel;
-			}
+			this.velocity = this.game.resultVector(this.velocity, thrustVel);
 			this.moveForward = false;
 		}
 
 		if(this.game.downkey) this.moveBackward = true;
 		if(this.moveBackward) {
 			var thrustVel = this.game.resolveVec(Math.PI + this.angle, 1);
-			var newVel= this.game.resultVector(this.velocity, thrustVel);
-			if (game.velocityMag(newVel) < 4) {
-				this.velocity = newVel;
-			}
+			this.velocity = this.game.resultVector(this.velocity, thrustVel);
 			this.moveBackward = false;
 		}
 
 		
-		
 		if(this.game.leftkey) this.rotateLeft = true;
 		if(this.rotateLeft) {
 			this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
-			//console.log(this.angle);
 			this.rotateLeft = false;
 		}
 		
@@ -126,9 +118,8 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		// save the current co-ordinate system 
 		// before we mess with it
 	 	this.ctx.save();
-
 		// move to the middle of where we want to draw our image
-		this.ctx.translate(this.game.getX(null, this.x), this.game.getY(null, this.y));
+		this.ctx.translate(this.game.getX(null, Math.round(this.x)), this.game.getY(null, Math.round(this.y)));
 		this.ctx.translate(25, 25);
 	 
 		// rotate around that point, converting our 
