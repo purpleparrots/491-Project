@@ -112,6 +112,14 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		}
 		if(this.game.spacebar) this.shoot = true;
 		if(this.shoot) {
+			console.log(this.shield + " " + this.lives);
+			var PWobject = new PowerUp(this.game, (Math.random() * 2 * Math.PI), {x: -1, y: 0}, AM.getAsset("./images/crystals.png"), 100, 0);
+			var fn = PWobject.getPowerUp();
+			if(typeof fn === 'function') {
+				console.log("success");
+				this.fn();
+			}
+        	console.log(this.shield + " " + this.lives);
 			this.game.addEntity(new Weapon(this.game, this.angle, this.velocity, AM.getAsset("./images/weapon3.png"), this.x , this.y));
 			this.shoot = false;
 		}
@@ -172,6 +180,18 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		if(this.shield <= 0) {
 			this.lives -= 1;
 		}
+	}
+
+	this.fillShield = function() {
+		this.shield = 100;
+	}
+
+	this.addLife = function() {
+		this.lives += 1;
+	}
+
+	this.doubleGun = function() {
+
 	}
 
 } // end PlayerShip
@@ -264,29 +284,23 @@ function PowerUp(game, angle, velocity, animation, x, y) {
 	this.typeMap = {
 		//Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse)
 		// light blue crystal
-		fillshield: new Animation(animation, 0, 0, 31, 29, .1, 3, 12, true, false),
+		"fillshield": new Animation(animation, 0, 0, 31, 29, .1, 3, 12, true, false),
 		// lime green crystal
-		extralife: new Animation(animation, 94, 0, 31, 29, .1, 3, 12, true, false),
+		"extralife": new Animation(animation, 94, 0, 31, 29, .1, 3, 12, true, false),
 		// red crystal
-		doublegun: new Animation(animation, 187,0, 31, 29, .1, 3, 12, true, false)
+		"doublegun": new Animation(animation, 187,0, 31, 29, .1, 3, 12, true, false)
 	};
 
 	this.actionMap = {
-		fillshield: function(entity) {
-			entity.shield = 100;
-		},
-		extralife: function(entity) {
-			entity.lives += 1
-		},
-		doublegun: function(entity) {
-
-		}
+		"fillshield": "fillShield",
+		"extralife": "addLife",
+		"doublegun": "doubleGun"
 	};
-	console.log(this.type);
 	this.animation = this.typeMap[this.type];
-	console.log(this.typeMap[this.type]);
 
 	this.getPowerUp = function() {
+		console.log(this);
+		console.log("trying: " + this.actionMap[this.type]);
 		return this.actionMap[this.type];
 	};
 
@@ -308,7 +322,7 @@ function PowerUp(game, angle, velocity, animation, x, y) {
         }
         
 	}
-}
+} // end PowerUp
 
 function Weapon(game, angle, velocity, animation, x, y) {
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
