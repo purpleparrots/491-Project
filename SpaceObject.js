@@ -66,7 +66,7 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
         }
         
 	}
-}
+} // end Alienship
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
@@ -174,8 +174,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		}
 	}
 
-}
-
+} // end PlayerShip
 
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
@@ -255,15 +254,40 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		}
 	}
 
-}
+} // end Asteroid
 
-function PowerUp(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
+function PowerUp(game, angle, velocity, animation, x, y) {
+	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 	
 	this.radius = 10;
-	this.type = game.typeMap[game.getRandomInt(0,100);
+	this.type = game.typeMap[game.getRandomInt(0,100)];
+	this.typeMap = {
+		//Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse)
+		// light blue crystal
+		fillshield: new Animation(animation, 0, 0, 31, 29, .1, 3, 12, true, false),
+		// lime green crystal
+		extralife: new Animation(animation, 94, 0, 31, 29, .1, 3, 12, true, false),
+		// red crystal
+		doublegun: new Animation(animation, 187,0, 31, 29, .1, 3, 12, true, false)
+	};
+
+	this.actionMap = {
+		fillshield: function(entity) {
+			entity.shield = 100;
+		},
+		extralife: function(entity) {
+			entity.lives += 1
+		},
+		doublegun: function(entity) {
+
+		}
+	};
+	console.log(this.type);
+	this.animation = this.typeMap[this.type];
+	console.log(this.typeMap[this.type]);
 
 	this.getPowerUp = function() {
+		return this.actionMap[this.type];
 	};
 
 	this.update = function() {
@@ -278,6 +302,7 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 		
 		if(otherObject instanceof PlayerShip) {
 			if (notify) otherObject.collide(this, false);
+			this.removeMe = true;
         } else {
         	//ignores alienships, asteroids, weapons, and other powerups
         }
