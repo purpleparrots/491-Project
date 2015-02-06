@@ -21,6 +21,7 @@ function GameEngine() {
     this.waveTick = 0;
     this.score = 0;
     this.active = true;
+    this.count = 0;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -63,6 +64,10 @@ GameEngine.prototype.addEntity = function (entity) {
     this.entities.push(entity);
 }
 
+GameEngine.prototype.addTempEntity = function(entity) {
+    this.newEntities.push(entity);
+}
+
 GameEngine.prototype.draw = function () {
     this.game_ctx.clearRect(0, 0, this.surfaceWidth * 2, this.surfaceHeight * 2);
     this.game_ctx.save();
@@ -78,18 +83,35 @@ GameEngine.prototype.draw = function () {
 }
 
 GameEngine.prototype.update = function () {
+    this.newEntities = [];
     var entitiesCount = this.entities.length;
-
+    //console.log("start collision check" + this.count);
+    this.count += 1;
     for (var i = 0; i < entitiesCount; i++) {
+        
         var entity = this.entities[i];
+        
         for (var j = i + 1; j < entitiesCount - 1; j++) {
-            var otherEntity = this.entities[j];
-            if (this.checkCollision(entity, otherEntity)) {
-                entity.collide(otherEntity, true);
-            }               
+            
+            //if(otherEntity != undefined) {
+                var otherEntity = this.entities[j];
+                
+                if (this.checkCollision(entity, otherEntity)) {
+                    entity.collide(otherEntity, true);
+                } 
+                
+                //console.log(otherEntity.velocity);
+            //}            
+                         
         }
+    
+    if (!entity.removeMe)  entity.update();
+    //console.log("end collision check");
     }
-    entity.update();
+    var newEntitiesCount = this.newEntities.length;
+    for(var k = 0; k < newEntitiesCount; k++) {
+        this.addEntity(this.newEntities[k]);
+    }
 }
 
 GameEngine.prototype.checkCollision = function(entity1, entity2) {
@@ -160,26 +182,30 @@ GameEngine.prototype.generateWave = function() {
 	powerupChance = (this.wave * 2) - 2;
 	while (waveValue > 0) {
 		type = this.getRandomInt(1,100);
+        velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
+        size = this.getRandomInt(1,3);
+        angle = Math.random() * Math.PI;
+        x = this.randOffScreenPoint();
+        y = this.randOffScreenPoint();
 /*
 		if (type - alienChance > 0) {
-			velocity = {x: velx + 1, y: vely + 1};
+			
 			value = this.getRandomInt(2,4) * 10;
 			this.addEntity(new AlienShip(this, angle, velocity, null, x, y, null, value));
 			waveValue -= value;
 
 		} else {
-          velocity = {x: velx, y: vely};
-			size = this.getRandomInt(1,3);
+            */
 			this.addEntity(new Asteroid(this, angle, velocity, x, y, size));
 			waveValue -= size;
-		}
+		//}
+        /*
 		if (type - powerupChance > 0) {
             velocity = {x: velx, y: vely};
 			this.addEntity(new PowerUp(this, angle, velocity, null, x, y, null));
 		}
         */
-        velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
-        size = this.getRandomInt(1,3);
+        
 
   //      this.addEntity(new Asteroid(this, Math.random() * 2 * Math.PI, velocity, this.randOffScreenPoint(), this.randOffScreenPoint(), size));
         waveValue -= size;
@@ -205,7 +231,7 @@ GameEngine.prototype.makeProtoEnemies = function() {
 	this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},  200, 300, 1));
     this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:-1}, AM.getAsset("./images/alienship.png"), 75, 75, null, 100));
     this.addEntity(new Weapon(this, 0, {x:0,y:-1},AM.getAsset("./images/weapon3.png"), 0, 0));
-  //  this.generateWave();
+    this.generateWave();
 
 }
 
