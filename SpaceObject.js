@@ -40,6 +40,8 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y, value);
 	
 	this.weapon = weapon;
+	// magic numbers! woohoo! 
+	this.radius = 22;
 
 	this.draw = function() {
 		//this.ctx.rotate(angle);
@@ -73,7 +75,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
-	
+	this.radius = 22;
 	this.shoot = false;
     this.rotateLeft = false;
     this.moveForward = false;
@@ -232,7 +234,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 			
 		}
 	};
-
+	
 	this.collide = function(otherObject, notify) {
 		if(this.state != "exploding") {
 			if(otherObject instanceof PlayerShip) {
@@ -246,7 +248,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
         			this.state = "exploding";
         		}
         		if (notify) otherObject.collide(this, false);
-        		} else {
+        	} else {
         		//ignores alienships and powerups
         	}
         
@@ -258,6 +260,8 @@ function Asteroid(game, angle, velocity, x, y, size) {
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
 	
+	this.radius = 10;
+
 	this.getPowerUp = function() {
 	};
 
@@ -281,18 +285,12 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 }
 
 function Weapon(game, angle, velocity, animation, x, y) {
-	this.radius = 10;
-
-
-}
-
-function Weapon(game, angle, velocity, animation, x, y) {
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 	this.x = x + 50 * Math.cos(angle);
 	this.y = y + 50 * Math.sin(angle);
 	this.animation = new Animation(animation, 0, 0, 31, 44, .4, 10, 10, false, false);
 	this.velocity = {x: 3 * Math.cos(this.angle) + velocity.x, y: 3 * Math.sin(this.angle) + velocity.y};
-
+	this.radius = 3;
 	
 	this.draw = function() {
 		//this.ctx.save();
@@ -314,7 +312,7 @@ function Weapon(game, angle, velocity, animation, x, y) {
 			if(otherObject.state != "exploding") {
 				this.removeMe = true;
 				if (notify) otherObject.collide(this, false);
-		}
+			}
         } else if (otherObject instanceof AlienShip) {
         	this.removeMe = true;
         	if (notify) otherObject.collide(this, false);
