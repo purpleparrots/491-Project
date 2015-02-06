@@ -27,7 +27,6 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 		}
 		if (this.x < -game.surfaceWidth - border) {
 			this. x = game.surfaceWidth + border;
-			
 		}
 	};
 	
