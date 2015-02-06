@@ -188,9 +188,9 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		this.state = "reverse";
 	}
 
-	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, false),
-					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8,52, 32, 32,.01,8, 64, true, true),
-						"exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2,2, 85, 84,.2,4, 16, false, false)};
+	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, false),
+					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, true),
+						"exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
 	this.animation = this.animations[this.state];
 	this.size = size;
 	
