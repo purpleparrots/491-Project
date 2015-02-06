@@ -27,7 +27,6 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 		}
 		if (this.x < -game.surfaceWidth - border) {
 			this. x = game.surfaceWidth + border;
-			
 		}
 	};
 	
@@ -41,8 +40,6 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y, value);
 	
 	this.weapon = weapon;
-	// magic numbers! woohoo!
-	this.radius = 22;
 
 	this.draw = function() {
 		//this.ctx.rotate(angle);
@@ -53,6 +50,7 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
 	};
+<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		
@@ -67,6 +65,8 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
         }
         
 	}
+=======
+>>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
@@ -76,13 +76,13 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
-	this.radius = 22;
 	
 	this.shoot = false;
     this.rotateLeft = false;
     this.moveForward = false;
     this.rotateRight = false;
-	
+	this.width = 50;
+	this.height = 50;
 	this.update = function() {
 		
 		if(this.game.upkey) this.moveForward = true;
@@ -113,7 +113,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		}
 		if(this.game.spacebar) this.shoot = true;
 		if(this.shoot) {
-			this.game.addEntity(new Weapon(this.game, this.angle, null, AM.getAsset("./images/weapon3.png"), this.x, this.y))
+			this.game.addEntity(new Weapon(this.game, this.angle, this.velocity, AM.getAsset("./images/weapon3.png"), this.x , this.y));
 			this.shoot = false;
 		}
 		
@@ -128,8 +128,8 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		// before we mess with it
 	 	this.ctx.save();
 		// move to the middle of where we want to draw our image
-		this.ctx.translate(this.game.getX(25, Math.round(this.x)), this.game.getY(25, Math.round(this.y)));
-		this.ctx.translate(25, 25);
+		this.ctx.translate(this.game.getX(this.width/ 2, Math.round(this.x)), this.game.getY(this.height/2, Math.round(this.y)));
+		this.ctx.translate(this.width / 2, this.height / 2);
 	 
 		// rotate around that point, converting our 
 
@@ -141,6 +141,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		this.ctx.restore();
 	};
 
+<<<<<<< HEAD
 	this.collide = function(otherObject, notify) {
 		if(otherObject instanceof Asteroid) {
 
@@ -175,12 +176,17 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		}
 	}
 
+=======
+>>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
+<<<<<<< HEAD
 	this.radius = 3 * size;
+=======
+>>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 	
 	if (Math.random() < .5) {
 		this.state = "normal";
@@ -234,6 +240,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 			
 		}
 	};
+<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		if(this.state != "exploding") {
@@ -255,15 +262,14 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		}
 	}
 
+=======
+>>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
 	
-	this.radius = 10;
-
 	this.getPowerUp = function() {
-
 	};
 
 	this.update = function() {
@@ -273,6 +279,7 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	this.draw = function() {
 		SpaceObject.prototype.draw.call(this);
 	};
+<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		
@@ -289,14 +296,23 @@ function Weapon(game, angle, velocity, animation, x, y) {
 	this.radius = 10;
 
 
-	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
+=======
+}
 
+function Weapon(game, angle, velocity, animation, x, y) {
+>>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
+	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
+	this.x = x + 50 * Math.cos(angle);
+	this.y = y + 50 * Math.sin(angle);
 	this.animation = new Animation(animation, 0, 0, 31, 44, .4, 10, 10, false, false);
-	this.velocity = {x: 3 * Math.cos(this.angle), y: 3 * Math.sin(this.angle)};
+	this.velocity = {x: 3 * Math.cos(this.angle) + velocity.x, y: 3 * Math.sin(this.angle) + velocity.y};
 
 	
 	this.draw = function() {
+		//this.ctx.save();
+		//this.ctx.scale(10, 10);
 		SpaceObject.prototype.draw.call(this);
+		//this.ctx.restore();
 	};
 	
 	this.update = function() {
@@ -305,6 +321,7 @@ function Weapon(game, angle, velocity, animation, x, y) {
 			this.removeMe = true;
 		}
 	};
+<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		
@@ -322,6 +339,8 @@ function Weapon(game, angle, velocity, animation, x, y) {
         
 	}
 
+=======
+>>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 
