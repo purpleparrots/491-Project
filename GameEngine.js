@@ -95,7 +95,7 @@ GameEngine.prototype.update = function () {
             
             //if(otherEntity != undefined) {
                 var otherEntity = this.entities[j];
-                
+
                 if (this.checkCollision(entity, otherEntity)) {
                     entity.collide(otherEntity, true);
                 } 
@@ -137,7 +137,7 @@ GameEngine.prototype.loop = function () {
     	this.increment("wave",1);
     	this.generateWave();
     }
-    
+
     this.update();
     this.draw();
     this.spacebar = null;

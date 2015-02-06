@@ -76,7 +76,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
-	this.radius = 50;
+	this.radius = 22;
 	
 	this.shoot = false;
     this.rotateLeft = false;
@@ -169,7 +169,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	}
 
 	this.damage = function(amount) {
-		this.shield = Math.max(0, this.shield - amount);
+		this.shield -= amount;
 		if(this.shield <= 0) {
 			this.lives -= 1;
 		}
@@ -180,7 +180,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
-	this.radius = 6 * size;
+	this.radius = 3 * size;
 	
 	if (Math.random() < .5) {
 		this.state = "normal";
