@@ -23,6 +23,7 @@ function GameEngine() {
     this.active = true;
     this.count = 0;
     this.ship = null;
+    this.typeMap = {};
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -37,6 +38,15 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
 	// temp function to show basic animations for prototype. remove for final
 	this.makeProtoEnemies();
 
+    for (var i = 0; i < 100; i++) {
+        if(i < 10) {
+            this.typeMap[i] = "extralife";
+        } else if (i < 40) {
+            this.typeMap[i] = "doublegun";
+        } else {
+            this.typeMap[i] = "fillshield";
+        }
+    }
 }
 
 GameEngine.prototype.start = function () {

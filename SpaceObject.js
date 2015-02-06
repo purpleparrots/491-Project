@@ -261,6 +261,7 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	SpaceObject.call(this, game, angle, velocity, animation,x, y, 0);
 	
 	this.radius = 10;
+	this.type = game.typeMap[game.getRandomInt(0,100);
 
 	this.getPowerUp = function() {
 	};
