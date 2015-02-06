@@ -50,7 +50,6 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
 	};
-<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		
@@ -65,8 +64,6 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
         }
         
 	}
-=======
->>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
@@ -141,7 +138,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		this.ctx.restore();
 	};
 
-<<<<<<< HEAD
 	this.collide = function(otherObject, notify) {
 		if(otherObject instanceof Asteroid) {
 
@@ -176,17 +172,13 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		}
 	}
 
-=======
->>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
-<<<<<<< HEAD
+
 	this.radius = 3 * size;
-=======
->>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 	
 	if (Math.random() < .5) {
 		this.state = "normal";
@@ -240,7 +232,6 @@ function Asteroid(game, angle, velocity, x, y, size) {
 			
 		}
 	};
-<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		if(this.state != "exploding") {
@@ -262,8 +253,6 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		}
 	}
 
-=======
->>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 function PowerUp(game, angle, velocity, animation, x, y, weapon) {
@@ -279,7 +268,6 @@ function PowerUp(game, angle, velocity, animation, x, y, weapon) {
 	this.draw = function() {
 		SpaceObject.prototype.draw.call(this);
 	};
-<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		
@@ -296,11 +284,9 @@ function Weapon(game, angle, velocity, animation, x, y) {
 	this.radius = 10;
 
 
-=======
 }
 
 function Weapon(game, angle, velocity, animation, x, y) {
->>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 	this.x = x + 50 * Math.cos(angle);
 	this.y = y + 50 * Math.sin(angle);
@@ -321,7 +307,6 @@ function Weapon(game, angle, velocity, animation, x, y) {
 			this.removeMe = true;
 		}
 	};
-<<<<<<< HEAD
 
 	this.collide = function(otherObject, notify) {
 		
@@ -339,8 +324,6 @@ function Weapon(game, angle, velocity, animation, x, y) {
         
 	}
 
-=======
->>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 

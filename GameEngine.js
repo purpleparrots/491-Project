@@ -90,7 +90,6 @@ GameEngine.prototype.update = function () {
     for (var i = 0; i < entitiesCount; i++) {
         
         var entity = this.entities[i];
-<<<<<<< HEAD
         
         for (var j = i + 1; j < entitiesCount - 1; j++) {
             
@@ -115,10 +114,8 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.checkCollision = function(entity1, entity2) {
     return this.absoluteDistance(entity1, entity2) <= entity1.radius + entity2.radius;
-=======
-        entity.update();
+
     }
->>>>>>> 80aad121141b0fc4c825531cc9b02d7c4f73bf64
 }
 
 GameEngine.prototype.loop = function () {
