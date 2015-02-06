@@ -167,7 +167,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         	}
         } else if (otherObject instanceof PowerUp) {
         	var doPowerUp = otherObject.getPowerUp();
-        	this.doPowerUp();
+        	//this.doPowerUp();
         	if (notify) otherObject.collide(this, false);
         } else {
         	//ignores weapons and other playerships
