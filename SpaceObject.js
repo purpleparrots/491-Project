@@ -76,7 +76,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = [];
-	this.radius = 22;
+	this.radius = 50;
 	
 	this.shoot = false;
     this.rotateLeft = false;
@@ -142,16 +142,22 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	};
 
 	this.collide = function(otherObject, notify) {
-		
 		if(otherObject instanceof Asteroid) {
-			if (otherObject.state != "exploding") {
-				// take damage
 
-				if (notify) otherObject.collide(this, false);
+			if (otherObject.state != "exploding") {
+				if (notify) {
+					otherObject.collide(this, false);
+				} else {
+					this.damage(otherObject.size * 10);
+				}
 			}
         } else if (otherObject instanceof AlienShip) {
         	// take damage
-        	if (notify) otherObject.collide(this, false);
+        	if (notify) {
+        		otherObject.collide(this, false);
+        	} else {
+        		this.damage(50);
+        	}
         } else if (otherObject instanceof PowerUp) {
         	var doPowerUp = otherObject.getPowerUp();
         	this.doPowerUp();
@@ -160,6 +166,13 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         	//ignores weapons and other playerships
         }
         
+	}
+
+	this.damage = function(amount) {
+		this.shield = Math.max(0, this.shield - amount);
+		if(this.shield <= 0) {
+			this.lives -= 1;
+		}
 	}
 
 }
@@ -235,12 +248,12 @@ function Asteroid(game, angle, velocity, x, y, size) {
         			this.state = "exploding";
         		}
         		if (notify) otherObject.collide(this, false);
-        	} else {
-        	//ignores alienships and powerups
-        }
+        		} else {
+        		//ignores alienships and powerups
+        	}
         
+		}
 	}
-}
 
 }
 

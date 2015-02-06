@@ -22,6 +22,7 @@ function GameEngine() {
     this.score = 0;
     this.active = true;
     this.count = 0;
+    this.ship = null;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -85,7 +86,6 @@ GameEngine.prototype.draw = function () {
 GameEngine.prototype.update = function () {
     this.newEntities = [];
     var entitiesCount = this.entities.length;
-    //console.log("start collision check" + this.count);
     this.count += 1;
     for (var i = 0; i < entitiesCount; i++) {
         
@@ -100,13 +100,11 @@ GameEngine.prototype.update = function () {
                     entity.collide(otherEntity, true);
                 } 
                 
-                //console.log(otherEntity.velocity);
             //}            
                          
         }
     
     if (!entity.removeMe)  entity.update();
-    //console.log("end collision check");
     }
     var newEntitiesCount = this.newEntities.length;
     for(var k = 0; k < newEntitiesCount; k++) {
@@ -139,6 +137,7 @@ GameEngine.prototype.loop = function () {
     	this.increment("wave",1);
     	this.generateWave();
     }
+    
     this.update();
     this.draw();
     this.spacebar = null;
