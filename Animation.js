@@ -27,7 +27,7 @@ function Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, f
 	this.columns = columns;
 }
 
-Animation.prototype.drawFrame = function (tick, ctx, x, y) {
+Animation.prototype.drawFrame = function (tick, ctx, x, y,  drawWidth, drawHeight) {
     this.elapsedTime += tick;
     if (this.isDone()) {
         if (this.loop) {
@@ -68,13 +68,12 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     //                   dWidth, 
     //                   dHeight);
   //console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
-
     ctx.drawImage(this.spriteSheet,
                  xstart, ystart,  // selection start point
                  currentFrameWidth, this.frameHeight, //selection rect
                  x, y, //image placement
-                 this.frameWidth, //drawing window
-                 this.frameHeight); //drawing height
+                 drawWidth, //drawing window
+                 drawHeight); //drawing height
 
 }
 

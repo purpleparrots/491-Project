@@ -9,6 +9,9 @@ AM.queueDownload("./images/alienship.png");
 AM.queueDownload("./images/background1.jpg");
 AM.queueDownload("./images/weapon3.png");
 AM.queueDownload("./images/crystals.png");
+AM.queueDownload("./images/alien_explosion.png");
+//AM.queueDownload("./images/glowing1.png");
+//AM.queueDownload("./images/glowing2.png");
 
 
 AM.downloadAll(function () {
@@ -21,13 +24,14 @@ AM.downloadAll(function () {
 	
     //var playerShip = new PlayerShip(game, 0, {x:0,y:0}, AM.getAsset("./images/playership.png"), 0, 0, null);
     //game.addEntity(playerShip);
-    
+	
+	
 	game.init(document.getElementById("gameWorld").getContext("2d"), 
 		  	document.getElementById("background").getContext("2d"),
 			document.getElementById("overlay").getContext("2d"));
     game.start();
 
 	game.addEntity(new PlayerShip(game, 0, {x:0,y:0}, 
-		AM.getAsset("./images/playership.png"), 0,0, null));
+		AM.getAsset("./images/playership.png"), 0,0, "default"));
 });
 
