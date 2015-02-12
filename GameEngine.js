@@ -225,19 +225,18 @@ GameEngine.prototype.randOffScreenPoint = function() {
 }
 
 GameEngine.prototype.makeProtoEnemies = function() {
-    /*this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: -2, y: -1}, -100, 50, 3));
+    this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: -2, y: -1}, -100, 50, 3));
     this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: 2, y: 1}, 100, 50, 3));
     this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)}, -200, 200, 2));
     this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)}, -100,-150, 3));
     this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: this.getRandomInt(1,4), y: this.getRandomInt(1,4)},  200, 300, 1));
     
-    this.addEntity(new Weapon(this, 0, {x:0,y:-1},AM.getAsset("./images/weapon3.png"), 0, 0));
-    this.generateWave();
-*/
+//    this.generateWave();
+
     //this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 100, 25, 2));  
     //this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -100, 25, 3));
-    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
-    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 150, 0, "bombPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:1}, 100, 0, "bombPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:-1, y:-1}, 150, 0, "extraLifePowerUp"));
     this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:0}, AM.getAsset("./images/alienship.png"), -75, 0, null, 100, "default"));
    
 }

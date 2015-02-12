@@ -6,7 +6,7 @@ var weapon_types = { default: {
 							width: 12,
 							shots: [0],
 							effect: function() {
-								that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
+								//that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
 							}
 						},
 					  doublegun: {
