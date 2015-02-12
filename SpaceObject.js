@@ -390,7 +390,6 @@ function PowerUp(game, angle, velocity, x, y, type) {
 						  that.weapon = "triplegun";
 			}
 		},
-<<<<<<< HEAD
 
 		backGunPowerUp : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
@@ -407,24 +406,6 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			}
 		},
 
-=======
-
-		backGunPowerUp : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
-			function: function backgun(){ 
-						  that.weapon = "backgun";
-			}
-		},
-
-		bombPowerUp : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,0, 31, 29, .1, 3, 12, true, false),
-			function: function bomb(){ 
-						  that.sec_weapon = "bomb";
-						  weapon_types[that.sec_weapon]["uses"] += 1;
-			}
-		},
-
->>>>>>> master
 		futurePowerUpOne : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
@@ -519,12 +500,3 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	}
 
 }
-
-<<<<<<< HEAD
-=======
-
-
-
-
-
->>>>>>> master
