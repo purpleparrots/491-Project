@@ -190,7 +190,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			}
 			this.shoot = false;
 		}
-		console.log(this.sec_weapon);
+		//console.log(this.sec_weapon);
 		if (this.sec_weapon != "none") {
 			if(this.game.ctrlkey) this.sec_shoot = true;
 
@@ -244,7 +244,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				if (notify) {
 					otherObject.collide(this, false);
 				} else {
-					this.damage(otherObject.size * 10);
+					this.damage(otherObject.size * 1);
 				}
 			}
         } else if (otherObject instanceof AlienShip) {
@@ -266,9 +266,19 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	}
 
 	this.damage = function(amount) {
+		//var that = this;
 		this.shield -= amount;
 		if(this.shield <= 0) {
-			this.lives -= 1;
+			if(this.lives <= 0) {
+				//game over
+			} else {
+				this.lives -= 1;
+				this.shield = 100;
+				this.game.removeLife();
+				this.game.resetSlider();
+			}
+		} else {
+			this.game.moveSlider(amount);
 		}
 	}
 
@@ -360,7 +370,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 }; // end of Asteroid
 
 function PowerUp(game, angle, velocity, x, y, type) {
-
+	
 	this.powerup_types = {
 		//start powerup types
 		fillShieldPowerUp : {
@@ -374,6 +384,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 94, 0, 31, 29, .1, 3, 12, true, false),
 			function: function extraLife() {
 				          that.lives += 1;
+				          that.game.createLife();
 					  }
 		},
 
@@ -407,16 +418,16 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		futurePowerUpOne : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 94,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
-						  that.weapon = "backgun";
+						  //that.weapon = "backgun";
 			}
 		},
 
 		futurePowerUpTwo : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
-						  that.weapon = "backgun";
+						  //that.weapon = "backgun";
 			}
 		},
 		//end powerup types	
