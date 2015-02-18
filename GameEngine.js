@@ -228,13 +228,16 @@ GameEngine.prototype.changeState = function() {
 }
 
 GameEngine.prototype.generateWave = function() {
-        
+    this.entities = [];
     //points worth of enemies generated this wave.
-    waveValue = (this.wave * 15) + 11;
+    var waveValue = (this.wave * 9) + 11;
     //chance an alien can spawn. this is < 0 until wave 3.
-    alienChance = (this.wave * 1.5) - 3;
+    var alienChance = (this.wave * 1.5) - 3;
     //chance a powerup can spawn. this is < 0 until wave 2.
-    powerupChance = (this.wave * 2) - 2;
+    var powerupChance = (this.wave * 1.5);
+    console.log("waveValue " + waveValue);
+    console.log("alienChance " + alienChance);
+    console.log("powerUpChance " + powerupChance);
     while (waveValue > 0) {
         var type = this.getRandomInt(1,100);
         var velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
@@ -242,14 +245,14 @@ GameEngine.prototype.generateWave = function() {
         var angle = Math.random() * Math.PI;
         var x = this.randOffScreenPoint(0);
         var y = this.randOffScreenPoint(1);
-        console.log(x + " " + y);
-
+        console.log("type " + type);
         if (type + alienChance > 95) {
             
             value = this.getRandomInt(2,4) * 10;
 
             this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
             waveValue -= value;
+            console.log("alien ship spawned");
 
         } else {
             
@@ -257,8 +260,9 @@ GameEngine.prototype.generateWave = function() {
             waveValue -= size;
         }
         
-        if (type + powerupChance > 95) {
+        if (100 - type < powerupChance) {
             var i = this.getRandomInt(0,100);
+            console.log("powerup spawned");
             this.addEntity(new PowerUp(this, 2 * Math.PI,velocity, 100, 0, this.typeMap[i]));
         }
         
