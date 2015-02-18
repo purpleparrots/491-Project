@@ -11,7 +11,7 @@ window.requestAnimFrame = (function () {
 
 function GameEngine() {
     this.entities = [];
-    this.newEntities = [];
+    this.splitEntities = [];
     this.game_ctx = null;
     this.background_ctx = null;
     this.overlay_ctx = null;
@@ -68,6 +68,8 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
+
+    this.generateWave();
 }
 
 GameEngine.prototype.createLife = function() {
@@ -115,7 +117,7 @@ GameEngine.prototype.addEntity = function (entity) {
 }
 
 GameEngine.prototype.addTempEntity = function(entity) {
-    this.newEntities.push(entity);
+    this.splitEntities.push(entity);
 }
 
 GameEngine.prototype.draw = function () {
@@ -135,7 +137,7 @@ GameEngine.prototype.draw = function () {
 }
 
 GameEngine.prototype.update = function () {
-    this.newEntities = [];
+    this.splitEntities = [];
     var entitiesCount = this.entities.length;
     this.count += 1;
     for (var i = 0; i < entitiesCount; i++) {
@@ -157,9 +159,9 @@ GameEngine.prototype.update = function () {
     
     if (!entity.removeMe)  entity.update();
     }
-    var newEntitiesCount = this.newEntities.length;
+    var newEntitiesCount = this.splitEntities.length;
     for(var k = 0; k < newEntitiesCount; k++) {
-        this.addEntity(this.newEntities[k]);
+        this.addEntity(this.splitEntities[k]);
     }
 }
 
@@ -182,11 +184,11 @@ GameEngine.prototype.loop = function () {
     // seconds to kill all, this equals 7800 ticks, round to 8000 and add 500 ticks
     // to each wave. wave points increase by 15 each time or about 3x the increased time
     // so the game gets harder in several ways each wave.
-    if (this.waveTick > (75 * this.wave) + 300) {
+    if (this.waveTick > (75 * this.wave) + 500) {
         this.waveTick = 0;
         this.wave += 1;
         document.title = this.wave;
-      //  this.generateWave();
+        this.generateWave();
     }
 
 
@@ -238,8 +240,9 @@ GameEngine.prototype.generateWave = function() {
         var velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
         var size = this.getRandomInt(1,3);
         var angle = Math.random() * Math.PI;
-        var x = this.randOffScreenPoint();
-        var y = this.randOffScreenPoint();
+        var x = this.randOffScreenPoint(0);
+        var y = this.randOffScreenPoint(1);
+        console.log(x + " " + y);
 
         if (type + alienChance > 95) {
             
@@ -264,12 +267,20 @@ GameEngine.prototype.generateWave = function() {
 
 
 
-GameEngine.prototype.randOffScreenPoint = function() {
-    side = Math.round(Math.random());
-    if (side === 0) {
-        return 0 - this.getRandomInt(this.surfaceWidth + 25, this.surfaceWidth + 50);
+GameEngine.prototype.randOffScreenPoint = function(dim) {
+    var side = Math.round(Math.random());
+    if (dim === 0) {
+        if (side === 0) {
+            return 0 - this.getRandomInt(this.surfaceWidth + 25, this.surfaceWidth + 50);
+        } else {
+            return this.getRandomInt(this.surfaceWidth + 25, this.surfaceWidth + 50);
+        }
     } else {
-        return this.getRandomInt(this.surfaceHeight + 25, this.surfaceHeight + 50);
+        if (side === 0) {
+            return 0 - this.getRandomInt(this.surfaceHeight + 25, this.surfaceHeight + 50);
+        } else {
+            return this.getRandomInt(this.surfaceHeight + 25, this.surfaceHeight + 50);
+        }
     }
 }
 
@@ -314,8 +325,8 @@ GameEngine.prototype.resolveCollision = function(entity1V, entity1M, entity2V, e
 	  var v4 = {};
 	  v4.x = (entity2V.x * (entity2M - entity1M) + 2 * entity1M * entity1V.x) / (entity1M + entity2M);
 	  v4.y = (entity2V.y * (entity2M - entity1M) + 2 * entity1M * entity1V.y) / (entity1M + entity2M);
-	  console.log(v3);
-	  console.log(v4);
+	  //console.log(v3);
+	  //console.log(v4);
 	  return [v3, v4];
     };
 
