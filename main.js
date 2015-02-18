@@ -10,7 +10,6 @@ AM.queueDownload("./images/background1.jpg");
 AM.queueDownload("./images/weapon3.png");
 AM.queueDownload("./images/crystals.png");
 AM.queueDownload("./images/alien_explosion.png");
-AM.queueDownload("./images/playership_icon.png");
 AM.queueDownload("./images/shieldbar.jpg");
 AM.queueDownload("./images/slider.png");
 //AM.queueDownload("./images/glowing1.png");
