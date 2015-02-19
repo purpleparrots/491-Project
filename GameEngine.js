@@ -233,14 +233,8 @@ GameEngine.prototype.changeState = function() {
 GameEngine.prototype.generateWave = function() {
    // this.entities = [];
     //points worth of enemies generated this wave.
-    var waveValue = (this.wave * 9) + 11;
-    //chance an alien can spawn. this is < 0 until wave 3.
-    var alienChance = (this.wave * 1.5) - 3;
-    //chance a powerup can spawn. this is < 0 until wave 2.
-    var powerupChance = (this.wave * 1.5);
-    console.log("waveValue " + waveValue);
-    console.log("alienChance " + alienChance);
-    console.log("powerUpChance " + powerupChance);
+    var waveValue = (this.wave * 7) + 9;
+
     while (waveValue > 0) {
         var type = this.getRandomInt(1,100);
         var velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
