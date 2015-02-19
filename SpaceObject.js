@@ -203,7 +203,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			
 		}
 		if(this.game.spacebar) this.shoot = true;
-		if(this.shoot) {
+		if(this.shoot && !this.game.fireLock) {
 			for (var shot in weapon_types[this.weapon]["shots"]) {
 				var weap_angle = weapon_types[this.weapon]["shots"][shot];
 				weap_angle = game.toRadians(weap_angle);
@@ -216,6 +216,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				sec_effect();
 			}
 			this.shoot = false;
+			this.game.fireLock = true;
 		}
 		if (this.sec_weapon != "none") {
 			if(this.game.ctrlkey) this.sec_shoot = true;

@@ -12,6 +12,7 @@ window.requestAnimFrame = (function () {
 function GameEngine() {
     this.entities = [];
     this.splitEntities = [];
+    this.waveEntities = [];
     this.game_ctx = null;
     this.background_ctx = null;
     this.overlay_ctx = null;
@@ -24,7 +25,7 @@ function GameEngine() {
     this.count = 0;
     this.ship = null;
     this.typeMap = {};
-
+    this.fireLock = false;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -89,7 +90,7 @@ GameEngine.prototype.drawLives = function(lives) {
 }*/
 
 GameEngine.prototype.moveSlider = function(amount) {
-	console.log(amount);
+	//console.log(amount);
 	var sliderWidth = 300;
 	var sliderStart = this.overlay_ctx.canvas.width - (sliderWidth / 2);
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth + 10, 70);
@@ -189,10 +190,20 @@ GameEngine.prototype.loop = function () {
     // so the game gets harder in several ways each wave.
     if (this.waveTick > (75 * this.wave) + 500) {
         this.waveTick = 0;
-        this.wave += 1;
         document.title = this.wave;
         this.generateWave();
     }
+
+    if (this.waveTick % 18 === 0) {
+        if(this.waveEntities.length > 0) {
+            this.addEntity(this.waveEntities.pop());
+        }
+    }
+
+    if (this.waveTick % 8 === 0) {
+        this.fireLock = false;
+    }
+
 
 
     this.update();
@@ -233,36 +244,18 @@ GameEngine.prototype.changeState = function() {
 GameEngine.prototype.generateWave = function() {
    // this.entities = [];
     //points worth of enemies generated this wave.
+    this.wave += 1;
     var waveValue = (this.wave * 7) + 9;
 
     while (waveValue > 0) {
-        var type = this.getRandomInt(1,100);
         var velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
         var size = this.getRandomInt(1,3);
         var angle = Math.random() * Math.PI;
         var x = this.randOffScreenPoint(0);
         var y = this.randOffScreenPoint(1);
-        console.log("type " + type);
-        if (type + alienChance > 95) {
-            
-            value = this.getRandomInt(2,4) * 10;
 
-            this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
-            waveValue -= value;
-            console.log("alien ship spawned");
-
-        } else {
-            
-            this.addEntity(new Asteroid(this, angle, velocity, x, y, size));
-            waveValue -= size;
-        }
-        
-        if (100 - type < powerupChance) {
-            var i = this.getRandomInt(0,100);
-            console.log("powerup spawned");
-            this.addEntity(new PowerUp(this, 2 * Math.PI,velocity, 100, 0, this.typeMap[i]));
-        }
-        
+        this.waveEntities.push(new Asteroid(this, angle, velocity, x, y, size));
+        waveValue -= size;
     }
 }
 
