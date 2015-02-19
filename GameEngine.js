@@ -204,7 +204,12 @@ GameEngine.prototype.loop = function () {
         this.fireLock = false;
     }
 
-
+/*
+    if (this.waveTick % )
+        this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
+        var i = this.getRandomInt(0,100);
+        this.addEntity(new PowerUp(this, 2 * Math.PI,velocity, 100, 0, this.typeMap[i]));
+*/
 
     this.update();
     this.draw();
