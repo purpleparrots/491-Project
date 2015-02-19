@@ -24,8 +24,7 @@ function GameEngine() {
     this.count = 0;
     this.ship = null;
     this.typeMap = {};
-    this.liveLocationX = 35;        
-    this.sliderLocationX = null; 
+
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -49,14 +48,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
 }
 
 GameEngine.prototype.start = function () {
-    //create 3 lives
-    this.createLife();
-    this.createLife();
-    this.createLife();
-    
     //create shield bar and slider
-    this.resetSlider();
-    
     //create and display score
     this.overlay_ctx.font="15px Georgia";
     this.overlay_ctx.fillStyle = "white";
@@ -72,7 +64,7 @@ GameEngine.prototype.start = function () {
     this.generateWave();
 }
 
-GameEngine.prototype.createLife = function() {
+/*GameEngine.prototype.createLife = function() {
     this.overlay_ctx.drawImage(AM.getAsset("./images/playership.png"), this.overlay_ctx.canvas.width - this.liveLocationX, 5, 30, 30);
     this.liveLocationX += 35;
 }
@@ -80,20 +72,31 @@ GameEngine.prototype.createLife = function() {
 GameEngine.prototype.removeLife = function() {
     this.liveLocationX -= 35;
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - this.liveLocationX, 5, 30, 30);
+}*/
+
+GameEngine.prototype.drawLives = function(lives) {
+	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (lives + 1) * 35, 0, this.overlay_ctx.canvas.width, 40);
+	for (var i = 0; i <= lives; i++) {
+		this.overlay_ctx.drawImage(AM.getAsset("./images/playership.png"), this.overlay_ctx.canvas.width - i * 35, 5, 30, 30);
+	}
 }
 
-GameEngine.prototype.resetSlider = function() {
+/*GameEngine.prototype.resetSlider = function() {
     this.overlay_ctx.clearRect(this.sliderLocationX - 10, this.overlay_ctx.canvas.height - 80, 20, 70);
     this.sliderLocationX = 450;
     this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), this.surfaceWidth/2, this.overlay_ctx.canvas.height - 60, this.surfaceWidth, 30);
     this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), this.sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
-}
+}*/
 
 GameEngine.prototype.moveSlider = function(amount) {
-    this.overlay_ctx.clearRect(this.sliderLocationX - 10, this.overlay_ctx.canvas.height - 80, 20, 70);
-    this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), this.surfaceWidth/2, this.overlay_ctx.canvas.height - 60, this.surfaceWidth, 30);
-    this.sliderLocationX = this.sliderLocationX - (amount * 3);
-    this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), this.sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
+	console.log(amount);
+	var sliderWidth = 300;
+	var sliderStart = this.overlay_ctx.canvas.width - (sliderWidth / 2);
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth + 10, 70);
+    this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 60,
+	 	sliderWidth, 30);
+    var sliderLocationX = (100 - amount) * 3;
+    this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"),sliderStart - sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
 }
 
 
@@ -228,7 +231,7 @@ GameEngine.prototype.changeState = function() {
 }
 
 GameEngine.prototype.generateWave = function() {
-    this.entities = [];
+   // this.entities = [];
     //points worth of enemies generated this wave.
     var waveValue = (this.wave * 9) + 11;
     //chance an alien can spawn. this is < 0 until wave 3.

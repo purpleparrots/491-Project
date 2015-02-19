@@ -142,8 +142,6 @@ function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
 
-	this.shield = 100;
-	this.lives = 3;
 	this.weapon = weapon;
 	this.sec_weapon = "none";
 	this.radius = 22;
@@ -154,7 +152,29 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.width = 50;
 	this.height = 50;
 	this.mass = 15;
-
+	this.lives = 0;
+	this.shield = 100;
+	
+	
+	this.setShield = function(amount) {
+		this.shield += amount;
+		if (this.shield > 100) {
+			this.shield = 100;
+		} else if (this.shield <= 0) {
+			this.shield = 100;
+			this.setLives(-1);
+		}
+		this.game.moveSlider(this.shield);
+	}
+	
+	this.setLives = function(lives) {
+		this.lives += lives;
+		this.game.drawLives(this.lives);
+	}
+	
+	this.setLives(3);
+	this.setShield(100);
+	
 	this.update = function() {
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
@@ -251,7 +271,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				if (notify) {
 					otherObject.collide(this, false);
 				} else {
-					this.damage(otherObject.size * 10);
+					this.setShield(-otherObject.size * 2);
 				}
 			}
         } else if (otherObject instanceof AlienShip) {
@@ -259,7 +279,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         	if (notify) {
         		otherObject.collide(this, false);
         	} else {
-        		this.damage(50);
+        		this.setShield(-50);
         	}
         } else if (otherObject instanceof PowerUp) {
         	that = this;
@@ -276,15 +296,10 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.damage = function(amount) { 
 		//var that = this; 	 	
 			this.shield -= amount;
-			if(this.shield <= 0) {
-				if(this.lives <= 0) {
-					//game over 	 	
-				} else { 	 	
-					this.lives -= 1; 	 	
-					this.shield = 100; 	 	
-					this.game.removeLife(); 	 	
-					this.game.resetSlider(); 	 	
-				} 	 	
+			if(this.shield <= 0) {	 	
+					this.setLives(-1);
+					this.shield = 100; 	 		 	
+					this.game.resetSlider();  		 		 	
 			} else { 	 	
 				this.game.moveSlider(amount); 	 	
 			}
@@ -319,16 +334,16 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	//	this.ctx.translate(this.width / 2, this.height / 2);
 	//	this.ctx.scale(this.size, this.size);
 		SpaceObject.prototype.draw.call(this, this.size * this.animation.frameWidth, this.size * this.animation.frameHeight);
-		if(this.debug) {
-			this.ctx.beginPath();
-      		this.ctx.arc(this.game.getX(this.animation.frameWidth, this.x), 
-				this.game.getY(this.animation.frameHeight, this.y), this.radius, 0, 2 * Math.PI, false);
-      		this.ctx.fillStyle = 'green';
-      		this.ctx.fill();
-      		this.ctx.lineWidth = 5;
-      		this.ctx.strokeStyle = '#003300';
-      		this.ctx.stroke();
-      	}
+			if(this.debug) {
+				this.ctx.beginPath();
+	      		this.ctx.arc(this.game.getX(this.animation.frameWidth, this.x), 
+					this.game.getY(this.animation.frameHeight, this.y), this.radius, 0, 2 * Math.PI, false);
+	      		this.ctx.fillStyle = 'green';
+	      		this.ctx.fill();
+	      		this.ctx.lineWidth = 5;
+	      		this.ctx.strokeStyle = '#003300';
+	      		this.ctx.stroke();
+	      	}
 	//	this.ctx.restore();
 	};
 	
@@ -337,13 +352,11 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		if (this.state != "exploding") {
 			SpaceObject.prototype.update.call(this);
 		} else {
+			if (this.size > 1) {
+				this.split();
+			}
 			if (this.animation.isDone()) {
-				if (this.size > 1) {
-					this.split();
-				}
 				this.removeMe = true;
-				
-				
 			}
 		}
 		
@@ -391,7 +404,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		fillShieldPowerUp : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0, 0, 31, 29, .1, 3, 12, true, false),
 			function: function fillShield() {
-				          that.shield = 100;
+				          that.setShield(100);
 					  },
 			text: ""
 		},
@@ -399,7 +412,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		extraLifePowerUp : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 94, 0, 31, 29, .1, 3, 12, true, false),
 			function: function extraLife() {
-				          that.lives += 1;
+				          that.setLives(1);
+						  
 					  },
 			text: "+1 Life"
 					
