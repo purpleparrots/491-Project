@@ -188,6 +188,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				var weap_angle = weapon_types[this.weapon]["shots"][shot];
 				weap_angle = game.toRadians(weap_angle);
 				this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+				this.game.addEntity(new PowerUp(this.game, this.angle, {x:0,y:0}, 50, 0, "extraLifePowerUp"));
 			}
 			var sec_effect = weapon_types[this.weapon]["effect"];
 			if (typeof sec_effect === "function") {
@@ -264,6 +265,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         	that = this;
         	var doPowerUp = otherObject.getPowerUp;
         	doPowerUp();
+			this.game.addEntity(new FloatingText(this.game.overlay_ctx, otherObject.text));
         	if (notify) otherObject.collide(this, false);
         } else {
         	//ignores weapons and other playerships
@@ -390,35 +392,41 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0, 0, 31, 29, .1, 3, 12, true, false),
 			function: function fillShield() {
 				          that.shield = 100;
-					  }
+					  },
+			text: ""
 		},
 
 		extraLifePowerUp : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 94, 0, 31, 29, .1, 3, 12, true, false),
 			function: function extraLife() {
-				          that.game.createLife(); 
-					  }
+				          that.lives += 1;
+					  },
+			text: "+1 Life"
+					
 		},
 
 		doubleGunPowerUp : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,116, 31, 29, .1, 3, 12, true, false),
 			function: function doublegun(){ 
 						  that.weapon = "doublegun";
-			}
+			},
+			text: ""
 		},
 
 		tripleGunPowerUp : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,0, 31, 29, .1, 3, 12, true, false),
 			function: function triplegun(){ 
 						  that.weapon = "triplegun";
-			}
+			},
+			text: ""
 		},
 
 		backGunPowerUp : {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
 						  that.weapon = "backgun";
-			}
+			},
+			text: ""
 		},
 
 		bombPowerUp : {
@@ -426,28 +434,31 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			function: function bomb(){ 
 						  that.sec_weapon = "bomb";
 						  weapon_types[that.sec_weapon]["uses"] += 1;
-			}
+			},
+			text: "+1 Bomb Use"
 		},
 
 		futurePowerUpOne : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 94,116, 31, 29, .1, 3, 12, true, false),
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
-						  //that.weapon = "backgun";
-			}
+						  that.weapon = "backgun";
+			},
+			text: ""
 		},
 
 		futurePowerUpTwo : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,116, 31, 29, .1, 3, 12, true, false),
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
-						  //that.weapon = "backgun";
-			}
+						  that.weapon = "backgun";
+			},
+			text: ""
 		},
 		//end powerup types	
 	};
 
 	this.animation = this.powerup_types[type]["animation"];
 	this.getPowerUp = this.powerup_types[type]["function"];
-	
+	this.text = this.powerup_types[type]["text"];
 	
 	SpaceObject.call(this, game, angle, velocity, this.animation,x, y, 0);
 
@@ -529,7 +540,39 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 
 }
 
+function FloatingText(ctx, str) {
+	this.timer_start = new Date().getTime();
+	this.str = str;
+	this.ctx = ctx;
+	this.ctx.fillStyle = "white";
+	this.ctx.strokeStyle = "white";
+	this.font_size = 8;
+	this.font_string = null;
 
+	//this.ctx.font = "48px serif";
+	this.update = function() {
+		timer_curr = new Date().getTime();
+		if (timer_curr - this.timer_start < 1200) {
+			this.font_size += 2;
+			this.font_string = this.font_size + "px serif";
+		}else if (timer_curr - this.timer_start > 1600) {
+			this.removeMe = true;
+			this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, 
+				this.text_measure.width, this.font_size + 5);
+		}	
+	}
+	
+	this.draw = function() {
+		this.ctx.save();
+		this.ctx.font = this.font_string;
+		this.text_measure = this.ctx.measureText(this.str);	
+		this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, this.text_measure.width, this.font_size + 5);
+		this.ctx.strokeText(this.str, this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2);
+		this.ctx.restore();
+		
+	}
+
+};
 
 
 
