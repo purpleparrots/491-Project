@@ -204,6 +204,13 @@ GameEngine.prototype.loop = function () {
         this.fireLock = false;
     }
 
+    if (this.waveTick === 500) {
+        this.addEntity(new PowerUp(this, 2 * Math.PI,{x: 1, y: 2}, 
+            this.randOffScreenPoint(0),
+            this.randOffScreenPoint(1),
+            this.typeMap[this.getRandomInt(0,100)]));
+        
+    }
 /*
     if (this.waveTick % )
         this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
