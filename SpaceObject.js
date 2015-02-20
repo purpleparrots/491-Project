@@ -95,29 +95,46 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 
 } // end of Constructor
 
-function AlienShip(game, angle, velocity, animation, x, y, weapon, value) {
-	SpaceObject.call(this, game, angle, velocity, animation,x, y, value);
-	
+function AlienShip(game, velocity, animation, x, y, weapon) {
+	SpaceObject.call(this, game, 0, velocity, animation, x, y, 25);
+	this.angle = Math.atan2(velocity.y,velocity.x);
+
+	// atan2 returns 0 for (0,1) and PI for (0,-1)
+	// for negative y values, it returns the same values but negative
+	console.log(this.angle);
+	if (this.angle >= 0 && this.angle <= Math.PI) {
+		this.angle = (Math.PI / 2) - this.angle;
+	} else if (this.angle < 0 && this.angle >= - Math.PI) {
+		this.angle = -this.angle;
+		this.angle += Math.PI / 2;
+	} else if (this.angle >= -Math.PI / 2 && this.angle >= - Math.PI) {
+		this.angle = -this.angle;
+		this.angle += Math.PI;
+	}
+	console.log(this.angle);
 	this.weapon = weapon;
 	// magic numbers! woohoo! 
 	this.radius = 22;
 	this.mass = 15;
+	this.width = 50;
+	this.height = 50;
 
 	this.draw = function() {
-		//this.ctx.rotate(angle);
-		// explosion width: 36 height: 38
-		this.ctx.drawImage(this.animation, game.getX(50, this.x), game.getY(50, this.y), 50, 50);
-		if(this.debug){
-		this.ctx.beginPath();
-      		this.ctx.arc(this.game.getX(50, this.x), 
-				this.game.getY(50, this.y), this.radius, 0, 2 * Math.PI, false);
-      		this.ctx.fillStyle = 'green';
-      		this.ctx.fill();
-      		this.ctx.lineWidth = 5;
-      		this.ctx.strokeStyle = '#003300';
-      		this.ctx.stroke();
-      	}
-		//this.ctx.restore();
+		//this.ctx.drawImage(this.animation, game.getX(50, this.x), game.getY(50, this.y), 50, 50);
+
+		this.ctx.save();
+		// move to the middle of where we want to draw our image
+		this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
+		this.ctx.translate(this.width / 2, this.height / 2);
+	 
+		// rotate around that point, converting our 
+
+		this.ctx.rotate(this.angle);//- (Math.PI / 2));
+
+		// draw it up and to the left by half the width
+		// and height of the image
+		this.ctx.drawImage(this.animation, -25, -25, 50, 50);
+		this.ctx.restore();
 	};
 	
 	this.update = function() {

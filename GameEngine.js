@@ -26,6 +26,7 @@ function GameEngine() {
     this.ship = null;
     this.typeMap = {};
     this.fireLock = false;
+    this.spawnPU = false;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -129,6 +130,9 @@ GameEngine.prototype.draw = function () {
     this.game_ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
         if (this.entities[i].removeMe) {
+            if(this.score % 250 > 25 && (((this.score + this.entities[i].value) % 250) < 25)) {
+                this.spawnPU = true;
+            }
             this.score += this.entities[i].value;
             this.overlay_ctx.clearRect(520, 345, 200, 100);         
             this.overlay_ctx.fillText("" + this.score + "", 525, 360);
@@ -204,19 +208,27 @@ GameEngine.prototype.loop = function () {
         this.fireLock = false;
     }
 
-    if (this.waveTick === 500) {
-        this.addEntity(new PowerUp(this, 2 * Math.PI,{x: 1, y: 2}, 
-            this.randOffScreenPoint(0),
-            this.randOffScreenPoint(1),
-            this.typeMap[this.getRandomInt(0,100)]));
-        
+    if (this.spawnPU) {
+        if(this.spawnPU) {
+            this.addEntity(new PowerUp(this, 2 * Math.PI,{x: 1, y: 2}, 
+                this.randOffScreenPoint(0),
+                this.randOffScreenPoint(1),
+                this.typeMap[this.getRandomInt(0,100)]));
+            this.spawnPU = false;
+        }
     }
-/*
-    if (this.waveTick % )
-        this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
-        var i = this.getRandomInt(0,100);
-        this.addEntity(new PowerUp(this, 2 * Math.PI,velocity, 100, 0, this.typeMap[i]));
-*/
+
+    if (this.waveTick % 50 === 0) {
+        this.addEntity(new AlienShip(this, {x: this.getRandomInt(-4,4),
+                                            y: this.getRandomInt(-4,4)},
+                                             AM.getAsset("./images/alienship.png"),
+                                             this.randOffScreenPoint(0),
+                                             this.randOffScreenPoint(1),
+                                             "default"));
+        //this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
+    }
+
+
 
     this.update();
     this.draw();
