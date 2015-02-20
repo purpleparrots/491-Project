@@ -185,8 +185,13 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 		if(this.game.downkey) this.moveBackward = true;
 		if(this.moveBackward) {
-			var thrustVel = this.game.resolveVec(Math.PI + this.angle, 1);
+			var thrustVel = this.game.resolveVec(Math.PI + this.angle, .2);
 			this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			
+			//if the ship is slow enough, hitting back will stop it
+			if (this.game.velocityMag(this.velocity) <= 2) {
+				this.velocity = {x:0,y:0};
+			}
 			this.moveBackward = false;
 		}
 

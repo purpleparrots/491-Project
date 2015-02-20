@@ -207,8 +207,8 @@ GameEngine.prototype.loop = function () {
 
     this.update();
     this.draw();
-   /* this.spacebar = null;
-    this.ctrlkey = null;
+    this.spacebar = null;
+    /*this.ctrlkey = null;
     this.leftkey = null;
     this.upkey = null;
     this.downkey = null;
