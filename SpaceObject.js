@@ -9,6 +9,17 @@ var weapon_types = { default: {
 								//that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
 							}
 						},
+					  alien: {
+					  		animation: "weapon3",
+					  		velocity: 3,
+					  		radius: 7,
+					  		height: 15,
+					  		width: 12,
+					  		shots:[0],
+					  		effect: function() {
+
+					  		}
+					    },
 					  doublegun: {
 							animation: "weapon3",
 							velocity: 3,
@@ -25,7 +36,7 @@ var weapon_types = { default: {
 							width: 12,
 							shots: [-15,0,15] 
 						},
-						backgun: {
+					  backgun: {
 							animation: "weapon3",
 							velocity: 3,
 							radius: 7,
@@ -33,7 +44,7 @@ var weapon_types = { default: {
 							width: 12,
 							shots: [0,180] 
 						},
-						bomb: {
+					  bomb: {
 							animation: "weapon3",
 							velocity: 3,
 							radius: 7,
@@ -101,7 +112,7 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 
 	// atan2 returns 0 for (0,1) and PI for (0,-1)
 	// for negative y values, it returns the same values but negative
-	console.log(this.angle);
+
 	if (this.angle >= 0 && this.angle <= Math.PI) {
 		this.angle = (Math.PI / 2) - this.angle;
 	} else if (this.angle < 0 && this.angle >= - Math.PI) {
@@ -111,7 +122,7 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 		this.angle = -this.angle;
 		this.angle += Math.PI;
 	}
-	console.log(this.angle);
+
 	this.weapon = weapon;
 	// magic numbers! woohoo! 
 	this.radius = 22;
@@ -139,6 +150,12 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
+
+		if (this.game.waveTick % 36 === 0) {
+			for (var shot in weapon_types[this.weapon]["shots"]) {
+				this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
+			}
+		}
 	};
 
 	this.collide = function(otherObject, notify) {
@@ -146,7 +163,7 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 		if(otherObject instanceof PlayerShip) {
 			this.removeMe = true;
 			if (notify) otherObject.collide(this, false);
-        } else if (otherObject instanceof Weapon) {
+        } else if (otherObject instanceof Weapon && ! otherObject.typeName === "alien") {
         	this.removeMe = true;
         	if (notify) otherObject.collide(this, false);
         } else {
@@ -230,6 +247,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				var weap_angle = weapon_types[this.weapon]["shots"][shot];
 				weap_angle = game.toRadians(weap_angle);
 				this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+
 			}
 			var sec_effect = weapon_types[this.weapon]["effect"];
 			if (typeof sec_effect === "function") {
@@ -309,6 +327,12 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         	doPowerUp();
 			this.game.addEntity(new FloatingText(this.game.overlay_ctx, otherObject.text));
         	if (notify) otherObject.collide(this, false);
+        } else if (otherObject instanceof Weapon && otherObject.typeName === "alien") {
+        	if (notify) {
+        		otherObject.collide(this, false);
+        	} else {
+        		this.setShield(-10);
+        	}
         } else {
         	//ignores weapons and other playerships
         }
@@ -411,7 +435,8 @@ function Asteroid(game, angle, velocity, x, y, size) {
        	 			otherObject.velocity = newVels[1];
        	 			otherObject.collide(this, false);
        	 		}
-        	} else if (otherObject instanceof Weapon) {
+        	} else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
+        		console.log(otherObject.typeName);
         		otherObject.removeMe = true;
         		this.state = "exploding";
 			}
@@ -531,13 +556,14 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	this.animations = {"weapon3" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 144, false, false)};
 
 	this.type = weapon_types[type];	
+	this.typeName = type;
 
 	this.x = x;
 	this.y = y;
 
 	this.animation = this.animations[this.type["animation"]];
 	this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
-	console.log(this.type);
+
 	if (this.type != "bomb") {
 		this.velocity.x += velocity.x;
 		this.velocity.y += velocity.y;
@@ -562,13 +588,18 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 
 	this.collide = function(otherObject, notify) {
 		
-		if(otherObject instanceof Asteroid) {
+		if(otherObject instanceof Asteroid && this.typeName != "alien") {
 			if(otherObject.state != "exploding") {
 				this.removeMe = true;
 				if (notify) otherObject.collide(this, false);
 			}
-        } else if (otherObject instanceof AlienShip) {
+        } else if (otherObject instanceof AlienShip && this.typeName != "alien") {
+        	console.log(this.typeName);
         	this.removeMe = true;
+        	if (notify) otherObject.collide(this, false);
+        } else if (otherObject instanceof PlayerShip && this.typeName === "alien") {
+        	this.removeMe = true;
+        	console.log("alien hit player");
         	if (notify) otherObject.collide(this, false);
         } else {
         	//ignores playerships, powerups, and other weapons

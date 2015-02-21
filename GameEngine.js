@@ -234,7 +234,7 @@ GameEngine.prototype.loop = function () {
                                              AM.getAsset("./images/alienship.png"),
                                              this.randOffScreenPoint(0),
                                              this.randOffScreenPoint(1),
-                                             "default"));
+                                             "alien"));
         //this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
     }
 
