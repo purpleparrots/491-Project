@@ -9,6 +9,17 @@ var weapon_types = { default: {
 								//that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
 							}
 						},
+					  alien: {
+					  		animation: "weapon3",
+					  		velocity: 3,
+					  		radius: 7,
+					  		height: 15,
+					  		width: 12,
+					  		shots:[0],
+					  		effect: function() {
+
+					  		}
+					    },
 					  doublegun: {
 							animation: "weapon3",
 							velocity: 3,
@@ -25,7 +36,7 @@ var weapon_types = { default: {
 							width: 12,
 							shots: [-15,0,15] 
 						},
-						backgun: {
+					  backgun: {
 							animation: "weapon3",
 							velocity: 3,
 							radius: 7,
@@ -33,7 +44,7 @@ var weapon_types = { default: {
 							width: 12,
 							shots: [0,180] 
 						},
-						bomb: {
+					  bomb: {
 							animation: "weapon3",
 							velocity: 3,
 							radius: 7,
