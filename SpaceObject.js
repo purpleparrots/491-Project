@@ -436,7 +436,6 @@ function Asteroid(game, angle, velocity, x, y, size) {
        	 			otherObject.collide(this, false);
        	 		}
         	} else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
-        		console.log(otherObject.typeName);
         		otherObject.removeMe = true;
         		this.state = "exploding";
 			}
@@ -594,12 +593,10 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 				if (notify) otherObject.collide(this, false);
 			}
         } else if (otherObject instanceof AlienShip && this.typeName != "alien") {
-        	console.log(this.typeName);
         	this.removeMe = true;
         	if (notify) otherObject.collide(this, false);
         } else if (otherObject instanceof PlayerShip && this.typeName === "alien") {
         	this.removeMe = true;
-        	console.log("alien hit player");
         	if (notify) otherObject.collide(this, false);
         } else {
         	//ignores playerships, powerups, and other weapons

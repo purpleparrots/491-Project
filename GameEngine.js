@@ -143,7 +143,11 @@ GameEngine.prototype.draw = function () {
             if(this.score % 250 > 25 && (((this.score + this.entities[i].value) % 250) < 25)) {
                 this.spawnPU = true;
             }
-            this.score += this.entities[i].value;
+            if (this.entities[i].value > 0) {
+                this.score += this.entities[i].value;
+            } else {
+                console.log(this.entities[i].value);
+            }
             this.overlay_ctx.clearRect(520, 345, 200, 100);         
             this.overlay_ctx.fillText("" + this.score + "", 525, 360);
             this.entities.splice(i,1);
