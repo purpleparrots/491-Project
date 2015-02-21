@@ -212,9 +212,11 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.update = function() {
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			var thrustVel = this.game.resolveVec(this.angle, .2);
-			this.velocity = this.game.resultVector(this.velocity, thrustVel);
-			this.moveForward = false;
+
+				var thrustVel = this.game.resolveVec(this.angle, .2);
+				this.velocity = this.game.resultVector(this.velocity, thrustVel);
+				this.moveForward = false;
+			
 		}
 
 		if(this.game.downkey) this.moveBackward = true;

@@ -323,6 +323,15 @@ GameEngine.prototype.resolveVec = function(angle, mag) {
     return ret;
 }
 
+/*
+GameEngine.prototype.checkVel = function(velocity) {
+    var x = velocity.x;
+    var y = velocity.y;
+
+    return Math.abs(x) + Math.abs(y) < 6;
+}
+*/
+
 GameEngine.prototype.resolveCollision = function(entity1V, entity1M, entity2V, entity2M) {
 
 	  var v3 = {};
