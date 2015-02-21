@@ -8,6 +8,7 @@ AM.queueDownload("./images/asteroid_explosion.png");
 AM.queueDownload("./images/alienship.png");
 AM.queueDownload("./images/background1.jpg");
 AM.queueDownload("./images/weapon3.png");
+AM.queueDownload("./images/weaponA.png");
 AM.queueDownload("./images/crystals.png");
 AM.queueDownload("./images/alien_explosion.png");
 AM.queueDownload("./images/shieldbar.jpg");

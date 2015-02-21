@@ -551,7 +551,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 function Weapon(game, angle, velocity, x, y, radius, type) {
 	SpaceObject.call(this, game, angle, velocity,null, x, y, 0);
 	
-	this.animations = {"weapon3" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 144, false, false)};
+	this.animations = {"weapon3" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 144, false, false),
+					   "weaponA" : new Animation(AM.getAsset("./images/weaponA.png"), 0, 0, 31, 44, .02, 8, 144, false, false)};
 
 	this.type = weapon_types[type];	
 	this.typeName = type;
