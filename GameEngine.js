@@ -232,7 +232,7 @@ GameEngine.prototype.loop = function () {
         }
     }
 
-    if (this.waveTick % 50 === 0) {
+    if (this.waveTick % 250 === 0) {
         this.addEntity(new AlienShip(this, {x: this.getRandomInt(-4,4),
                                             y: this.getRandomInt(-4,4)},
                                              AM.getAsset("./images/alienship.png"),

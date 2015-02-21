@@ -10,7 +10,7 @@ var weapon_types = { default: {
 							}
 						},
 					  alien: {
-					  		animation: "weapon3",
+					  		animation: "weaponA",
 					  		velocity: 3,
 					  		radius: 7,
 					  		height: 15,
@@ -163,7 +163,7 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 		if(otherObject instanceof PlayerShip) {
 			this.removeMe = true;
 			if (notify) otherObject.collide(this, false);
-        } else if (otherObject instanceof Weapon && ! otherObject.typeName === "alien") {
+        } else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
         	this.removeMe = true;
         	if (notify) otherObject.collide(this, false);
         } else {
@@ -461,7 +461,6 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 94, 0, 31, 29, .1, 3, 12, true, false),
 			function: function extraLife() {
 				          that.setLives(1);
-						  
 					  },
 			text: "+1 Life"
 					
@@ -472,7 +471,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			function: function doublegun(){ 
 						  that.weapon = "doublegun";
 			},
-			text: "Double Gun"
+			text: "Two Shot"
 		},
 
 		tripleGunPowerUp : {
@@ -480,7 +479,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			function: function triplegun(){ 
 						  that.weapon = "triplegun";
 			},
-			text: "Triple Gun"
+			text: "Three Shot"
 		},
 
 		backGunPowerUp : {
