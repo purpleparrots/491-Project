@@ -66,16 +66,6 @@ GameEngine.prototype.start = function () {
     this.generateWave();
 }
 
-/*GameEngine.prototype.createLife = function() {
-    this.overlay_ctx.drawImage(AM.getAsset("./images/playership.png"), this.overlay_ctx.canvas.width - this.liveLocationX, 5, 30, 30);
-    this.liveLocationX += 35;
-}
-
-GameEngine.prototype.removeLife = function() {
-    this.liveLocationX -= 35;
-    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - this.liveLocationX, 5, 30, 30);
-}*/
-
 GameEngine.prototype.drawLives = function(lives) {
 	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (lives + 1) * 35, 0, this.overlay_ctx.canvas.width, 40);
 	for (var i = 0; i <= lives; i++) {
@@ -83,22 +73,14 @@ GameEngine.prototype.drawLives = function(lives) {
 	}
 }
 
-/*GameEngine.prototype.resetSlider = function() {
-    this.overlay_ctx.clearRect(this.sliderLocationX - 10, this.overlay_ctx.canvas.height - 80, 20, 70);
-    this.sliderLocationX = 450;
-    this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), this.surfaceWidth/2, this.overlay_ctx.canvas.height - 60, this.surfaceWidth, 30);
-    this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), this.sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
-}*/
-
 GameEngine.prototype.moveSlider = function(amount) {
-	//console.log(amount);
 	var sliderWidth = 300;
 	var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth + 10, 70);
     this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 60,
 	 	sliderWidth, 30);
-    var sliderLocationX = (100 - amount) * 3;
-    this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"),sliderStart - sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
+    var sliderLocationX = (amount) * 3;
+    this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), sliderStart + sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
 }
 
 
@@ -355,8 +337,6 @@ GameEngine.prototype.resolveCollision = function(entity1V, entity1M, entity2V, e
 	  var v4 = {};
 	  v4.x = (entity2V.x * (entity2M - entity1M) + 2 * entity1M * entity1V.x) / (entity1M + entity2M);
 	  v4.y = (entity2V.y * (entity2M - entity1M) + 2 * entity1M * entity1V.y) / (entity1M + entity2M);
-	  //console.log(v3);
-	  //console.log(v4);
 	  return [v3, v4];
     };
 

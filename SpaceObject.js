@@ -286,7 +286,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.draw = function() {
 		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
 		// we'll need to use this to make the ship rotate in place.
-		//console.log(typeof this.animation);
 		// save the current co-ordinate system 
 		// before we mess with it
 	 	this.ctx.save();
@@ -325,7 +324,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			this.game.addEntity(new FloatingText(this.game.overlay_ctx, otherObject.text));
         	if (notify) otherObject.collide(this, false);
         } else if (otherObject instanceof Weapon && otherObject.typeName === "alien") {
-        	console.log("player shot " + this.shield);
         	this.damage(10);
         	if (notify) {
         		otherObject.collide(this, false);
@@ -337,8 +335,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	}
 
 	this.damage = function(amount) { 
-		document.title = this.shield;
-		//var that = this; 	 	
 			this.shield -= amount;
 			if(this.shield <= 0) {	 	
 					this.setLives(-1);
@@ -347,7 +343,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			} else { 	 	
 				this.game.moveSlider(amount); 	 	
 			}
-			console.log(this.shield);
+			document.title = this.shield;
 		} 
 
 } // end of PlayerShip
