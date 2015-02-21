@@ -114,6 +114,16 @@ GameEngine.prototype.startInput = function () {
         if (e.keyCode === 40) that.downkey = true;
         e.preventDefault();
     }, false);
+	
+    that.overlay_ctx.canvas.addEventListener("keyup", function (e) {
+        if (String.fromCharCode(e.which) === ' ') that.spacebar = false;
+        if (e.keyCode === 17) that.ctrlkey = false;
+        if (e.keyCode === 37) that.leftkey = false;
+        if (e.keyCode === 38) that.upkey = false;
+        if (e.keyCode === 39) that.rightkey = false;
+        if (e.keyCode === 40) that.downkey = false;
+        e.preventDefault();
+    }, false);
 
 }
 
@@ -233,11 +243,11 @@ GameEngine.prototype.loop = function () {
     this.update();
     this.draw();
     this.spacebar = null;
-    this.ctrlkey = null;
+    /*this.ctrlkey = null;
     this.leftkey = null;
     this.upkey = null;
     this.downkey = null;
-    this.rightkey = null;
+    this.rightkey = null;*/
 }
 
 GameEngine.prototype.getX = function(width, x) {

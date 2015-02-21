@@ -195,15 +195,20 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.update = function() {
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
-			var thrustVel = this.game.resolveVec(this.angle, 1);
+			var thrustVel = this.game.resolveVec(this.angle, .2);
 			this.velocity = this.game.resultVector(this.velocity, thrustVel);
 			this.moveForward = false;
 		}
 
 		if(this.game.downkey) this.moveBackward = true;
 		if(this.moveBackward) {
-			var thrustVel = this.game.resolveVec(Math.PI + this.angle, 1);
+			var thrustVel = this.game.resolveVec(Math.PI + this.angle, .2);
 			this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			
+			//if the ship is slow enough, hitting back will stop it
+			if (this.game.velocityMag(this.velocity) <= 2) {
+				this.velocity = {x:0,y:0};
+			}
 			this.moveBackward = false;
 		}
 
