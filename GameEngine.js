@@ -145,8 +145,6 @@ GameEngine.prototype.draw = function () {
             }
             if (this.entities[i].value > 0) {
                 this.score += this.entities[i].value;
-            } else {
-                console.log(this.entities[i].value);
             }
             this.overlay_ctx.clearRect(520, 345, 200, 100);         
             this.overlay_ctx.fillText("" + this.score + "", 525, 360);

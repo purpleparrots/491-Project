@@ -308,18 +308,15 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		if(otherObject instanceof Asteroid) {
 
 			if (otherObject.state != "exploding") {
+				this.damage(otherObject.size * 2);
 				if (notify) {
 					otherObject.collide(this, false);
-				} else {
-					this.setShield(-otherObject.size * 2);
 				}
 			}
         } else if (otherObject instanceof AlienShip) {
-        	// take damage
+        	this.damage(50);
         	if (notify) {
         		otherObject.collide(this, false);
-        	} else {
-        		this.setShield(-50);
         	}
         } else if (otherObject instanceof PowerUp) {
         	that = this;
@@ -328,10 +325,10 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			this.game.addEntity(new FloatingText(this.game.overlay_ctx, otherObject.text));
         	if (notify) otherObject.collide(this, false);
         } else if (otherObject instanceof Weapon && otherObject.typeName === "alien") {
+        	console.log("player shot " + this.shield);
+        	this.damage(10);
         	if (notify) {
         		otherObject.collide(this, false);
-        	} else {
-        		this.setShield(-10);
         	}
         } else {
         	//ignores weapons and other playerships
@@ -340,15 +337,17 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	}
 
 	this.damage = function(amount) { 
+		document.title = this.shield;
 		//var that = this; 	 	
 			this.shield -= amount;
 			if(this.shield <= 0) {	 	
 					this.setLives(-1);
 					this.shield = 100; 	 		 	
-					this.game.resetSlider();  		 		 	
+					this.game.moveSlider(100);  		 		 	
 			} else { 	 	
 				this.game.moveSlider(amount); 	 	
 			}
+			console.log(this.shield);
 		} 
 
 } // end of PlayerShip
@@ -427,6 +426,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		that = this;
 		if(this.state != "exploding") {
 			if(otherObject instanceof PlayerShip) {
+				this.state = "exploding";
 				if (notify) otherObject.collide(this, false);
       	  	} else if (otherObject instanceof Asteroid) {
        	 		if (notify) {
