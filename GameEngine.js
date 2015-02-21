@@ -198,19 +198,20 @@ GameEngine.prototype.loop = function () {
         }
     }
 
-    if (this.waveTick % 8 === 0) {
+    if (this.waveTick % 16 === 0) {
         this.fireLock = false;
     }
 
-    if (this.spawnPU) {
-        if(this.spawnPU) {
-            this.addEntity(new PowerUp(this, 2 * Math.PI,{x: 1, y: 2}, 
-                this.randOffScreenPoint(0),
-                this.randOffScreenPoint(1),
-                this.typeMap[this.getRandomInt(0,100)]));
-            this.spawnPU = false;
-        }
+    if(this.spawnPU) {
+        var vel = {x: this.getRandomInt(-2,2),
+                   y: this.getRandomInt(-2,2)};
+        var x = this.randOffScreenPoint(0);
+        var y = this.randOffScreenPoint(1);
+        this.addEntity(new PowerUp(this, 0, vel, x, y,
+            this.typeMap[this.getRandomInt(0,100)]));
+        this.spawnPU = false;
     }
+    
 
     if (this.waveTick % 250 === 0) {
         this.addEntity(new AlienShip(this, {x: this.getRandomInt(-4,4),
@@ -219,19 +220,12 @@ GameEngine.prototype.loop = function () {
                                              this.randOffScreenPoint(0),
                                              this.randOffScreenPoint(1),
                                              "alien"));
-        //this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), velocity, AM.getAsset("./images/alienship.png"), x, y, null, 100, "default"));
     }
 
 
 
     this.update();
     this.draw();
-    //this.spacebar = null;
-    /*this.ctrlkey = null;
-    this.leftkey = null;
-    this.upkey = null;
-    this.downkey = null;
-    this.rightkey = null;*/
 }
 
 GameEngine.prototype.getX = function(width, x) {
@@ -263,7 +257,7 @@ GameEngine.prototype.generateWave = function() {
    // this.entities = [];
     //points worth of enemies generated this wave.
     this.wave += 1;
-    var waveValue = (this.wave * 7) + 9;
+    var waveValue = (this.wave * 9) + 15;
 
     while (waveValue > 0) {
         var velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
