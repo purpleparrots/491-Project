@@ -230,7 +230,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				var weap_angle = weapon_types[this.weapon]["shots"][shot];
 				weap_angle = game.toRadians(weap_angle);
 				this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
-				this.game.addEntity(new PowerUp(this.game, this.angle, {x:0,y:0}, 50, 0, "extraLifePowerUp"));
 			}
 			var sec_effect = weapon_types[this.weapon]["effect"];
 			if (typeof sec_effect === "function") {
@@ -335,6 +334,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
 	this.size = size;
 	this.debug = false;	
+	this.hasSplit = false;
 	
 	if (Math.random() < .5) {
 		this.state = "normal";
@@ -375,7 +375,8 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		if (this.state != "exploding") {
 			SpaceObject.prototype.update.call(this);
 		} else {
-			if (this.size > 1) {
+			if (!this.hasSplit) {
+				this.hasSplit = true;
 				this.split();
 			}
 			if (this.animation.isDone()) {

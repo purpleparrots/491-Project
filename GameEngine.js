@@ -93,7 +93,7 @@ GameEngine.prototype.drawLives = function(lives) {
 GameEngine.prototype.moveSlider = function(amount) {
 	//console.log(amount);
 	var sliderWidth = 300;
-	var sliderStart = this.overlay_ctx.canvas.width - (sliderWidth / 2);
+	var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth + 10, 70);
     this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 60,
 	 	sliderWidth, 30);
@@ -242,7 +242,7 @@ GameEngine.prototype.loop = function () {
 
     this.update();
     this.draw();
-    this.spacebar = null;
+    //this.spacebar = null;
     /*this.ctrlkey = null;
     this.leftkey = null;
     this.upkey = null;
@@ -283,7 +283,7 @@ GameEngine.prototype.generateWave = function() {
 
     while (waveValue > 0) {
         var velocity = {x: this.getRandomInt(-4,4), y: this.getRandomInt(-4,4)};
-        var size = this.getRandomInt(1,3);
+        var size = this.getRandomInt(1,4);
         var angle = Math.random() * Math.PI;
         var x = this.randOffScreenPoint(0);
         var y = this.randOffScreenPoint(1);
