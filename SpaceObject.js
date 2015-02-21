@@ -112,7 +112,7 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 
 	// atan2 returns 0 for (0,1) and PI for (0,-1)
 	// for negative y values, it returns the same values but negative
-	console.log(this.angle);
+
 	if (this.angle >= 0 && this.angle <= Math.PI) {
 		this.angle = (Math.PI / 2) - this.angle;
 	} else if (this.angle < 0 && this.angle >= - Math.PI) {
@@ -122,7 +122,7 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 		this.angle = -this.angle;
 		this.angle += Math.PI;
 	}
-	console.log(this.angle);
+
 	this.weapon = weapon;
 	// magic numbers! woohoo! 
 	this.radius = 22;
@@ -150,6 +150,11 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
+		if (this.game.waveTick & 12 === 0) {
+			var weap_angle = weapon_types[this.weapon]["shots"][shot];
+				weap_angle = game.toRadians(weap_angle);
+				this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+		}
 	};
 
 	this.collide = function(otherObject, notify) {
@@ -241,7 +246,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				var weap_angle = weapon_types[this.weapon]["shots"][shot];
 				weap_angle = game.toRadians(weap_angle);
 				this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
-				this.game.addEntity(new PowerUp(this.game, this.angle, {x:0,y:0}, 50, 0, "extraLifePowerUp"));
+				//this.game.addEntity(new PowerUp(this.game, this.angle, {x:0,y:0}, 50, 0, "extraLifePowerUp"));
 			}
 			var sec_effect = weapon_types[this.weapon]["effect"];
 			if (typeof sec_effect === "function") {
@@ -547,7 +552,7 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 
 	this.animation = this.animations[this.type["animation"]];
 	this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
-	console.log(this.type);
+
 	if (this.type != "bomb") {
 		this.velocity.x += velocity.x;
 		this.velocity.y += velocity.y;
