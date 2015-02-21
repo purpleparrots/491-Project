@@ -454,7 +454,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			function: function fillShield() {
 				          that.setShield(100);
 					  },
-			text: ""
+			text: "Shields Filled"
 		},
 
 		extraLifePowerUp : {
@@ -472,7 +472,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			function: function doublegun(){ 
 						  that.weapon = "doublegun";
 			},
-			text: ""
+			text: "Double Gun"
 		},
 
 		tripleGunPowerUp : {
@@ -480,7 +480,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			function: function triplegun(){ 
 						  that.weapon = "triplegun";
 			},
-			text: ""
+			text: "Triple Gun"
 		},
 
 		backGunPowerUp : {
@@ -488,7 +488,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 			function: function backgun(){ 
 						  that.weapon = "backgun";
 			},
-			text: ""
+			text: "Rear Fire"
 		},
 
 		bombPowerUp : {
