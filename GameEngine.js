@@ -74,13 +74,17 @@ GameEngine.prototype.drawLives = function(lives) {
 }
 
 GameEngine.prototype.moveSlider = function(amount) {
-	var sliderWidth = 300;
-	var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
-    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth + 10, 70);
-    this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 60,
-	 	sliderWidth, 30);
-    var sliderLocationX = (amount) * 3;
-    this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), sliderStart + sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
+	var sliderWidth = this.overlay_ctx.canvas.width / 2;
+	
+	//var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth, 70);
+	//context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
+    this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), 0,  0, sliderWidth * (amount / 100), 30,
+											this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80,
+											sliderWidth * (amount / 100), 30);
+											console.log(amount);
+  //  var sliderLocationX = (amount) * 3;
+  //  this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), sliderStart + sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
 }
 
 
