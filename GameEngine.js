@@ -76,6 +76,7 @@ GameEngine.prototype.drawLives = function(lives) {
 GameEngine.prototype.moveSlider = function(amount) {
 	var sliderWidth = this.overlay_ctx.canvas.width / 2;
 	var shieldAmount = Math.floor(sliderWidth * (amount / 100));
+	console.log(shieldAmount);
 	//var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth, 70);
 	//context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);

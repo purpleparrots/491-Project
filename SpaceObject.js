@@ -326,13 +326,13 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		if(otherObject instanceof Asteroid) {
 
 			if (otherObject.state != "exploding") {
-				this.damage(otherObject.size * 2);
+				this.setShield(-otherObject.size * 2);
 				if (notify) {
 					otherObject.collide(this, false);
 				}
 			}
         } else if (otherObject instanceof AlienShip) {
-        	this.damage(50);
+        	this.setShield(-50);
         	if (notify) {
         		otherObject.collide(this, false);
         	}
@@ -343,7 +343,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			this.game.addEntity(new FloatingText(this.game.overlay_ctx, otherObject.text));
         	if (notify) otherObject.collide(this, false);
         } else if (otherObject instanceof Weapon && otherObject.typeName === "alien") {
-        	this.damage(10);
+        	this.setShield(-10);
         	if (notify) {
         		otherObject.collide(this, false);
         	}
@@ -353,7 +353,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         
 	}
 
-	this.damage = function(amount) { 
+/*	this.damage = function(amount) { 
 			this.shield -= amount;
 			if(this.shield <= 0) {	 	
 					this.setLives(-1);
@@ -363,7 +363,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				this.game.moveSlider(amount); 	 	
 			}
 			document.title = this.shield;
-		} 
+		} */
 
 } // end of PlayerShip
 
