@@ -106,13 +106,13 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 
 } // end of Constructor
 
-function AlienShip(game, velocity, animation, x, y, weapon) {
+function AlienShip(game, velocity, x, y, weapon) {
 	SpaceObject.call(this, game, 0, velocity, null, x, y, 25);
 
-	this.state = "normal";
-
-	this.animations = {"exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false),
-					   "normal": new Animation(AM.getAsset("./images/alienship.png"), 0, 0, 343, 383, 1, 1, true, false)
+	this.state = "exploding";
+	//Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse)
+	this.animations = {"exploding": new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.2, 8, 8, false, false),
+					   "normal": AM.getAsset("./images/alienship.png")
 					}
 	this.animation = this.animations[this.state];
 	// atan2 returns 0 for (0,1) and PI for (0,-1)
@@ -137,20 +137,24 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 
 	this.draw = function() {
 		//this.ctx.drawImage(this.animation, game.getX(50, this.x), game.getY(50, this.y), 50, 50);
-		if (this.state )
-		this.ctx.save();
-		// move to the middle of where we want to draw our image
-		this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
-		this.ctx.translate(this.width / 2, this.height / 2);
+		if (this.state === "normal") {
+			this.ctx.save();
+			// move to the middle of where we want to draw our image
+			this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
+			this.ctx.translate(this.width / 2, this.height / 2);
 	 
-		// rotate around that point, converting our 
+			// rotate around that point, converting our 
 
-		this.ctx.rotate(this.angle);//- (Math.PI / 2));
+			this.ctx.rotate(this.angle);//- (Math.PI / 2));
 
-		// draw it up and to the left by half the width
-		// and height of the image
-		this.ctx.drawImage(this.animation, -25, -25, 50, 50);
-		this.ctx.restore();
+			// draw it up and to the left by half the width
+			// and height of the image
+			this.ctx.drawImage(this.animation, -25, -25, 50, 50);
+			this.ctx.restore();
+		} else {
+			console.log("exploding aliens!");
+			SpaceObject.prototype.draw.call(this, this.animation.frameWidth, this.animation.frameHeight);
+		}
 	};
 	
 	this.update = function() {
