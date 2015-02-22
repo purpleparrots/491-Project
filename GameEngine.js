@@ -62,7 +62,6 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
-    this.addEntity(new AlienShip(this, {x:0, y:0}, -75, 0, "default"));
 
     this.generateWave();
 }

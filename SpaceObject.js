@@ -109,9 +109,9 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 function AlienShip(game, velocity, x, y, weapon) {
 	SpaceObject.call(this, game, 0, velocity, null, x, y, 25);
 
-	this.state = "exploding";
+	this.state = "normal";
 	//Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse)
-	this.animations = {"exploding": new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.2, 8, 8, false, false),
+	this.animations = {"exploding": new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.08, 8, 8, false, false),
 					   "normal": AM.getAsset("./images/alienship.png")
 					}
 	this.animation = this.animations[this.state];
@@ -153,27 +153,36 @@ function AlienShip(game, velocity, x, y, weapon) {
 			this.ctx.restore();
 		} else {
 			console.log("exploding aliens!");
-			SpaceObject.prototype.draw.call(this, this.animation.frameWidth, this.animation.frameHeight);
+			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 2, this.animation.frameHeight * 2);
 		}
 	};
 	
 	this.update = function() {
-		SpaceObject.prototype.update.call(this);
-
-		if (this.game.waveTick % 36 === 0) {
-			for (var shot in weapon_types[this.weapon]["shots"]) {
-				this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
+		this.animation = this.animations[this.state];
+		
+		if (this.state === "normal") {
+			SpaceObject.prototype.update.call(this);
+			if (this.game.waveTick % 36 === 0) {
+				for (var shot in weapon_types[this.weapon]["shots"]) {
+					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
+				}
+			}
+		} else {
+			if (this.animation.isDone()) {
+				this.removeMe = true;
 			}
 		}
+		
+
 	};
 
 	this.collide = function(otherObject, notify) {
 		
 		if(otherObject instanceof PlayerShip) {
-			this.removeMe = true;
+			this.state = "exploding";
 			if (notify) otherObject.collide(this, false);
         } else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
-        	this.removeMe = true;
+        	this.state = "exploding";
         	if (notify) otherObject.collide(this, false);
         } else {
         	//ignores powerups, asteroids, and other aliens
