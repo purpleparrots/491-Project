@@ -220,7 +220,6 @@ GameEngine.prototype.loop = function () {
     if (this.waveTick % 250 === 0) {
         this.addEntity(new AlienShip(this, {x: this.getRandomInt(-4,4),
                                             y: this.getRandomInt(-4,4)},
-                                             AM.getAsset("./images/alienship.png"),
                                              this.randOffScreenPoint(0),
                                              this.randOffScreenPoint(1),
                                              "alien"));
@@ -305,7 +304,7 @@ GameEngine.prototype.makeProtoEnemies = function() {
     //this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -100, 25, 3));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 150, 0, "bombPowerUp"));
-    this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:0}, AM.getAsset("./images/alienship.png"), -75, 0, null, 100, "default"));
+    this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:0}, -75, 0, null, 100, "default"));
    // generateWave();
 }
 

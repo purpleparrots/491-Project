@@ -106,13 +106,18 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 
 } // end of Constructor
 
-function AlienShip(game, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, 0, velocity, animation, x, y, 25);
-	this.angle = Math.atan2(velocity.y,velocity.x);
+function AlienShip(game, velocity, x, y, weapon) {
+	SpaceObject.call(this, game, 0, velocity, null, x, y, 25);
 
+	this.state = "normal";
+	//Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse)
+	this.animations = {"exploding": new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.08, 8, 8, false, false),
+					   "normal": AM.getAsset("./images/alienship.png")
+					}
+	this.animation = this.animations[this.state];
 	// atan2 returns 0 for (0,1) and PI for (0,-1)
 	// for negative y values, it returns the same values but negative
-
+	this.angle = Math.atan2(velocity.y,velocity.x);
 	if (this.angle >= 0 && this.angle <= Math.PI) {
 		this.angle = (Math.PI / 2) - this.angle;
 	} else if (this.angle < 0 && this.angle >= - Math.PI) {
@@ -132,39 +137,52 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 
 	this.draw = function() {
 		//this.ctx.drawImage(this.animation, game.getX(50, this.x), game.getY(50, this.y), 50, 50);
-
-		this.ctx.save();
-		// move to the middle of where we want to draw our image
-		this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
-		this.ctx.translate(this.width / 2, this.height / 2);
+		if (this.state === "normal") {
+			this.ctx.save();
+			// move to the middle of where we want to draw our image
+			this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
+			this.ctx.translate(this.width / 2, this.height / 2);
 	 
-		// rotate around that point, converting our 
+			// rotate around that point, converting our 
 
-		this.ctx.rotate(this.angle);//- (Math.PI / 2));
+			this.ctx.rotate(this.angle);//- (Math.PI / 2));
 
-		// draw it up and to the left by half the width
-		// and height of the image
-		this.ctx.drawImage(this.animation, -25, -25, 50, 50);
-		this.ctx.restore();
+			// draw it up and to the left by half the width
+			// and height of the image
+			this.ctx.drawImage(this.animation, -25, -25, 50, 50);
+			this.ctx.restore();
+		} else {
+			console.log("exploding aliens!");
+			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 2, this.animation.frameHeight * 2);
+		}
 	};
 	
 	this.update = function() {
-		SpaceObject.prototype.update.call(this);
-
-		if (this.game.waveTick % 36 === 0) {
-			for (var shot in weapon_types[this.weapon]["shots"]) {
-				this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
+		this.animation = this.animations[this.state];
+		
+		if (this.state === "normal") {
+			SpaceObject.prototype.update.call(this);
+			if (this.game.waveTick % 36 === 0) {
+				for (var shot in weapon_types[this.weapon]["shots"]) {
+					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
+				}
+			}
+		} else {
+			if (this.animation.isDone()) {
+				this.removeMe = true;
 			}
 		}
+		
+
 	};
 
 	this.collide = function(otherObject, notify) {
 		
 		if(otherObject instanceof PlayerShip) {
-			this.removeMe = true;
+			this.state = "exploding";
 			if (notify) otherObject.collide(this, false);
         } else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
-        	this.removeMe = true;
+        	this.state = "exploding";
         	if (notify) otherObject.collide(this, false);
         } else {
         	//ignores powerups, asteroids, and other aliens
@@ -554,9 +572,6 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 
 	this.type = weapon_types[type];	
 	this.typeName = type;
-
-	this.x = x;
-	this.y = y;
 
 	this.animation = this.animations[this.type["animation"]];
 	this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
