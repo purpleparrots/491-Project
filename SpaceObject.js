@@ -107,12 +107,17 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 } // end of Constructor
 
 function AlienShip(game, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, 0, velocity, animation, x, y, 25);
-	this.angle = Math.atan2(velocity.y,velocity.x);
+	SpaceObject.call(this, game, 0, velocity, null, x, y, 25);
 
+	this.state = "normal";
+
+	this.animations = {"exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false),
+					   "normal": new Animation(AM.getAsset("./images/alienship.png"), 0, 0, 343, 383, 1, 1, true, false)
+					}
+	this.animation = this.animations[this.state];
 	// atan2 returns 0 for (0,1) and PI for (0,-1)
 	// for negative y values, it returns the same values but negative
-
+	this.angle = Math.atan2(velocity.y,velocity.x);
 	if (this.angle >= 0 && this.angle <= Math.PI) {
 		this.angle = (Math.PI / 2) - this.angle;
 	} else if (this.angle < 0 && this.angle >= - Math.PI) {
@@ -132,7 +137,7 @@ function AlienShip(game, velocity, animation, x, y, weapon) {
 
 	this.draw = function() {
 		//this.ctx.drawImage(this.animation, game.getX(50, this.x), game.getY(50, this.y), 50, 50);
-
+		if (this.state )
 		this.ctx.save();
 		// move to the middle of where we want to draw our image
 		this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
@@ -552,9 +557,6 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 
 	this.type = weapon_types[type];	
 	this.typeName = type;
-
-	this.x = x;
-	this.y = y;
 
 	this.animation = this.animations[this.type["animation"]];
 	this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
