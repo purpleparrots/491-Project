@@ -152,7 +152,6 @@ function AlienShip(game, velocity, x, y, weapon) {
 			this.ctx.drawImage(this.animation, -25, -25, 50, 50);
 			this.ctx.restore();
 		} else {
-			console.log("exploding aliens!");
 			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 2, this.animation.frameHeight * 2);
 		}
 	};
