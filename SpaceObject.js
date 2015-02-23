@@ -176,17 +176,17 @@ function AlienShip(game, velocity, x, y, weapon) {
 	};
 
 	this.collide = function(otherObject, notify) {
-		
-		if(otherObject instanceof PlayerShip) {
-			this.state = "exploding";
-			if (notify) otherObject.collide(this, false);
-        } else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
-        	this.state = "exploding";
-        	if (notify) otherObject.collide(this, false);
-        } else {
+		if (this.state != "exploding") {
+			if(otherObject instanceof PlayerShip) {
+				this.state = "exploding";
+				if (notify) otherObject.collide(this, false);
+       		} else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
+        		this.state = "exploding";
+        		if (notify) otherObject.collide(this, false);
+        	} else {
         	//ignores powerups, asteroids, and other aliens
+        	}
         }
-        
 	}
 } // end of AlienShip
 
@@ -332,9 +332,11 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				}
 			}
         } else if (otherObject instanceof AlienShip) {
-        	this.setShield(-50);
-        	if (notify) {
-        		otherObject.collide(this, false);
+        		if (otherObject.state != "exploding") {
+        		this.setShield(-50);
+        		if (notify) {
+        			otherObject.collide(this, false);
+        		}
         	}
         } else if (otherObject instanceof PowerUp) {
         	that = this;
@@ -353,17 +355,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         
 	}
 
-/*	this.damage = function(amount) { 
-			this.shield -= amount;
-			if(this.shield <= 0) {	 	
-					this.setLives(-1);
-					this.shield = 100; 	 		 	
-					this.game.moveSlider(100);  		 		 	
-			} else { 	 	
-				this.game.moveSlider(amount); 	 	
-			}
-			document.title = this.shield;
-		} */
+
 
 } // end of PlayerShip
 
@@ -622,8 +614,8 @@ function FloatingText(ctx, str) {
 	this.timer_start = new Date().getTime();
 	this.str = str;
 	this.ctx = ctx;
-	this.ctx.fillStyle = "white";
-	this.ctx.strokeStyle = "white";
+	//this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+	this.ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
 	this.font_size = 8;
 	this.font_string = null;
 
@@ -632,8 +624,8 @@ function FloatingText(ctx, str) {
 		timer_curr = new Date().getTime();
 		if (timer_curr - this.timer_start < 1200) {
 			this.font_size += 2;
-			this.font_string = this.font_size + "px serif";
-		}else if (timer_curr - this.timer_start > 1600) {
+			this.font_string = this.font_size + "px Impact";
+		}else if (timer_curr - this.timer_start > 1200) {
 			this.removeMe = true;
 			this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, 
 				this.text_measure.width, this.font_size + 5);
@@ -644,8 +636,9 @@ function FloatingText(ctx, str) {
 		this.ctx.save();
 		this.ctx.font = this.font_string;
 		this.text_measure = this.ctx.measureText(this.str);	
+		this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
 		this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, this.text_measure.width, this.font_size + 5);
-		this.ctx.strokeText(this.str, this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2);
+		this.ctx.fillText(this.str, this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2);
 		this.ctx.restore();
 		
 	}

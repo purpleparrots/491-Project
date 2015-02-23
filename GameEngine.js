@@ -49,20 +49,13 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     }
 }
 
-GameEngine.prototype.start = function () {
-    //create shield bar and slider
-    //create and display score
-    this.overlay_ctx.font="15px Georgia";
-    this.overlay_ctx.fillStyle = "white";
-    this.overlay_ctx.fillText("Score: ", 480, 360);
-    this.overlay_ctx.fillText("" + this.score + "", 525, 360);
-    
+GameEngine.prototype.start = function () {    
     var that = this;
     (function gameLoop() {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
-
+    this.changeScore();
     this.generateWave();
 }
 
@@ -76,16 +69,25 @@ GameEngine.prototype.drawLives = function(lives) {
 GameEngine.prototype.moveSlider = function(amount) {
 	var sliderWidth = this.overlay_ctx.canvas.width / 2;
 	var shieldAmount = Math.floor(sliderWidth * (amount / 100));
-	console.log(shieldAmount);
 	//var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth, 70);
 	//context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
     this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), 0,  0, shieldAmount, 30,
 											this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80,
 											shieldAmount, 30);
-											console.log(amount);
   //  var sliderLocationX = (amount) * 3;
   //  this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), sliderStart + sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
+}
+
+GameEngine.prototype.changeScore = function() {
+    this.overlay_ctx.font="25px Impact";
+    this.overlay_ctx.fillStyle = "white";
+    var scoreText = "Score: " + this.score + "";
+    console.log(scoreText);
+    var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
+    this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
+
 }
 
 
@@ -132,9 +134,9 @@ GameEngine.prototype.draw = function () {
             }
             if (this.entities[i].value > 0) {
                 this.score += this.entities[i].value;
+                this.changeScore();
             }
-            this.overlay_ctx.clearRect(520, 345, 200, 100);         
-            this.overlay_ctx.fillText("" + this.score + "", 525, 360);
+            
             this.entities.splice(i,1);
         } else {
             this.entities[i].draw(this.ctx);
