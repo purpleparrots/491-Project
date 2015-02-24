@@ -60,21 +60,21 @@ GameEngine.prototype.start = function () {
 }
 
 GameEngine.prototype.drawLives = function(lives) {
-	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (lives + 1) * 35, 0, this.overlay_ctx.canvas.width, 40);
-	for (var i = 0; i <= lives; i++) {
-		this.overlay_ctx.drawImage(AM.getAsset("./images/playership.png"), this.overlay_ctx.canvas.width - i * 35, 5, 30, 30);
-	}
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (lives + 1) * 35, 0, this.overlay_ctx.canvas.width, 40);
+    for (var i = 0; i <= lives; i++) {
+        this.overlay_ctx.drawImage(AM.getAsset("./images/playership.png"), this.overlay_ctx.canvas.width - i * 35, 5, 30, 30);
+    }
 }
 
 GameEngine.prototype.moveSlider = function(amount) {
-	var sliderWidth = this.overlay_ctx.canvas.width / 2;
-	var shieldAmount = Math.floor(sliderWidth * (amount / 100));
-	//var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
+    var sliderWidth = this.overlay_ctx.canvas.width / 2;
+    var shieldAmount = Math.floor(sliderWidth * (amount / 100));
+    //var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth, 70);
-	//context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
+    //context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
     this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), 0,  0, shieldAmount, 30,
-											this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80,
-											shieldAmount, 30);
+                                            this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80,
+                                            shieldAmount, 30);
   //  var sliderLocationX = (amount) * 3;
   //  this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), sliderStart + sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
 }
@@ -103,7 +103,7 @@ GameEngine.prototype.startInput = function () {
         if (e.keyCode === 40) that.downkey = true;
         e.preventDefault();
     }, false);
-	
+    
     that.overlay_ctx.canvas.addEventListener("keyup", function (e) {
         if (String.fromCharCode(e.which) === ' ') that.spacebar = false;
         if (e.keyCode === 17) that.ctrlkey = false;
@@ -328,13 +328,13 @@ GameEngine.prototype.resolveVec = function(angle, mag) {
 
 GameEngine.prototype.resolveCollision = function(entity1V, entity1M, entity2V, entity2M) {
 
-	  var v3 = {};
-	  v3.x = (entity1V.x * (entity1M - entity2M) + 2 * entity2M * entity2V.x) / (entity1M + entity2M);
-	  v3.y = (entity1V.y * (entity1M - entity2M) + 2 * entity2M * entity2V.y) / (entity1M + entity2M);
-	  var v4 = {};
-	  v4.x = (entity2V.x * (entity2M - entity1M) + 2 * entity1M * entity1V.x) / (entity1M + entity2M);
-	  v4.y = (entity2V.y * (entity2M - entity1M) + 2 * entity1M * entity1V.y) / (entity1M + entity2M);
-	  return [v3, v4];
+      var v3 = {};
+      v3.x = (entity1V.x * (entity1M - entity2M) + 2 * entity2M * entity2V.x) / (entity1M + entity2M);
+      v3.y = (entity1V.y * (entity1M - entity2M) + 2 * entity2M * entity2V.y) / (entity1M + entity2M);
+      var v4 = {};
+      v4.x = (entity2V.x * (entity2M - entity1M) + 2 * entity1M * entity1V.x) / (entity1M + entity2M);
+      v4.y = (entity2V.y * (entity2M - entity1M) + 2 * entity1M * entity1V.y) / (entity1M + entity2M);
+      return [v3, v4];
     };
 
 GameEngine.prototype.velocityMag = function(vel) {
@@ -342,7 +342,7 @@ GameEngine.prototype.velocityMag = function(vel) {
 }
 
 GameEngine.prototype.toRadians = function(degrees) {
-	return degrees * (Math.PI / 180);
+    return degrees * (Math.PI / 180);
 }
 
 
