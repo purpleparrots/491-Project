@@ -205,8 +205,8 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.mass = 15;
 	this.lives = 0;
 	this.shield = 100;
-	
-	
+	this.speedcap = 8;
+
 	this.setShield = function(amount) {
 		this.shield += amount;
 		if (this.shield > 100) {
@@ -229,17 +229,16 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.update = function() {
 		if(this.game.upkey) this.moveForward = true;
 		if(this.moveForward) {
+			var thrustVel = this.game.resolveVec(this.angle, .2);
+			this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
 
-				var thrustVel = this.game.resolveVec(this.angle, .2);
-				this.velocity = this.game.resultVector(this.velocity, thrustVel);
-				this.moveForward = false;
-			
+			this.moveForward = false;
 		}
 
 		if(this.game.downkey) this.moveBackward = true;
 		if(this.moveBackward) {
 			var thrustVel = this.game.resolveVec(Math.PI + this.angle, .2);
-			this.velocity = this.game.resultVector(this.velocity, thrustVel);
+			this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
 			
 			//if the ship is slow enough, hitting back will stop it
 			if (this.game.velocityMag(this.velocity) <= 2) {
@@ -355,7 +354,17 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         
 	}
 
-
+	this.setVelocity = function(newVelocity) {
+		//var thrustVel = this.game.resultVector(this.velocity, this.game.resolveVec(this.angle, .2));
+		if (this.game.velocityMag(newVelocity) > this.speedcap) {
+			var tx = newVelocity.x / this.game.velocityMag(newVelocity);
+			var ty = newVelocity.y / this.game.velocityMag(newVelocity);
+			this.velocity = {x: tx * this.speedcap,
+							 y: ty * this.speedcap};
+		} else {
+			this.velocity = newVelocity;
+		}
+	}
 
 } // end of PlayerShip
 

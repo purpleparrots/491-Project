@@ -70,10 +70,10 @@ GameEngine.prototype.moveSlider = function(amount) {
     var sliderWidth = this.overlay_ctx.canvas.width / 2;
     var shieldAmount = Math.floor(sliderWidth * (amount / 100));
     //var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
-    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80, sliderWidth, 70);
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 60, sliderWidth, 80);
     //context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
     this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), 0,  0, shieldAmount, 30,
-                                            this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 80,
+                                            this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 45,
                                             shieldAmount, 30);
   //  var sliderLocationX = (amount) * 3;
   //  this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), sliderStart + sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
@@ -85,7 +85,7 @@ GameEngine.prototype.changeScore = function() {
     var scoreText = "Score: " + this.score + "";
     console.log(scoreText);
     var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
-    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 40, 400, 70);
     this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
 
 }
@@ -154,16 +154,10 @@ GameEngine.prototype.update = function () {
         var entity = this.entities[i];
         
         for (var j = i + 1; j < entitiesCount; j++) {
-            
-            //if(otherEntity != undefined) {
-                var otherEntity = this.entities[j];
-
-                if (this.checkCollision(entity, otherEntity)) {
-                    entity.collide(otherEntity, true);
-                } 
-                
-            //}            
-                         
+            var otherEntity = this.entities[j];
+            if (this.checkCollision(entity, otherEntity)) {
+                entity.collide(otherEntity, true);
+            }                     
         }
     
     if (!entity.removeMe)  entity.update();
