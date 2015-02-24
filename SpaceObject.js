@@ -227,6 +227,9 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.setLives = function(lives) {
 		this.lives += lives;
 		this.game.drawLives(this.lives);
+		if (this.lives <= 0) {
+			this.game.die();
+		}
 	}
 	
 	this.setLives(3);
@@ -635,8 +638,6 @@ function FloatingText(ctx, str) {
 	this.timer_start = new Date().getTime();
 	this.str = str;
 	this.ctx = ctx;
-	//this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-	this.ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
 	this.font_size = 8;
 	this.font_string = null;
 
@@ -646,7 +647,7 @@ function FloatingText(ctx, str) {
 		if (timer_curr - this.timer_start < 1200) {
 			this.font_size += 2;
 			this.font_string = this.font_size + "px Impact";
-		}else if (timer_curr - this.timer_start > 1200) {
+		} else {
 			this.removeMe = true;
 			this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, 
 				this.text_measure.width, this.font_size + 5);
@@ -658,6 +659,7 @@ function FloatingText(ctx, str) {
 		this.ctx.font = this.font_string;
 		this.text_measure = this.ctx.measureText(this.str);	
 		this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+		this.ctx.strokeStyle = "rgba(255,255, 255, 0.5)";
 		this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, this.text_measure.width, this.font_size + 5);
 		this.ctx.fillText(this.str, this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2);
 		this.ctx.restore();

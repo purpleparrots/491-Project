@@ -29,8 +29,5 @@ AM.downloadAll(function () {
 		  	document.getElementById("background").getContext("2d"),
 			document.getElementById("overlay").getContext("2d"));
     game.start();
-    
-	game.addEntity(new PlayerShip(game, 0, {x:0,y:0}, 
-		AM.getAsset("./images/playership.png"), 0,0, "default"));
 });
 
