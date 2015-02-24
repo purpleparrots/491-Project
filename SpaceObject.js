@@ -152,7 +152,7 @@ function AlienShip(game, velocity, x, y, weapon) {
 			this.ctx.drawImage(this.animation, -25, -25, 50, 50);
 			this.ctx.restore();
 		} else {
-			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 2, this.animation.frameHeight * 2);
+			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 3, this.animation.frameHeight * 3);
 		}
 	};
 	
@@ -161,7 +161,7 @@ function AlienShip(game, velocity, x, y, weapon) {
 		
 		if (this.state === "normal") {
 			SpaceObject.prototype.update.call(this);
-			if (this.game.waveTick % 36 === 0) {
+			if (this.game.waveTick % (40 - this.game.wave) === 0) {
 				for (var shot in weapon_types[this.weapon]["shots"]) {
 					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
 				}
@@ -178,16 +178,23 @@ function AlienShip(game, velocity, x, y, weapon) {
 	this.collide = function(otherObject, notify) {
 		if (this.state != "exploding") {
 			if(otherObject instanceof PlayerShip) {
-				this.state = "exploding";
+				this.takeHit();
 				if (notify) otherObject.collide(this, false);
        		} else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
-        		this.state = "exploding";
+       			this.takeHit();
         		if (notify) otherObject.collide(this, false);
         	} else {
         	//ignores powerups, asteroids, and other aliens
         	}
         }
 	}
+
+	this.takeHit = function() {
+		this.x -= 25;
+		this.y += 25;
+		this.state = "exploding";
+	}
+
 } // end of AlienShip
 
 function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
@@ -351,12 +358,8 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
         	}
         } else {
         	//ignores weapons and other playerships
-        }
-        
+        }   
 	}
-
-
-
 } // end of PlayerShip
 
 
@@ -377,7 +380,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 
 	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, false),
 					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, true),
-						"exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
+					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
 	this.animation = this.animations[this.state];
 
 	
