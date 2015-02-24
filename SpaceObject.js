@@ -59,9 +59,6 @@ var weapon_types = { default: {
 
 };
 
-
-
-
 //initial angle given in radians, velocity is {x: , y: } vector
 //x, y given in game coords
 function SpaceObject(game, angle, velocity, animation, x, y, value) {
@@ -212,16 +209,25 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.mass = 15;
 	this.lives = 0;
 	this.shield = 100;
+	this.state = "normal";
+
+	this.animations = {"exploding": new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.08, 8, 8, false, false),
+					   "normal": AM.getAsset("./images/playership.png")
+					}
+	this.animation = this.animations[this.state];
 
 	this.setShield = function(amount) {
-		this.shield += amount;
-		if (this.shield > 100) {
-			this.shield = 100;
-		} else if (this.shield <= 0) {
-			this.shield = 100;
-			this.setLives(-1);
+		if (this.state === "normal") {
+			this.shield += amount;
+			if (this.shield > 100) {
+				this.shield = 100;
+			} else if (this.shield <= 0) {
+				this.shield = 100;
+				this.setLives(-1);
+				this.state = "exploding";
+			}
+			this.game.moveSlider(this.shield);
 		}
-		this.game.moveSlider(this.shield);
 	}
 	
 	this.setLives = function(lives) {
@@ -236,98 +242,111 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.setShield(100);
 	
 	this.update = function() {
-		if(this.game.upkey) this.moveForward = true;
-		if(this.moveForward) {
-			var thrustVel = this.game.resolveVec(this.angle, .2);
-			this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
-
-			this.moveForward = false;
-		}
-
-		if(this.game.downkey) this.moveBackward = true;
-		if(this.moveBackward) {
-			var thrustVel = this.game.resolveVec(Math.PI + this.angle, .2);
-			this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
-			
-			//if the ship is slow enough, hitting back will stop it
-			if (this.game.velocityMag(this.velocity) <= 2) {
-				this.velocity = {x:0,y:0};
-			}
-			this.moveBackward = false;
-		}
-
-		if(this.game.leftkey) this.rotateLeft = true;
-		if(this.rotateLeft) {
-			this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
-			this.rotateLeft = false;
-		}
+		this.animation = this.animations[this.state];
 		
-		if(this.game.rightkey) this.rotateRight = true;
-		if(this.rotateRight) {
-			this.angle += 4 * Math.PI / 360 % 2 * Math.PI;
-			this.rotateRight = false;
+		if (this.state === "normal") {
+			if(this.game.upkey) this.moveForward = true;
+			if(this.moveForward) {
+				var thrustVel = this.game.resolveVec(this.angle, .2);
+				this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
+
+				this.moveForward = false;
+			}
+
+			if(this.game.downkey) this.moveBackward = true;
+			if(this.moveBackward) {
+				var thrustVel = this.game.resolveVec(Math.PI + this.angle, .2);
+				this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
 			
-		}
-		if(this.game.spacebar) this.shoot = true;
-		if(this.shoot && !this.game.fireLock) {
-			for (var shot in weapon_types[this.weapon]["shots"]) {
-				var weap_angle = weapon_types[this.weapon]["shots"][shot];
-				weap_angle = game.toRadians(weap_angle);
-				this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
-
-			}
-			var sec_effect = weapon_types[this.weapon]["effect"];
-			if (typeof sec_effect === "function") {
-				that = this;
-				sec_effect();
-			}
-			this.shoot = false;
-			this.game.fireLock = true;
-		}
-		if (this.sec_weapon != "none") {
-			if(this.game.ctrlkey) this.sec_shoot = true;
-
-			if(this.sec_shoot && weapon_types[this.sec_weapon]["uses"] > 0) {
-				for (var shot in weapon_types[this.sec_weapon]["shots"]) {
-					var weap_angle = weapon_types[this.sec_weapon]["shots"][shot];
-					weap_angle = game.toRadians(weap_angle);
-
-					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.sec_weapon));
+				//if the ship is slow enough, hitting back will stop it
+				if (this.game.velocityMag(this.velocity) <= 2) {
+					this.velocity = {x:0,y:0};
 				}
-				var sec_effect = this.sec_weapon.effect;
+				this.moveBackward = false;
+			}
+
+			if(this.game.leftkey) this.rotateLeft = true;
+			if(this.rotateLeft) {
+				this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
+				this.rotateLeft = false;
+			}
+		
+			if(this.game.rightkey) this.rotateRight = true;
+			if(this.rotateRight) {
+				this.angle += 4 * Math.PI / 360 % 2 * Math.PI;
+				this.rotateRight = false;
+			
+			}
+			if(this.game.spacebar) this.shoot = true;
+			if(this.shoot && !this.game.fireLock) {
+				for (var shot in weapon_types[this.weapon]["shots"]) {
+					var weap_angle = weapon_types[this.weapon]["shots"][shot];
+					weap_angle = game.toRadians(weap_angle);
+					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+
+				}
+				var sec_effect = weapon_types[this.weapon]["effect"];
 				if (typeof sec_effect === "function") {
 					that = this;
 					sec_effect();
 				}
-				this.sec_shoot = false;
-				weapon_types[this.sec_weapon]["uses"] -= 1;
-			} if (weapon_types[this.sec_weapon]["uses"] <= 0 ) {
-				this.sec_weapon = "none";
+				this.shoot = false;
+				this.game.fireLock = true;
+			}
+			if (this.sec_weapon != "none") {
+				if(this.game.ctrlkey) this.sec_shoot = true;
+
+				if(this.sec_shoot && weapon_types[this.sec_weapon]["uses"] > 0) {
+					for (var shot in weapon_types[this.sec_weapon]["shots"]) {
+						var weap_angle = weapon_types[this.sec_weapon]["shots"][shot];
+						weap_angle = game.toRadians(weap_angle);
+
+						this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.sec_weapon));
+					}
+					var sec_effect = this.sec_weapon.effect;
+					if (typeof sec_effect === "function") {
+						that = this;
+						sec_effect();
+					}
+					this.sec_shoot = false;
+					weapon_types[this.sec_weapon]["uses"] -= 1;
+				} if (weapon_types[this.sec_weapon]["uses"] <= 0 ) {
+					this.sec_weapon = "none";
+				}
+			}
+			SpaceObject.prototype.update.call(this);
+		} else {
+			if (this.animation.isDone()) {
+				this.state = "normal";
+				this.animation = this.animations[this.state];
+				this.animations["exploding"] = new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.08, 8, 8, false, false);
 			}
 		}
-
-		SpaceObject.prototype.update.call(this);
+		
 
 	};
 
 	this.draw = function() {
-		// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
-		// we'll need to use this to make the ship rotate in place.
-		// save the current co-ordinate system 
-		// before we mess with it
-	 	this.ctx.save();
-		// move to the middle of where we want to draw our image
-		this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
-		this.ctx.translate(this.width / 2, this.height / 2);
+		if (this.state === "normal") {
+			// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
+			// we'll need to use this to make the ship rotate in place.
+			// save the current co-ordinate system 
+			// before we mess with it
+		 	this.ctx.save();
+			// move to the middle of where we want to draw our image
+			this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
+			this.ctx.translate(this.width / 2, this.height / 2);
 	 
-		// rotate around that point, converting our 
+			// rotate around that point
+			this.ctx.rotate(this.angle);
 
-		this.ctx.rotate(this.angle);
-
-		// draw it up and to the left by half the width
-		// and height of the image
-		this.ctx.drawImage(this.animation, -25, -25, 50, 50);
-		this.ctx.restore();
+			// draw it up and to the left by half the width
+			// and height of the image
+			this.ctx.drawImage(this.animation, -25, -25, 50, 50);
+			this.ctx.restore();
+		} else {
+			SpaceObject.prototype.draw.call(this, 4 * this.animation.frameWidth, 4 * this.animation.frameHeight);
+		}
 	};
 
 	this.collide = function(otherObject, notify) {
