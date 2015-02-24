@@ -45,7 +45,7 @@ var weapon_types = { default: {
 							shots: [0,180] 
 						},
 					  bomb: {
-							animation: "weapon3",
+							animation: "default",
 							velocity: 3,
 							radius: 7,
 							height: 15,
@@ -283,6 +283,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 					var weap_angle = weapon_types[this.weapon]["shots"][shot];
 					weap_angle = game.toRadians(weap_angle);
 					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+					this.game.addEntity(new PowerUp(this.game, 0, {x:0,y:0}, 100, 0, "bombPowerUp"));
 
 				}
 				var sec_effect = weapon_types[this.weapon]["effect"];
