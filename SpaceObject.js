@@ -1,5 +1,5 @@
 var weapon_types = { default: {
-							animation: "weapon3",
+							animation: "default",
 							velocity: 3,
 							radius: 7,
 							height: 15,
@@ -21,7 +21,7 @@ var weapon_types = { default: {
 					  		}
 					    },
 					  doublegun: {
-							animation: "weapon3",
+							animation: "double",
 							velocity: 3,
 							radius: 7,
 							height: 15,
@@ -29,7 +29,7 @@ var weapon_types = { default: {
 							shots: [-5,5] 
 						},
 					  triplegun: {
-							animation: "weapon3",
+							animation: "triple",
 							velocity: 3,
 							radius: 7,
 							height: 15,
@@ -37,7 +37,7 @@ var weapon_types = { default: {
 							shots: [-15,0,15] 
 						},
 					  backgun: {
-							animation: "weapon3",
+							animation: "default",
 							velocity: 3,
 							radius: 7,
 							height: 15,
@@ -205,7 +205,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	this.mass = 15;
 	this.lives = 0;
 	this.shield = 100;
-	this.speedcap = 8;
 
 	this.setShield = function(amount) {
 		this.shield += amount;
@@ -356,11 +355,11 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 	this.setVelocity = function(newVelocity) {
 		//var thrustVel = this.game.resultVector(this.velocity, this.game.resolveVec(this.angle, .2));
-		if (this.game.velocityMag(newVelocity) > this.speedcap) {
+		if (this.game.velocityMag(newVelocity) > this.game.speedcap) {
 			var tx = newVelocity.x / this.game.velocityMag(newVelocity);
 			var ty = newVelocity.y / this.game.velocityMag(newVelocity);
-			this.velocity = {x: tx * this.speedcap,
-							 y: ty * this.speedcap};
+			this.velocity = {x: tx * this.game.speedcap,
+							 y: ty * this.game.speedcap};
 		} else {
 			this.velocity = newVelocity;
 		}
@@ -567,7 +566,9 @@ function PowerUp(game, angle, velocity, x, y, type) {
 function Weapon(game, angle, velocity, x, y, radius, type) {
 	SpaceObject.call(this, game, angle, velocity,null, x, y, 0);
 	
-	this.animations = {"weapon3" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 144, false, false),
+	this.animations = {"default" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 80, false, false),
+					   "double"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 60, false, false),
+					   "triple"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 40, false, false),
 					   "weaponA" : new Animation(AM.getAsset("./images/weaponA.png"), 0, 0, 31, 44, .02, 8, 144, false, false)};
 
 	this.type = weapon_types[type];	
@@ -577,9 +578,14 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
 
 	if (this.type != "bomb") {
-		this.velocity.x += velocity.x;
-		this.velocity.y += velocity.y;
+		var vm = this.game.velocityMag(this.velocity);
+		var vx = this.velocity.x / vm;
+		var vy = this.velocity.y / vm;
+
+		this.velocity.x = vx * (this.game.speedcap + 3);
+		this.velocity.y = vy * (this.game.speedcap + 3);
 	}
+
 	this.height = this.type["height"];
 	this.width = this.type["width"];
 	this.radius = this.type["radius"];
