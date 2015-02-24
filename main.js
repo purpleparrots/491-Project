@@ -13,6 +13,7 @@ AM.queueDownload("./images/crystals.png");
 AM.queueDownload("./images/alien_explosion.png");
 AM.queueDownload("./images/shieldbar.jpg");
 AM.queueDownload("./images/slider.png");
+AM.queueDownload("./images/weapon4.png");
 //AM.queueDownload("./images/glowing1.png");
 //AM.queueDownload("./images/glowing2.png");
 

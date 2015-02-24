@@ -45,16 +45,13 @@ var weapon_types = { default: {
 							shots: [0,180] 
 						},
 					  bomb: {
-							animation: "default",
+							animation: "bomb",
 							velocity: 3,
 							radius: 7,
 							height: 15,
 							width: 12,
 							uses: 0,
-							shots: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 
-									110, 120, 130, 140, 150, 160, 170, 180, 190, 
-									200, 210, 220, 230, 240, 250, 260, 270, 280, 
-									290, 300, 310, 320, 330, 340, 350] 
+							shots: [0] 
 						}
 
 };
@@ -598,21 +595,24 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	this.animations = {"default" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 80, false, false),
 					   "double"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 60, false, false),
 					   "triple"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 40, false, false),
-					   "weaponA" : new Animation(AM.getAsset("./images/weaponA.png"), 0, 0, 31, 44, .02, 8, 144, false, false)};
+					   "weaponA" : new Animation(AM.getAsset("./images/weaponA.png"), 0, 0, 31, 44, .02, 8, 144, false, false),
+					   "bomb" : new Animation(AM.getAsset("./images/weapon4.png"), 0, 0, 260, 260, 1, 3, 6, false, false)};
 
 	this.type = weapon_types[type];	
 	this.typeName = type;
 
 	this.animation = this.animations[this.type["animation"]];
-	this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
-
-	if (this.type != "bomb") {
+	
+	if (this.typeName != "bomb") {
+		this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
 		var vm = this.game.velocityMag(this.velocity);
 		var vx = this.velocity.x / vm;
 		var vy = this.velocity.y / vm;
 
 		this.velocity.x = vx * (this.game.speedcap + 3);
 		this.velocity.y = vy * (this.game.speedcap + 3);
+	} else {
+		this.velocity = {x:0,y:0};
 	}
 
 	this.height = this.type["height"];
@@ -620,10 +620,7 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	this.radius = this.type["radius"];
 
 	this.draw = function() {
-		//this.ctx.save();
-		//this.ctx.scale(10, 10);
 		SpaceObject.prototype.draw.call(this, this.animation.frameWidth, this.animation.frameHeight);
-		//this.ctx.restore();
 	};
 	
 	this.update = function() {
