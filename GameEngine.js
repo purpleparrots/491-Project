@@ -27,6 +27,7 @@ function GameEngine() {
     this.typeMap = {};
     this.fireLock = false;
     this.spawnPU = false;
+    this.speedcap = 8;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
