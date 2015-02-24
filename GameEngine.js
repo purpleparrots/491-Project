@@ -34,6 +34,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.spawnPU = false;
 	this.gameOver = false;
 	this.overlay_ctx.canvas.focus();
+    this.speedcap = 8;
 	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
 		AM.getAsset("./images/playership.png"), 0,0, "default"));
 		
@@ -99,7 +100,7 @@ GameEngine.prototype.changeScore = function() {
     var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
 
 	if (!this.gameOver) {
-    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 40, 400, 70);
     	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
 	} else {
 		this.overlay_ctx.font="35px Impact";
