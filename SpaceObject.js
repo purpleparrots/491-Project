@@ -274,6 +274,22 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				this.rotateRight = false;
 			
 			}
+			if(this.game.spacebar && !this.game.fireLock) {
+				for (var shot in weapon_types[this.weapon]["shots"]) {
+					var weap_angle = weapon_types[this.weapon]["shots"][shot];
+					weap_angle = game.toRadians(weap_angle);
+					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+					this.game.addEntity(new PowerUp(this.game, 0, {x:0,y:0}, 100, 0, "bombPowerUp"));
+
+				}
+				var sec_effect = weapon_types[this.weapon]["effect"];
+				if (typeof sec_effect === "function") {
+					that = this;
+					sec_effect();
+				}
+				this.game.fireLock = true;
+			}
+			/*
 			if(this.game.spacebar) this.shoot = true;
 			if(this.shoot && !this.game.fireLock) {
 				for (var shot in weapon_types[this.weapon]["shots"]) {
@@ -291,10 +307,10 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				this.shoot = false;
 				this.game.fireLock = true;
 			}
+			*/
 			if (this.sec_weapon != "none") {
-				if(this.game.ctrlkey) this.sec_shoot = true;
 
-				if(this.sec_shoot && weapon_types[this.sec_weapon]["uses"] > 0) {
+				if(this.game.ctrlkey && weapon_types[this.sec_weapon]["uses"] > 0 && !this.game.secFireLock) {
 					for (var shot in weapon_types[this.sec_weapon]["shots"]) {
 						var weap_angle = weapon_types[this.sec_weapon]["shots"][shot];
 						weap_angle = game.toRadians(weap_angle);
@@ -306,7 +322,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 						that = this;
 						sec_effect();
 					}
-					this.sec_shoot = false;
+					this.game.secFireLock = true;
 					weapon_types[this.sec_weapon]["uses"] -= 1;
 				} if (weapon_types[this.sec_weapon]["uses"] <= 0 ) {
 					this.sec_weapon = "none";

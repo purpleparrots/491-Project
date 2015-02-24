@@ -31,6 +31,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.count = 0;
     this.typeMap = {};
     this.fireLock = false;
+    this.secFireLock = false;
     this.spawnPU = false;
 	this.gameOver = false;
 	this.overlay_ctx.canvas.focus();
@@ -232,9 +233,10 @@ GameEngine.prototype.loop = function () {
 	        }
 	    }
 
-	    if (this.waveTick % 16 === 0) {
-	        this.fireLock = false;
-	    }
+	    if (this.waveTick % 16 === 0) this.fireLock = false;
+
+        if(this.waveTick % 40 === 0) this.secFireLock = false;
+
 
 	    if(this.spawnPU) {
 	        var vel = {x: this.getRandomInt(-2,2),
