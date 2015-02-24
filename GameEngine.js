@@ -10,26 +10,13 @@ window.requestAnimFrame = (function () {
 })();
 
 function GameEngine() {
-    this.entities = [];
-    this.splitEntities = [];
-    this.waveEntities = [];
-    this.game_ctx = null;
-    this.background_ctx = null;
-    this.overlay_ctx = null;
-    this.surfaceWidth = null;
-    this.surfaceHeight = null;
-    this.wave = 0;
-    this.waveTick = 0;
-    this.score = 0;
-    this.active = true;
-    this.count = 0;
-    this.ship = null;
-    this.typeMap = {};
-    this.fireLock = false;
-    this.spawnPU = false;
+	this.isPaused = false;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
+    this.splitEntities = [];
+    this.waveEntities = [];
+	this.entities = [];
     this.game_ctx = game_ctx;
     this.background_ctx = background_ctx;
     this.overlay_ctx = overlay_ctx;
@@ -38,7 +25,18 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.startInput();
     this.timer = new Timer();
     this.wave = 1;
-    
+    this.waveTick = 0;
+    this.score = 0;
+    this.active = true;
+    this.count = 0;
+    this.typeMap = {};
+    this.fireLock = false;
+    this.spawnPU = false;
+	this.gameOver = false;
+	this.overlay_ctx.canvas.focus();
+	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
+		AM.getAsset("./images/playership.png"), 0,0, "default"));
+		
     for(var i = 0; i < 100; i++) {
             if(i < 20) this.typeMap[i] = "fillShieldPowerUp";
             if(i >= 20 && i < 30) this.typeMap[i] = "extraLifePowerUp";
@@ -49,7 +47,8 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     }
 }
 
-GameEngine.prototype.start = function () {    
+GameEngine.prototype.start = function () {
+	 
     var that = this;
     (function gameLoop() {
         that.loop();
@@ -64,6 +63,20 @@ GameEngine.prototype.drawLives = function(lives) {
 	for (var i = 0; i <= lives; i++) {
 		this.overlay_ctx.drawImage(AM.getAsset("./images/playership.png"), this.overlay_ctx.canvas.width - i * 35, 5, 30, 30);
 	}
+}
+
+GameEngine.prototype.die = function() {
+	this.gameOver = true;
+	this.gameOverTxt = new FloatingText(this.overlay_ctx,"Game Over");
+	this.changeScore();
+}
+
+GameEngine.prototype.pause = function() {
+	this.isPaused = true;
+}
+
+GameEngine.prototype.unpause = function() {
+	this.isPaused = false;
 }
 
 GameEngine.prototype.moveSlider = function(amount) {
@@ -83,10 +96,17 @@ GameEngine.prototype.changeScore = function() {
     this.overlay_ctx.font="25px Impact";
     this.overlay_ctx.fillStyle = "white";
     var scoreText = "Score: " + this.score + "";
-    console.log(scoreText);
     var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
-    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
-    this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
+	if (!this.gameOver) {
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
+    	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
+	} else {
+		this.overlay_ctx.font="35px Impact";
+		this.overlay_ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+		scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
+    	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width / 2 - scoreTextMeasure.width / 2, this.overlay_ctx.canvas.height - 150);
+	}
 
 }
 
@@ -146,32 +166,37 @@ GameEngine.prototype.draw = function () {
 }
 
 GameEngine.prototype.update = function () {
-    this.splitEntities = [];
-    var entitiesCount = this.entities.length;
-    this.count += 1;
-    for (var i = 0; i < entitiesCount; i++) {
+	if (!this.gameOver) {
+	    this.splitEntities = [];
+	    var entitiesCount = this.entities.length;
+	    this.count += 1;
+	    for (var i = 0; i < entitiesCount; i++) {
         
-        var entity = this.entities[i];
+	        var entity = this.entities[i];
         
-        for (var j = i + 1; j < entitiesCount; j++) {
+	        for (var j = i + 1; j < entitiesCount; j++) {
             
-            //if(otherEntity != undefined) {
-                var otherEntity = this.entities[j];
+	            //if(otherEntity != undefined) {
+	                var otherEntity = this.entities[j];
 
-                if (this.checkCollision(entity, otherEntity)) {
-                    entity.collide(otherEntity, true);
-                } 
+	                if (this.checkCollision(entity, otherEntity)) {
+	                    entity.collide(otherEntity, true);
+	                } 
                 
-            //}            
+	            //}            
                          
-        }
+	        }
     
-    if (!entity.removeMe)  entity.update();
-    }
-    var newEntitiesCount = this.splitEntities.length;
-    for(var k = 0; k < newEntitiesCount; k++) {
-        this.addEntity(this.splitEntities[k]);
-    }
+	    if (!entity.removeMe)  entity.update();
+	    }
+	    var newEntitiesCount = this.splitEntities.length;
+	    for(var k = 0; k < newEntitiesCount; k++) {
+	        this.addEntity(this.splitEntities[k]);
+	    }
+	} else {
+		this.gameOverTxt.update();
+		this.gameOverTxt.draw();
+	}
 }
 
 GameEngine.prototype.checkCollision = function(entity1, entity2) {
@@ -183,49 +208,51 @@ GameEngine.prototype.absoluteDistance = function(entity1, entity2) {
 }
 
 GameEngine.prototype.loop = function () {
-    this.clockTick = this.timer.tick();
-    // reenable waveTick incrememnt went moving past prototype
-    this.waveTick += 1;
+	if (!this.isPaused) {
+	    this.clockTick = this.timer.tick();
+	    // reenable waveTick incrememnt went moving past prototype
+	    this.waveTick += 1;
 
-    // 500x + 8000
-    // first wave gets 26 waves points. if each of these is an asteroid that means
-    // 26 asteroids are created. average of 5 seconds to kill each one means 130
-    // seconds to kill all, this equals 7800 ticks, round to 8000 and add 500 ticks
-    // to each wave. wave points increase by 15 each time or about 3x the increased time
-    // so the game gets harder in several ways each wave.
-    if (this.waveTick > (75 * this.wave) + 500) {
-        this.waveTick = 0;
-        document.title = this.wave;
-        this.generateWave();
-    }
+	    // 500x + 8000
+	    // first wave gets 26 waves points. if each of these is an asteroid that means
+	    // 26 asteroids are created. average of 5 seconds to kill each one means 130
+	    // seconds to kill all, this equals 7800 ticks, round to 8000 and add 500 ticks
+	    // to each wave. wave points increase by 15 each time or about 3x the increased time
+	    // so the game gets harder in several ways each wave.
+	    if (this.waveTick > (75 * this.wave) + 500) {
+	        this.waveTick = 0;
+	        document.title = this.wave;
+	        this.generateWave();
+	    }
 
-    if (this.waveTick % 18 === 0) {
-        if(this.waveEntities.length > 0) {
-            this.addEntity(this.waveEntities.pop());
-        }
-    }
+	    if (this.waveTick % 18 === 0) {
+	        if(this.waveEntities.length > 0) {
+	            this.addEntity(this.waveEntities.pop());
+	        }
+	    }
 
-    if (this.waveTick % 16 === 0) {
-        this.fireLock = false;
-    }
+	    if (this.waveTick % 16 === 0) {
+	        this.fireLock = false;
+	    }
 
-    if(this.spawnPU) {
-        var vel = {x: this.getRandomInt(-2,2),
-                   y: this.getRandomInt(-2,2)};
-        var x = this.randOffScreenPoint(0);
-        var y = this.randOffScreenPoint(1);
-        this.addEntity(new PowerUp(this, 0, vel, x, y,
-            this.typeMap[this.getRandomInt(0,100)]));
-        this.spawnPU = false;
-    }
+	    if(this.spawnPU) {
+	        var vel = {x: this.getRandomInt(-2,2),
+	                   y: this.getRandomInt(-2,2)};
+	        var x = this.randOffScreenPoint(0);
+	        var y = this.randOffScreenPoint(1);
+	        this.addEntity(new PowerUp(this, 0, vel, x, y,
+	            this.typeMap[this.getRandomInt(0,100)]));
+	        this.spawnPU = false;
+	    }
 
-    if (this.waveTick % 250 === 0) {
-        var data = this.newObjectData();
-        this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
-    }
+	    if (this.waveTick % 250 === 0) {
+	        var data = this.newObjectData();
+	        this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
+	    }
 
-    this.update();
-    this.draw();
+	    this.update();
+	    this.draw();
+	}
 }
 
 GameEngine.prototype.getX = function(width, x) {
@@ -346,7 +373,7 @@ GameEngine.prototype.resolveCollision = function(entity1V, entity1M, entity2V, e
 	  v4.x = (entity2V.x * (entity2M - entity1M) + 2 * entity1M * entity1V.x) / (entity1M + entity2M);
 	  v4.y = (entity2V.y * (entity2M - entity1M) + 2 * entity1M * entity1V.y) / (entity1M + entity2M);
 	  return [v3, v4];
-    };
+};
 
 GameEngine.prototype.velocityMag = function(vel) {
     return Math.sqrt(vel.x * vel.x + vel.y * vel.y);
