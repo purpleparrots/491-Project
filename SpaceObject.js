@@ -612,7 +612,7 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 					   "double"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 60, false, false),
 					   "triple"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 40, false, false),
 					   "weaponA" : new Animation(AM.getAsset("./images/weaponA.png"), 0, 0, 31, 44, .02, 8, 144, false, false),
-					   "bomb" : new Animation(AM.getAsset("./images/weapon4.png"), 0, 0, 260, 260, 1, 3, 6, false, false)};
+					   "bomb" : AM.getAsset("./images/weapon4.png")};
 
 	this.type = weapon_types[type];	
 	this.typeName = type;
@@ -636,13 +636,24 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	this.radius = this.type["radius"];
 
 	this.draw = function() {
-		SpaceObject.prototype.draw.call(this, this.animation.frameWidth, this.animation.frameHeight);
+		if ( this.animation instanceof Animation) {
+			SpaceObject.prototype.draw.call(this, this.animation.frameWidth, this.animation.frameHeight);
+		} else {
+			this.ctx.drawImage(this.animation, this.game.getX(this.radius * 2, this.x), this.game.getY(this.radius * 2, this.y), 2 * this.radius, 2 * this.radius);
+		}
 	};
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
-		if (this.animation.isDone()) {
-			this.removeMe = true;
+		if (this.antimation instanceof Animation) {
+			if (this.animation.isDone()) {
+				this.removeMe = true;
+			}
+		} else {
+			this.radius += 2;
+			if (this.radius >= 300) {
+				this.removeMe = true;
+			}
 		}
 	};
 
@@ -656,13 +667,16 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
         } else if (otherObject instanceof AlienShip && this.typeName != "alien") {
         	this.removeMe = true;
         	if (notify) otherObject.collide(this, false);
-        } else if (otherObject instanceof PlayerShip && this.typeName === "alien") {
+        } else if (otherObject instanceof PlayerShip && this.typeName === "alien" ) {
         	this.removeMe = true;
         	if (notify) otherObject.collide(this, false);
         } else {
         	//ignores playerships, powerups, and other weapons
         }
         
+		if (this.typeName == "bomb") {
+			this.removeMe = false;
+		}
 	}
 
 }
