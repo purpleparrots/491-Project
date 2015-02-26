@@ -10,7 +10,7 @@ window.requestAnimFrame = (function () {
 })();
 
 function GameEngine() {
-	this.isPaused = false;
+	this.isPaused = true;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -34,11 +34,24 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.secFireLock = false;
     this.spawnPU = false;
 	this.gameOver = false;
-	this.overlay_ctx.canvas.focus();
     this.speedcap = 8;
 	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
 		AM.getAsset("./images/playership.png"), 0,0, "default"));
 		
+	that = this;
+	this.overlay_ctx.canvas.onclick = function() {
+		console.log(that);
+		if (!that.gameOver) {
+			if (that.isPaused) {
+				that.unpause();
+			} else {
+				that.pause();
+			}
+		} else {
+			that.init();
+		}
+	}
+	
     for(var i = 0; i < 100; i++) {
             if(i < 20) this.typeMap[i] = "fillShieldPowerUp";
             if(i >= 20 && i < 30) this.typeMap[i] = "extraLifePowerUp";
@@ -210,6 +223,7 @@ GameEngine.prototype.absoluteDistance = function(entity1, entity2) {
 }
 
 GameEngine.prototype.loop = function () {
+	console.log(this.isPaused);
 	if (!this.isPaused) {
 	    this.clockTick = this.timer.tick();
 	    // reenable waveTick incrememnt went moving past prototype
