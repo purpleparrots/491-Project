@@ -35,6 +35,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.spawnPU = false;
 	this.gameOver = false;
     this.speedcap = 8;
+	
 	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
 		AM.getAsset("./images/playership.png"), 0,0, "default"));
 		
@@ -48,14 +49,15 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
 			game = that.game;
 		}
 		
-		if (!that.gameOver) {
+		if (!game.gameOver) {
 			if (game.isPaused) {
 				game.unpause();
 			} else {
 				game.pause();
 			}
 		} else {
-			game.init();
+			game.overlay_ctx.clearRect(0,0, game.overlay_ctx.canvas.width, game.overlay_ctx.canvas.height);
+			game.init(game.game_ctx, game.background_ctx, game.overlay_ctx);
 		}
 	}, false);
 	
