@@ -39,18 +39,25 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
 		AM.getAsset("./images/playership.png"), 0,0, "default"));
 		
 	that = this;
-	this.overlay_ctx.canvas.onclick = function() {
-		console.log(that);
+	this.overlay_ctx.canvas.addEventListener('click', function(){
+		var game;
+		
+		if (that instanceof GameEngine) {
+			game = that;
+		} else {
+			game = that.game;
+		}
+		
 		if (!that.gameOver) {
-			if (that.isPaused) {
-				that.unpause();
+			if (game.isPaused) {
+				game.unpause();
 			} else {
-				that.pause();
+				game.pause();
 			}
 		} else {
-			that.init();
+			game.init();
 		}
-	}
+	}, false);
 	
     for(var i = 0; i < 100; i++) {
             if(i < 20) this.typeMap[i] = "fillShieldPowerUp";
@@ -223,7 +230,6 @@ GameEngine.prototype.absoluteDistance = function(entity1, entity2) {
 }
 
 GameEngine.prototype.loop = function () {
-	console.log(this.isPaused);
 	if (!this.isPaused) {
 	    this.clockTick = this.timer.tick();
 	    // reenable waveTick incrememnt went moving past prototype
