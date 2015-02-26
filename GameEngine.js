@@ -101,13 +101,13 @@ GameEngine.prototype.changeScore = function() {
     var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
 
 	if (!this.gameOver) {
-    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 40, 400, 70);
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 50, 400, 70);
     	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
 	} else {
 		this.overlay_ctx.font="35px Impact";
 		this.overlay_ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
 		scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
-    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 50, 400, 70);
     	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width / 2 - scoreTextMeasure.width / 2, this.overlay_ctx.canvas.height - 150);
 	}
 }
