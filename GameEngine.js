@@ -11,7 +11,7 @@ window.requestAnimFrame = (function () {
 })();
 
 function GameEngine() {
-	this.isPaused = false;
+	this.isPaused = true;
 }
 
 GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
@@ -32,13 +32,36 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.count = 0;
     this.typeMap = {};
     this.fireLock = false;
+    this.secFireLock = false;
     this.spawnPU = false;
 	this.gameOver = false;
-	this.overlay_ctx.canvas.focus();
     this.speedcap = 8;
+	
 	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
 		AM.getAsset("./images/playership.png"), 0,0, "default"));
 		
+	that = this;
+	this.overlay_ctx.canvas.addEventListener('click', function(){
+		var game;
+		
+		if (that instanceof GameEngine) {
+			game = that;
+		} else {
+			game = that.game;
+		}
+		
+		if (!game.gameOver) {
+			if (game.isPaused) {
+				game.unpause();
+			} else {
+				game.pause();
+			}
+		} else {
+			game.overlay_ctx.clearRect(0,0, game.overlay_ctx.canvas.width, game.overlay_ctx.canvas.height);
+			game.init(game.game_ctx, game.background_ctx, game.overlay_ctx);
+		}
+	}, false);
+	
     for(var i = 0; i < 100; i++) {
             if(i < 20) this.typeMap[i] = "fillShieldPowerUp";
             if(i >= 20 && i < 30) this.typeMap[i] = "extraLifePowerUp";
@@ -101,13 +124,13 @@ GameEngine.prototype.changeScore = function() {
     var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
 
 	if (!this.gameOver) {
-    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 40, 400, 70);
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 50, 400, 70);
     	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
 	} else {
 		this.overlay_ctx.font="35px Impact";
 		this.overlay_ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
 		scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
-    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 40, 400, 70);
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 50, 400, 70);
     	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width / 2 - scoreTextMeasure.width / 2, this.overlay_ctx.canvas.height - 150);
 	}
 }
@@ -233,9 +256,10 @@ GameEngine.prototype.loop = function () {
 	        }
 	    }
 
-	    if (this.waveTick % 16 === 0) {
-	        this.fireLock = false;
-	    }
+	    if (this.waveTick % 16 === 0) this.fireLock = false;
+
+        if(this.waveTick % 40 === 0) this.secFireLock = false;
+
 
 	    if(this.spawnPU) {
 	        var vel = {x: this.getRandomInt(-2,2),
