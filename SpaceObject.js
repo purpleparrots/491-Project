@@ -505,6 +505,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 	this.powerup_types = {
 		//start powerup types
 		fillShieldPowerUp : {
+			// image set 0
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0, 0, 31, 29, .1, 3, 12, true, false),
 			function: function fillShield() {
 				          that.setShield(100);
@@ -513,6 +514,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		extraLifePowerUp : {
+			// image set 1
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 94, 0, 31, 29, .1, 3, 12, true, false),
 			function: function extraLife() {
 				          that.setLives(1);
@@ -522,6 +524,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		doubleGunPowerUp : {
+			// image set 6
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,116, 31, 29, .1, 3, 12, true, false),
 			function: function doublegun(){ 
 						  that.weapon = "doublegun";
@@ -530,6 +533,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		tripleGunPowerUp : {
+			// image set 2
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,0, 31, 29, .1, 3, 12, true, false),
 			function: function triplegun(){ 
 						  that.weapon = "triplegun";
@@ -538,6 +542,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		backGunPowerUp : {
+			// image set 4
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
 						  that.weapon = "backgun";
@@ -546,6 +551,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		bombPowerUp : {
+			//image set 3
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,0, 31, 29, .1, 3, 12, true, false),
 			function: function bomb(){ 
 						  that.sec_weapon = "bomb";
@@ -555,7 +561,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		futurePowerUpOne : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
+			// image set 5
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 94,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
 						  that.weapon = "backgun";
 			},
@@ -563,7 +570,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		futurePowerUpTwo : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
+			// image set 7
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
 						  that.weapon = "backgun";
 			},
