@@ -13,13 +13,14 @@ function GameEngine() {
 	this.isPaused = true;
 }
 
-GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
+GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nextBackground_ctx) {
     this.splitEntities = [];
     this.waveEntities = [];
 	this.entities = [];
     this.game_ctx = game_ctx;
     this.background_ctx = background_ctx;
     this.overlay_ctx = overlay_ctx;
+	this.nextBackground_ctx = nextBackground_ctx;
     this.surfaceWidth = this.game_ctx.canvas.width / 2;
     this.surfaceHeight = this.game_ctx.canvas.height / 2;
     this.startInput();
@@ -35,6 +36,13 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx) {
     this.spawnPU = false;
 	this.gameOver = false;
     this.speedcap = 8;
+	this.ga = 1;
+	this.background_index = 0;
+	this.backgrounds = [AM.getAsset("./images/background2.jpg"),AM.getAsset("./images/background3.jpg"),
+		AM.getAsset("./images/background4.jpg"),AM.getAsset("./images/background5.jpg")];
+		
+	this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0, this.background_ctx.canvas.width, background_ctx.canvas.height);
+	this.nextBackground_ctx.drawImage(this.backgrounds[this.background_index + 1], 0,0, this.nextBackground_ctx.canvas.width, nextBackground_ctx.canvas.height);
 	
 	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
 		AM.getAsset("./images/playership.png"), 0,0, "default"));
@@ -171,6 +179,21 @@ GameEngine.prototype.addTempEntity = function(entity) {
 GameEngine.prototype.draw = function () {
     this.game_ctx.clearRect(0, 0, this.surfaceWidth * 2, this.surfaceHeight * 2);
     this.game_ctx.save();
+	if (this.count > 0 && (this.count % 1 === 0 || this.ga < 1)) {
+		this.ga -= .002;
+		this.background_ctx.globalAlpha = this.ga;
+		this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+		this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+		if (this.ga <= 0) {
+			this.ga = 1;
+			this.background_ctx.globalAlpha = this.ga;
+			this.background_index = (this.background_index + 1) % this.backgrounds.length;
+			this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+			this.nextBackground_ctx.clearRect(0,0,this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
+			this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0, this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+			this.nextBackground_ctx.drawImage(this.backgrounds[this.background_index + 1], 0,0, this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
+		}
+    }
     for (var i = 0; i < this.entities.length; i++) {
         if (this.entities[i].removeMe) {
             if(this.score % 250 > 25 && (((this.score + this.entities[i].value) % 250) < 25)) {
@@ -191,7 +214,9 @@ GameEngine.prototype.draw = function () {
 
 GameEngine.prototype.update = function () {
 	if (!this.gameOver) {
-	    this.splitEntities = [];
+		
+		
+		this.splitEntities = [];
 	    var entitiesCount = this.entities.length;
 	    this.count += 1;
 	    for (var i = 0; i < entitiesCount; i++) {
