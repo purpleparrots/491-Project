@@ -179,7 +179,8 @@ GameEngine.prototype.addTempEntity = function(entity) {
 GameEngine.prototype.draw = function () {
     this.game_ctx.clearRect(0, 0, this.surfaceWidth * 2, this.surfaceHeight * 2);
     this.game_ctx.save();
-	if (this.count > 0 && (this.count % 1 === 0 || this.ga < 1)) {
+	if (this.count > 0 && (this.count % 400 === 0 || this.ga < 1)) {
+		console.log(this.count);
 		this.ga -= .002;
 		this.background_ctx.globalAlpha = this.ga;
 		this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
@@ -188,10 +189,11 @@ GameEngine.prototype.draw = function () {
 			this.ga = 1;
 			this.background_ctx.globalAlpha = this.ga;
 			this.background_index = (this.background_index + 1) % this.backgrounds.length;
+			console.log(this.background_index);
 			this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
 			this.nextBackground_ctx.clearRect(0,0,this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
 			this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0, this.background_ctx.canvas.width, this.background_ctx.canvas.height);
-			this.nextBackground_ctx.drawImage(this.backgrounds[this.background_index + 1], 0,0, this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
+			this.nextBackground_ctx.drawImage(this.backgrounds[(this.background_index + 1) % this.backgrounds.length], 0,0, this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
 		}
     }
     for (var i = 0; i < this.entities.length; i++) {
