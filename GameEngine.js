@@ -179,7 +179,7 @@ GameEngine.prototype.addTempEntity = function(entity) {
 GameEngine.prototype.draw = function () {
     this.game_ctx.clearRect(0, 0, this.surfaceWidth * 2, this.surfaceHeight * 2);
     this.game_ctx.save();
-	if (this.count > 0 && (this.count % 400 === 0 || this.ga < 1)) {
+	if (this.count > 0 && (this.count % 1000 === 0 || this.ga < 1)) {
 		console.log(this.count);
 		this.ga -= .002;
 		this.background_ctx.globalAlpha = this.ga;
