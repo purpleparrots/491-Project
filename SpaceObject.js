@@ -426,8 +426,8 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, false),
 					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, true),
 					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};*/
-	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 39, 40, 0.01, 8, 64, true, false),
-			   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 39, 40, 0.01, 8, 64, true, true),
+	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.1, 8, 64, true, false),
+			           "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.1, 8, 64, true, true),
 			   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
 	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, false),
 			   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, true),
@@ -440,7 +440,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	//	this.ctx.translate(this.game.getX(this.width/ 2, Math.round(this.x)), this.game.getY(this.height/2, Math.round(this.y)));
 	//	this.ctx.translate(this.width / 2, this.height / 2);
 	//	this.ctx.scale(this.size, this.size);
-		SpaceObject.prototype.draw.call(this, this.size * this.animation.frameWidth, this.size * this.animation.frameHeight);
+		SpaceObject.prototype.draw.call(this, size * 50, size * 50);
 			if(this.debug) {
 				this.ctx.beginPath();
 	      		this.ctx.arc(this.game.getX(this.animation.frameWidth, this.x), 
