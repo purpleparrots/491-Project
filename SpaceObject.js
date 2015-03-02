@@ -53,7 +53,6 @@ var weapon_types = { default: {
 							uses: 0,
 							shots: [0] 
 						}
-
 };
 
 //initial angle given in radians, velocity is {x: , y: } vector
@@ -92,12 +91,9 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	};
 	
 	SpaceObject.prototype.draw = function(drawWidth, drawHeight) {
-		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(this.animation.frameWidth, this.x), 
-			this.game.getY(this.animation.frameHeight, this.y), drawWidth, drawHeight);
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(drawWidth, this.x), 
+			this.game.getY(drawHeight, this.y), drawWidth, drawHeight);
 	};
-
-
-
 } // end of Constructor
 
 function AlienShip(game, velocity, x, y, weapon) {
@@ -264,13 +260,13 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 			if(this.game.leftkey) this.rotateLeft = true;
 			if(this.rotateLeft) {
-				this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
+				this.angle -= 2 * Math.PI / 360 % 2 * Math.PI;
 				this.rotateLeft = false;
 			}
 		
 			if(this.game.rightkey) this.rotateRight = true;
 			if(this.rotateRight) {
-				this.angle += 4 * Math.PI / 360 % 2 * Math.PI;
+				this.angle += 2 * Math.PI / 360 % 2 * Math.PI;
 				this.rotateRight = false;
 			
 			}
@@ -411,7 +407,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
 	this.size = size;
-	this.debug = false;	
 	this.hasSplit = false;
 	
 	if (Math.random() < .5) {
@@ -443,8 +438,8 @@ function Asteroid(game, angle, velocity, x, y, size) {
 		SpaceObject.prototype.draw.call(this, size * 50, size * 50);
 			if(this.debug) {
 				this.ctx.beginPath();
-	      		this.ctx.arc(this.game.getX(this.animation.frameWidth, this.x), 
-					this.game.getY(this.animation.frameHeight, this.y), this.radius, 0, 2 * Math.PI, false);
+	      		this.ctx.arc(this.game.getX(this.size * 50, this.x), 
+					this.game.getY(this.size * 50, this.y), this.radius, 0, 2 * Math.PI, false);
 	      		this.ctx.fillStyle = 'green';
 	      		//this.ctx.fill();
 	      		this.ctx.lineWidth = 5;
@@ -649,7 +644,7 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
-		if (this.antimation instanceof Animation) {
+		if (this.animation instanceof Animation) {
 			if (this.animation.isDone()) {
 				this.removeMe = true;
 			}
@@ -659,6 +654,8 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 				this.removeMe = true;
 			}
 		}
+		
+
 	};
 
 	this.collide = function(otherObject, notify) {

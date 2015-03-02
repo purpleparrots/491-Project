@@ -87,7 +87,8 @@ GameEngine.prototype.start = function () {
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
     this.changeScore();
-    this.generateWave();
+    this.makeProtoEnemies();
+    //this.generateWave();
 }
 
 GameEngine.prototype.drawLives = function(lives) {
@@ -273,7 +274,8 @@ GameEngine.prototype.loop = function () {
 	    if (this.waveTick > (75 * this.wave) + 500) {
 	        this.waveTick = 0;
 	        document.title = this.wave;
-	        this.generateWave();
+            //RIGHT HERE
+	        //this.generateWave();
 	    }
 
 	    if (this.waveTick % 18 === 0) {
@@ -299,7 +301,8 @@ GameEngine.prototype.loop = function () {
 
 	    if (this.waveTick % 250 === 0) {
 	        var data = this.newObjectData();
-	        this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
+            //RIGHT HERE
+	        //this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
 	    }
 
 	    this.update();
@@ -383,12 +386,14 @@ GameEngine.prototype.changeState = function() {
 }
 
 GameEngine.prototype.makeProtoEnemies = function() {
-    this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: -2, y: -1}, 100, -50, 3));
-    this.addEntity(new Asteroid(this, (Math.random() * 2 * Math.PI), {x: 2, y: 1}, -100, 50, 2));
-    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
-    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 150, 0, "bombPowerUp"));
-    this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:0}, -75, 0, null, 100, "default"));
-   // generateWave();
+    //this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -400, 0, 3));
+    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 3));
+                            //(game, angle, velocity, x, y, radius, type)
+    this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, -55, 0, "default"));
+    
+    //this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
+    //this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 150, 0, "bombPowerUp"));
+    //this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:0}, -75, 0, null, 100, "default"));
 }
     
 GameEngine.prototype.resultVector = function(orig_vec, force_vec) {
