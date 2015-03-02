@@ -391,11 +391,15 @@ GameEngine.prototype.changeState = function() {
 
 GameEngine.prototype.makeProtoEnemies = function() {
     this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -400, 0, 3));
-    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 6));
+    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 3));
     //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, 54, 0, "default"));
     //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, -54, 0, "default"));
-    
-    //this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 33, "bombPowerUp"));
+
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -200, "bombPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -100, "fillShieldPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 0, "extraLifePowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 100, "tripleGunPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 200, "backGunPowerUp"));
     //this.addEntity(new AlienShip(this, {x:0, y:0}, -100, 28, "alien"));
     //this.addEntity(new AlienShip(this, {x:1, y:0}, -100, 45, "none"));
 }
