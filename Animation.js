@@ -55,7 +55,7 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y,  drawWidth, drawHeigh
 			xstart += this.frameWidth[i];
 		}
 	} else {	
-		xstart = xindex * (currentFrameWidth + xstart);
+		xstart = xindex * currentFrameWidth + xstart;
 	}
     
 

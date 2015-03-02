@@ -38,7 +38,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
     this.speedcap = 8;
 	this.ga = 1;
 	this.background_index = 0;
-    this.debug = true;
+    this.debug = false;
 	this.backgrounds = [AM.getAsset("./images/background2.jpg"),AM.getAsset("./images/background3.jpg"),
 		AM.getAsset("./images/background4.jpg"),AM.getAsset("./images/background5.jpg")];
 		
@@ -395,9 +395,9 @@ GameEngine.prototype.makeProtoEnemies = function() {
     //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, 54, 0, "default"));
     //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, -54, 0, "default"));
 
-    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -200, "bombPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -0, "bombPowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -100, "fillShieldPowerUp"));
-    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 0, "extraLifePowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -200, "extraLifePowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 100, "tripleGunPowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 200, "backGunPowerUp"));
     //this.addEntity(new AlienShip(this, {x:0, y:0}, -100, 28, "alien"));
