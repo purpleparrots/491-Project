@@ -52,7 +52,18 @@ var weapon_types = { default: {
 							width: 12,
 							uses: 0,
 							shots: [0] 
-						}
+						},
+					  none: {
+							animation: "default",
+							velocity: 0,
+							radius: 0,
+							height: 0,
+							width: 0,
+							shots: [],
+							effect: function() {
+								//that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
+							}
+						},
 };
 
 //initial angle given in radians, velocity is {x: , y: } vector
@@ -68,7 +79,6 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	this.angle = angle;
 	this.removeMe = false;
 	this.value = value;
-	this.debug = false;
 	
 	SpaceObject.prototype.update = function() {
 		var border = .05 * Math.max(game.surfaceHeight, game.surfaceWidth);
@@ -93,6 +103,16 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	SpaceObject.prototype.draw = function(drawWidth, drawHeight) {
 		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(drawWidth, this.x), 
 			this.game.getY(drawHeight, this.y), drawWidth, drawHeight);
+		if(this.game.debug) {
+			var context = this.game.overlay_ctx;
+			context.beginPath();
+
+			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
+						this.game.getY(this.radius * 2, this.y) + this.radius,
+						this.radius, 0, 2 * Math.PI, false);
+			context.strokeStyle = '#003300';
+			context.stroke();
+		}
 	};
 } // end of Constructor
 
@@ -144,6 +164,16 @@ function AlienShip(game, velocity, x, y, weapon) {
 		} else {
 			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 3, this.animation.frameHeight * 3);
 		}
+		if(this.game.debug) {
+			var context = this.game.overlay_ctx;
+			context.beginPath();
+
+			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
+						this.game.getY(this.radius * 2, this.y) + this.radius,
+						this.radius, 0, 2 * Math.PI, false);
+			context.strokeStyle = '#003300';
+			context.stroke();
+		}
 	};
 	
 	this.update = function() {
@@ -180,8 +210,6 @@ function AlienShip(game, velocity, x, y, weapon) {
 	}
 
 	this.takeHit = function() {
-		this.x -= 25;
-		this.y += 25;
 		this.state = "exploding";
 	}
 
@@ -260,13 +288,13 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 
 			if(this.game.leftkey) this.rotateLeft = true;
 			if(this.rotateLeft) {
-				this.angle -= 2 * Math.PI / 360 % 2 * Math.PI;
+				this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
 				this.rotateLeft = false;
 			}
 		
 			if(this.game.rightkey) this.rotateRight = true;
 			if(this.rotateRight) {
-				this.angle += 2 * Math.PI / 360 % 2 * Math.PI;
+				this.angle += 4 * Math.PI / 360 % 2 * Math.PI;
 				this.rotateRight = false;
 			
 			}
@@ -355,6 +383,16 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		} else {
 			SpaceObject.prototype.draw.call(this, 4 * this.animation.frameWidth, 4 * this.animation.frameHeight);
 		}
+		if(this.game.debug) {
+			var context = this.game.overlay_ctx;
+			context.beginPath();
+
+			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
+						this.game.getY(this.radius * 2, this.y) + this.radius,
+						this.radius, 0, 2 * Math.PI, false);
+			context.strokeStyle = '#003300';
+			context.stroke();
+		}
 	};
 
 	this.collide = function(otherObject, notify) {
@@ -421,8 +459,8 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, false),
 					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, true),
 					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};*/
-	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.05, 7, 64, true, false),
-			           "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.05, 7, 64, true, true),
+	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.5, 8, 64, true, false),
+			           "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.5, 8, 64, true, true),
 			   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
 	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, false),
 			   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, true),
@@ -436,16 +474,6 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	//	this.ctx.translate(this.width / 2, this.height / 2);
 	//	this.ctx.scale(this.size, this.size);
 		SpaceObject.prototype.draw.call(this, size * 50, size * 50);
-			if(this.debug) {
-				this.ctx.beginPath();
-	      		this.ctx.arc(this.game.getX(this.size * 50, this.x), 
-					this.game.getY(this.size * 50, this.y), this.radius, 0, 2 * Math.PI, false);
-	      		this.ctx.fillStyle = 'green';
-	      		//this.ctx.fill();
-	      		this.ctx.lineWidth = 5;
-	      		this.ctx.strokeStyle = '#003300';
-	      		this.ctx.stroke();
-	      	}
 	//	this.ctx.restore();
 	};
 	

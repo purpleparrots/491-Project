@@ -38,6 +38,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
     this.speedcap = 8;
 	this.ga = 1;
 	this.background_index = 0;
+    this.debug = true;
 	this.backgrounds = [AM.getAsset("./images/background2.jpg"),AM.getAsset("./images/background3.jpg"),
 		AM.getAsset("./images/background4.jpg"),AM.getAsset("./images/background5.jpg")];
 		
@@ -87,8 +88,12 @@ GameEngine.prototype.start = function () {
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
     this.changeScore();
-    this.makeProtoEnemies();
-    //this.generateWave();
+    if (this.debug) {
+        this.makeProtoEnemies();
+    } else {
+        //RIGHT HERE
+        this.generateWave();
+    }
 }
 
 GameEngine.prototype.drawLives = function(lives) {
@@ -275,7 +280,7 @@ GameEngine.prototype.loop = function () {
 	        this.waveTick = 0;
 	        document.title = this.wave;
             //RIGHT HERE
-	        //this.generateWave();
+            if (!this.debug) this.generateWave();
 	    }
 
 	    if (this.waveTick % 18 === 0) {
@@ -302,7 +307,7 @@ GameEngine.prototype.loop = function () {
 	    if (this.waveTick % 250 === 0) {
 	        var data = this.newObjectData();
             //RIGHT HERE
-	        //this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
+            if(!this.debug) this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
 	    }
 
 	    this.update();
@@ -362,7 +367,6 @@ GameEngine.prototype.randOffScreenPoint = function(dim) {
 
 GameEngine.prototype.getX = function(width, x) {
     return this.surfaceWidth + x - (width / 2);
-    
 }
 
 GameEngine.prototype.getY = function(height, y) {
@@ -386,14 +390,14 @@ GameEngine.prototype.changeState = function() {
 }
 
 GameEngine.prototype.makeProtoEnemies = function() {
-    //this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -400, 0, 3));
-    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 3));
-                            //(game, angle, velocity, x, y, radius, type)
-    this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, -55, 0, "default"));
+    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -400, 0, 3));
+    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 6));
+    //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, 54, 0, "default"));
+    //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, -54, 0, "default"));
     
-    //this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
-    //this.addEntity(new PowerUp(this, 2 * Math.PI,{x:0, y:0}, 150, 0, "bombPowerUp"));
-    //this.addEntity(new AlienShip(this, (Math.round() * 2 * Math.PI), {x:0, y:0}, -75, 0, null, 100, "default"));
+    //this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 33, "bombPowerUp"));
+    //this.addEntity(new AlienShip(this, {x:0, y:0}, -100, 28, "alien"));
+    //this.addEntity(new AlienShip(this, {x:1, y:0}, -100, 45, "none"));
 }
     
 GameEngine.prototype.resultVector = function(orig_vec, force_vec) {
