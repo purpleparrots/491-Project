@@ -651,7 +651,7 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 	
 	this.update = function() {
 		SpaceObject.prototype.update.call(this);
-		if (this.antimation instanceof Animation) {
+		if (this.animation instanceof Animation) {
 			if (this.animation.isDone()) {
 				this.removeMe = true;
 			}
