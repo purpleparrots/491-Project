@@ -1,4 +1,3 @@
-
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -9,6 +8,7 @@ window.requestAnimFrame = (function () {
                 window.setTimeout(callback, 1000 / 60);
             };
 })();
+
 
 function GameEngine() {
 	this.isPaused = true;
@@ -109,6 +109,7 @@ GameEngine.prototype.die = function() {
 	this.gameOver = true;
 	this.gameOverTxt = new FloatingText(this.overlay_ctx,"Game Over");
 	this.changeScore();
+	this.checkScore();
 }
 
 GameEngine.prototype.pause = function() {
@@ -122,14 +123,10 @@ GameEngine.prototype.unpause = function() {
 GameEngine.prototype.moveSlider = function(amount) {
     var sliderWidth = this.overlay_ctx.canvas.width / 2;
     var shieldAmount = Math.floor(sliderWidth * (amount / 100));
-    //var sliderStart = this.overlay_ctx.canvas.width / 2 + (sliderWidth / 2);
     this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 60, sliderWidth, 80);
-    //context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
     this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), 0,  0, shieldAmount, 30,
                                             this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 45,
                                             shieldAmount, 30);
-  //  var sliderLocationX = (amount) * 3;
-  //  this.overlay_ctx.drawImage(AM.getAsset("./images/slider.png"), sliderStart + sliderLocationX, this.overlay_ctx.canvas.height - 70, 10, 50);
 }
 
 GameEngine.prototype.changeScore = function() {
@@ -430,9 +427,34 @@ GameEngine.prototype.velocityMag = function(vel) {
 }
 
 GameEngine.prototype.toRadians = function(degrees) {
-    return degrees * (Math.PI / 180);
+    return degrees * (Math.PI / 180);	
 }
 
+GameEngine.prototype.checkScore = function() {
+	var rtn;
+	that = this;
+    $.ajax({
+		url: 'check.php',
+		data: "",
+		dataType: 'json',
+		async: false, 
+		success: function(data){
+			if (that.score > data) {
+				var nickname = prompt("Highscore! Please enter a name to save your score:");
+				if (nickname != null) {
+					$.ajax({
+						type: "GET",
+						url: 'update.php',
+						data: {"name":nickname, "score":that.score},
+						dataType: 'json',
+						success: function() {
+						}
+					})
+				}
+			}
+		}
+	});
+}
 
 function Timer() {
     this.gameTime = 0;
