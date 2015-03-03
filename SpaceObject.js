@@ -52,8 +52,18 @@ var weapon_types = { default: {
 							width: 12,
 							uses: 0,
 							shots: [0] 
-						}
-
+						},
+					  none: {
+							animation: "default",
+							velocity: 0,
+							radius: 0,
+							height: 0,
+							width: 0,
+							shots: [],
+							effect: function() {
+								//that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
+							}
+						},
 };
 
 //initial angle given in radians, velocity is {x: , y: } vector
@@ -69,7 +79,6 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	this.angle = angle;
 	this.removeMe = false;
 	this.value = value;
-	this.debug = false;
 	
 	SpaceObject.prototype.update = function() {
 		var border = .05 * Math.max(game.surfaceHeight, game.surfaceWidth);
@@ -92,12 +101,19 @@ function SpaceObject(game, angle, velocity, animation, x, y, value) {
 	};
 	
 	SpaceObject.prototype.draw = function(drawWidth, drawHeight) {
-		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(this.animation.frameWidth, this.x), 
-			this.game.getY(this.animation.frameHeight, this.y), drawWidth, drawHeight);
+		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(drawWidth, this.x), 
+			this.game.getY(drawHeight, this.y), drawWidth, drawHeight);
+		if(this.game.debug) {
+			var context = this.game.overlay_ctx;
+			context.beginPath();
+
+			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
+						this.game.getY(this.radius * 2, this.y) + this.radius,
+						this.radius, 0, 2 * Math.PI, false);
+			context.strokeStyle = '#003300';
+			context.stroke();
+		}
 	};
-
-
-
 } // end of Constructor
 
 function AlienShip(game, velocity, x, y, weapon) {
@@ -148,6 +164,16 @@ function AlienShip(game, velocity, x, y, weapon) {
 		} else {
 			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 3, this.animation.frameHeight * 3);
 		}
+		if(this.game.debug) {
+			var context = this.game.overlay_ctx;
+			context.beginPath();
+
+			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
+						this.game.getY(this.radius * 2, this.y) + this.radius,
+						this.radius, 0, 2 * Math.PI, false);
+			context.strokeStyle = '#003300';
+			context.stroke();
+		}
 	};
 	
 	this.update = function() {
@@ -155,9 +181,9 @@ function AlienShip(game, velocity, x, y, weapon) {
 		
 		if (this.state === "normal") {
 			SpaceObject.prototype.update.call(this);
-			if (this.game.waveTick % (40 - this.game.wave) === 0) {
+			if (this.game.gameTick % (50 - this.game.wave) === 0) {
 				for (var shot in weapon_types[this.weapon]["shots"]) {
-					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
+					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.x, this.y, 0, this.weapon));
 				}
 			}
 		} else {
@@ -184,8 +210,6 @@ function AlienShip(game, velocity, x, y, weapon) {
 	}
 
 	this.takeHit = function() {
-		this.x -= 25;
-		this.y += 25;
 		this.state = "exploding";
 	}
 
@@ -278,7 +302,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				for (var shot in weapon_types[this.weapon]["shots"]) {
 					var weap_angle = weapon_types[this.weapon]["shots"][shot];
 					weap_angle = game.toRadians(weap_angle);
-					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.x, this.y, 0, this.weapon));
 				}
 				var sec_effect = weapon_types[this.weapon]["effect"];
 				if (typeof sec_effect === "function") {
@@ -313,7 +337,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 						var weap_angle = weapon_types[this.sec_weapon]["shots"][shot];
 						weap_angle = game.toRadians(weap_angle);
 
-						this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.sec_weapon));
+						this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.x, this.y, 0, this.sec_weapon));
 					}
 					var sec_effect = this.sec_weapon.effect;
 					if (typeof sec_effect === "function") {
@@ -358,6 +382,16 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 			this.ctx.restore();
 		} else {
 			SpaceObject.prototype.draw.call(this, 4 * this.animation.frameWidth, 4 * this.animation.frameHeight);
+		}
+		if(this.game.debug) {
+			var context = this.game.overlay_ctx;
+			context.beginPath();
+
+			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
+						this.game.getY(this.radius * 2, this.y) + this.radius,
+						this.radius, 0, 2 * Math.PI, false);
+			context.strokeStyle = '#003300';
+			context.stroke();
 		}
 	};
 
@@ -411,7 +445,6 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 function Asteroid(game, angle, velocity, x, y, size) {
 	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
 	this.size = size;
-	this.debug = false;	
 	this.hasSplit = false;
 	
 	if (Math.random() < .5) {
@@ -423,9 +456,15 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	this.radius = 16 * size;
 	this.mass = 10 * size;
 
-	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, false),
+	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, false),
 					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, true),
-					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
+					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};*/
+	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.05, 8, 64, true, false),
+			           "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.05, 8, 64, true, true),
+			   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
+	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, false),
+			   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, true),
+			   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};*/
 	this.animation = this.animations[this.state];
 
 	
@@ -434,17 +473,7 @@ function Asteroid(game, angle, velocity, x, y, size) {
 	//	this.ctx.translate(this.game.getX(this.width/ 2, Math.round(this.x)), this.game.getY(this.height/2, Math.round(this.y)));
 	//	this.ctx.translate(this.width / 2, this.height / 2);
 	//	this.ctx.scale(this.size, this.size);
-		SpaceObject.prototype.draw.call(this, this.size * this.animation.frameWidth, this.size * this.animation.frameHeight);
-			if(this.debug) {
-				this.ctx.beginPath();
-	      		this.ctx.arc(this.game.getX(this.animation.frameWidth, this.x), 
-					this.game.getY(this.animation.frameHeight, this.y), this.radius, 0, 2 * Math.PI, false);
-	      		this.ctx.fillStyle = 'green';
-	      		this.ctx.fill();
-	      		this.ctx.lineWidth = 5;
-	      		this.ctx.strokeStyle = '#003300';
-	      		this.ctx.stroke();
-	      	}
+		SpaceObject.prototype.draw.call(this, size * 50, size * 50);
 	//	this.ctx.restore();
 	};
 	
@@ -611,8 +640,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 
 
 			
-function Weapon(game, angle, velocity, x, y, radius, type) {
-	SpaceObject.call(this, game, angle, velocity,null, x, y, 0);
+function Weapon(game, angle, x, y, radius, type) {
+	SpaceObject.call(this, game, angle, null , null, x, y, 0);
 	
 	this.animations = {"default" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 80, false, false),
 					   "double"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 60, false, false),
@@ -661,6 +690,8 @@ function Weapon(game, angle, velocity, x, y, radius, type) {
 				this.removeMe = true;
 			}
 		}
+		
+
 	};
 
 	this.collide = function(otherObject, notify) {
