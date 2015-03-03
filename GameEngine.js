@@ -27,6 +27,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
     this.timer = new Timer();
     this.wave = 1;
     this.waveTick = 0;
+    this.gameTick = 0;
     this.score = 0;
     this.active = true;
     this.count = 0;
@@ -186,7 +187,6 @@ GameEngine.prototype.draw = function () {
     this.game_ctx.clearRect(0, 0, this.surfaceWidth * 2, this.surfaceHeight * 2);
     this.game_ctx.save();
 	if (this.count > 0 && (this.count % 1000 === 0 || this.ga < 1)) {
-		console.log(this.count);
 		this.ga -= .002;
 		this.background_ctx.globalAlpha = this.ga;
 		this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
@@ -195,7 +195,6 @@ GameEngine.prototype.draw = function () {
 			this.ga = 1;
 			this.background_ctx.globalAlpha = this.ga;
 			this.background_index = (this.background_index + 1) % this.backgrounds.length;
-			console.log(this.background_index);
 			this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
 			this.nextBackground_ctx.clearRect(0,0,this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
 			this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0, this.background_ctx.canvas.width, this.background_ctx.canvas.height);
@@ -267,16 +266,11 @@ GameEngine.prototype.absoluteDistance = function(entity1, entity2) {
 GameEngine.prototype.loop = function () {
 	if (!this.isPaused) {
 	    this.clockTick = this.timer.tick();
-	    // reenable waveTick incrememnt went moving past prototype
+
+        this.gameTick += 1;
 	    this.waveTick += 1;
 
-	    // 500x + 8000
-	    // first wave gets 26 waves points. if each of these is an asteroid that means
-	    // 26 asteroids are created. average of 5 seconds to kill each one means 130
-	    // seconds to kill all, this equals 7800 ticks, round to 8000 and add 500 ticks
-	    // to each wave. wave points increase by 15 each time or about 3x the increased time
-	    // so the game gets harder in several ways each wave.
-	    if (this.waveTick > (75 * this.wave) + 500) {
+	    if (this.waveTick > (100 * this.wave) + 500) {
 	        this.waveTick = 0;
 	        document.title = this.wave;
             //RIGHT HERE
@@ -289,14 +283,16 @@ GameEngine.prototype.loop = function () {
 	        }
 	    }
 
-	    if (this.waveTick % 16 === 0) this.fireLock = false;
+	    if (this.gameTick % 16 === 0) this.fireLock = false;
 
-        if(this.waveTick % 40 === 0) this.secFireLock = false;
+        if(this.gameTick % 40 === 0) this.secFireLock = false;
 
 
 	    if(this.spawnPU) {
 	        var vel = {x: this.getRandomInt(-2,2),
 	                   y: this.getRandomInt(-2,2)};
+            if (vel.x === 0) vel.x += 1;
+            if (vel.y === 0) vel.y += 1;
 	        var x = this.randOffScreenPoint(0);
 	        var y = this.randOffScreenPoint(1);
 	        this.addEntity(new PowerUp(this, 0, vel, x, y,
@@ -304,7 +300,7 @@ GameEngine.prototype.loop = function () {
 	        this.spawnPU = false;
 	    }
 
-	    if (this.waveTick % 250 === 0) {
+	    if (this.gameTick % 300 === 0) {
 	        var data = this.newObjectData();
             //RIGHT HERE
             if(!this.debug) this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
@@ -319,7 +315,7 @@ GameEngine.prototype.generateWave = function() {
    // this.entities = [];
     //points worth of enemies generated this wave.
     this.wave += 1;
-    var waveValue = (this.wave * 11) + 10;
+    var waveValue = (this.wave * 7) + 8;
 
     while (waveValue > 0) {
         var data = this.newObjectData();
@@ -392,8 +388,8 @@ GameEngine.prototype.changeState = function() {
 GameEngine.prototype.makeProtoEnemies = function() {
     this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -400, 0, 3));
     this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 3));
-    //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, 54, 0, "default"));
-    //this.addEntity(new Weapon(this, 0, {x: 0, y: 0}, -100, -54, 0, "default"));
+    //this.addEntity(new Weapon(this, 0, -100, 54, 0, "default"));
+    //this.addEntity(new Weapon(this, 0, -100, -54, 0, "default"));
 
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -0, "bombPowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -100, "fillShieldPowerUp"));

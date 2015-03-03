@@ -181,9 +181,9 @@ function AlienShip(game, velocity, x, y, weapon) {
 		
 		if (this.state === "normal") {
 			SpaceObject.prototype.update.call(this);
-			if (this.game.waveTick % (40 - this.game.wave) === 0) {
+			if (this.game.gameTick % (50 - this.game.wave) === 0) {
 				for (var shot in weapon_types[this.weapon]["shots"]) {
-					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.velocity, this.x, this.y, 0, this.weapon));
+					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.x, this.y, 0, this.weapon));
 				}
 			}
 		} else {
@@ -302,7 +302,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 				for (var shot in weapon_types[this.weapon]["shots"]) {
 					var weap_angle = weapon_types[this.weapon]["shots"][shot];
 					weap_angle = game.toRadians(weap_angle);
-					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
+					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.x, this.y, 0, this.weapon));
 				}
 				var sec_effect = weapon_types[this.weapon]["effect"];
 				if (typeof sec_effect === "function") {
@@ -337,7 +337,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 						var weap_angle = weapon_types[this.sec_weapon]["shots"][shot];
 						weap_angle = game.toRadians(weap_angle);
 
-						this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.sec_weapon));
+						this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.x, this.y, 0, this.sec_weapon));
 					}
 					var sec_effect = this.sec_weapon.effect;
 					if (typeof sec_effect === "function") {
@@ -632,8 +632,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 
 
 			
-function Weapon(game, angle, velocity, x, y, radius, type) {
-	SpaceObject.call(this, game, angle, velocity,null, x, y, 0);
+function Weapon(game, angle, x, y, radius, type) {
+	SpaceObject.call(this, game, angle, null , null, x, y, 0);
 	
 	this.animations = {"default" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 80, false, false),
 					   "double"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 60, false, false),
