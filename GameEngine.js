@@ -26,7 +26,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
     this.surfaceHeight = this.game_ctx.canvas.height / 2;
     this.startInput();
     this.timer = new Timer();
-    this.wave = 1;
+    this.wave = 0;
     this.waveTick = 0;
     this.gameTick = 0;
     this.score = 0;
@@ -75,7 +75,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
     for(var i = 0; i < 100; i++) {
             if(i < 35) this.typeMap[i] = "fillShieldPowerUp";
             if(i >= 35 && i < 45) this.typeMap[i] = "extraLifePowerUp";
-            if(i >= 45 && i < 50) this.typeMap[i] = "doubleGunPowerUp";
+            if(i >= 45 && i < 60) this.typeMap[i] = "doubleGunPowerUp";
             if(i >= 60 && i < 65) this.typeMap[i] = "tripleGunPowerUp";
             if(i >= 65 && i < 80) this.typeMap[i] = "backGunPowerUp";
             if(i >= 80 && i < 100) this.typeMap[i] = "bombPowerUp";
@@ -268,9 +268,8 @@ GameEngine.prototype.loop = function () {
         this.gameTick += 1;
 	    this.waveTick += 1;
 
-	    if (this.waveTick > (100 * this.wave) + 500) {
+	    if (this.waveTick > (80 * this.wave) + 500) {
 	        this.waveTick = 0;
-	        document.title = this.wave;
             //RIGHT HERE
             if (!this.debug) this.generateWave();
 	    }
@@ -281,7 +280,7 @@ GameEngine.prototype.loop = function () {
 	        }
 	    }
 
-	    if (this.gameTick % 16 === 0) this.fireLock = false;
+	    if (this.gameTick % 12 === 0) this.fireLock = false;
 
         if(this.gameTick % 40 === 0) this.secFireLock = false;
 
@@ -313,6 +312,7 @@ GameEngine.prototype.generateWave = function() {
    // this.entities = [];
     //points worth of enemies generated this wave.
     this.wave += 1;
+    document.title = this.wave;
     var waveValue = (this.wave * 7) + 8;
 
     while (waveValue > 0) {
@@ -323,23 +323,30 @@ GameEngine.prototype.generateWave = function() {
 }
 
 GameEngine.prototype.newObjectData = function() {
-    var velX = this.getRandomInt(-4,4);
-    var velY = this.getRandomInt(-4,4);
-    while (velX === 0 && velY === 0) {
-        velX = this.getRandomInt(-4,4);
-        vely = this.getRandomInt(-4,4);
-    }
+    var sizeMax = Math.floor(this.wave * .1) + 4;
+    var velMax = Math.floor(this.wave * .2) + 3;
+    var velX = this.getRandomIntNonZero(-velMax,velMax);
+    var velY = this.getRandomIntNonZero(-velMax,velMax);
+
     var velocity = {x: velX, y: velY};
     var angle = this.getRandomInt(0,2) * Math.PI;
     var x = this.randOffScreenPoint(0);
     var y = this.randOffScreenPoint(1);
-    var size = this.getRandomInt(1,4);
+    var size = this.getRandomInt(1,sizeMax);
 
     return [velocity, angle, x, y, size];
 }
 
 GameEngine.prototype.getRandomInt = function(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
+}
+
+GameEngine.prototype.getRandomIntNonZero = function(min, max) {
+    var rand = Math.floor(Math.random() * (max - min)) + min;
+    while (rand === 0) {
+        rand = Math.floor(Math.random() * (max - min)) + min;
+    }
+    return rand;
 }
 
 GameEngine.prototype.randOffScreenPoint = function(dim) {
@@ -385,15 +392,17 @@ GameEngine.prototype.changeState = function() {
 
 GameEngine.prototype.makeProtoEnemies = function() {
     this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -400, 0, 3));
-    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 3));
+    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 5));
     //this.addEntity(new Weapon(this, 0, -100, 54, 0, "default"));
     //this.addEntity(new Weapon(this, 0, -100, -54, 0, "default"));
 
+    /*
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -0, "bombPowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -100, "fillShieldPowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -200, "extraLifePowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 100, "tripleGunPowerUp"));
     this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 200, "backGunPowerUp"));
+    */
     //this.addEntity(new AlienShip(this, {x:0, y:0}, -100, 28, "alien"));
     //this.addEntity(new AlienShip(this, {x:1, y:0}, -100, 45, "none"));
 }

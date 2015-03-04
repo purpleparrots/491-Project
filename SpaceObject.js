@@ -499,7 +499,9 @@ function Asteroid(game, angle, velocity, x, y, size) {
 			new_size = this.game.getRandomInt(1, available_size);
 			available_size -= new_size;
 			if (new_size > 0) {
-				this.game.addTempEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(-4,4), y: this.game.getRandomInt(-4,4)},  this.x, this.y, 
+				newpos1 = this.game.getRandomInt(0, this.radius);
+				newpos2 = this.game.getRandomInt(0, this.radius);
+				this.game.addTempEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(-4,4), y: this.game.getRandomInt(-4,4)}, this.x + newpos1, this.y + newpos2, 
 				new_size));
 			}
 			
