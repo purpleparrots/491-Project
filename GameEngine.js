@@ -110,8 +110,6 @@ GameEngine.prototype.die = function() {
 	this.gameOver = true;
     this.changeScore();
 	this.gameOverTxt = new FloatingText(this.overlay_ctx,"Game Over");
-	
-	this.checkScore();
 }
 
 GameEngine.prototype.pause = function() {
@@ -313,7 +311,12 @@ GameEngine.prototype.loop = function () {
 
 	    this.update();
 	    this.draw();
-	}
+	} else {
+		if (this.gameOver) { 
+ 			this.update(); 
+ 			this.draw(); 
+ 		} 
+ 	    } 
 }
 
 GameEngine.prototype.generateWave = function() {
@@ -462,6 +465,7 @@ GameEngine.prototype.checkScore = function() {
 						data: {"name":nickname, "score":that.score},
 						dataType: 'json',
 						success: function() {
+							that.die();
 						}
 					})
 				}
