@@ -250,9 +250,9 @@ GameEngine.prototype.update = function () {
 	        this.addEntity(this.splitEntities[k]);
 	    }
 	} else {
-		this.gameOverTxt.update();
-		this.gameOverTxt.draw();
-	}
+        this.gameOverTxt.update();
+        this.gameOverTxt.draw();
+    }
 }
 
 GameEngine.prototype.checkCollision = function(entity1, entity2) {
@@ -308,7 +308,12 @@ GameEngine.prototype.loop = function () {
 
 	    this.update();
 	    this.draw();
-	}
+	} else {
+        if(this.gameOver) {
+            this.update();
+            this.draw();
+        }
+    }
 }
 
 GameEngine.prototype.generateWave = function() {
