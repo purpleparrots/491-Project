@@ -73,12 +73,12 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
 	}, false);
 	
     for(var i = 0; i < 100; i++) {
-            if(i < 20) this.typeMap[i] = "fillShieldPowerUp";
-            if(i >= 20 && i < 30) this.typeMap[i] = "extraLifePowerUp";
-            if(i >= 30 && i < 50) this.typeMap[i] = "doubleGunPowerUp";
-            if(i >= 50 && i < 60) this.typeMap[i] = "tripleGunPowerUp";
-            if(i >= 60 && i < 78) this.typeMap[i] = "backGunPowerUp";
-            if(i >= 78 && i < 100) this.typeMap[i] = "bombPowerUp";
+            if(i < 35) this.typeMap[i] = "fillShieldPowerUp";
+            if(i >= 35 && i < 45) this.typeMap[i] = "extraLifePowerUp";
+            if(i >= 45 && i < 50) this.typeMap[i] = "doubleGunPowerUp";
+            if(i >= 60 && i < 65) this.typeMap[i] = "tripleGunPowerUp";
+            if(i >= 65 && i < 80) this.typeMap[i] = "backGunPowerUp";
+            if(i >= 80 && i < 100) this.typeMap[i] = "bombPowerUp";
     }
 }
 
