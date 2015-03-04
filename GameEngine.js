@@ -90,13 +90,14 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
+    this.changeScore();
     if (this.debug) {
         this.makeProtoEnemies();
     } else {
         //RIGHT HERE
         this.generateWave();
     }
-    this.changeScore();
+    
 }
 
 GameEngine.prototype.drawLives = function(lives) {
@@ -316,7 +317,7 @@ GameEngine.prototype.loop = function () {
  			this.update(); 
  			this.draw(); 
  		} 
- 	    } 
+ 	} 
 }
 
 GameEngine.prototype.generateWave = function() {
@@ -464,7 +465,7 @@ GameEngine.prototype.checkScore = function() {
 						url: 'update.php',
 						data: {"name":nickname, "score":that.score},
 						dataType: 'json',
-						success: function() {
+						success: function(that) {
 							that.die();
 						}
 					})
