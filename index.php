@@ -67,7 +67,7 @@
 				
 				$selected = mysql_select_db("alpertmd", $dbhandle) or die("Could not select high score db");
 				
-				$result = mysql_query("SELECT name, score FROM Highscores");
+				$result = mysql_query("SELECT name, score FROM Highscores ORDER BY score DESC LIMIT 10");
 				
 				while ($row = mysql_fetch_array($result,  MYSQL_NUM)){
 					echo "<tr>";
