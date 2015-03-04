@@ -255,7 +255,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		this.lives += lives;
 		this.game.drawLives(this.lives);
 		if (this.lives <= 0) {
-			this.game.die();
+			this.game.checkScore();
 		}
 	}
 	
