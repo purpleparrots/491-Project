@@ -108,8 +108,9 @@ GameEngine.prototype.drawLives = function(lives) {
 
 GameEngine.prototype.die = function() {
 	this.gameOver = true;
+    this.changeScore();
 	this.gameOverTxt = new FloatingText(this.overlay_ctx,"Game Over");
-	this.changeScore();
+	
 	this.checkScore();
 }
 
@@ -145,7 +146,6 @@ GameEngine.prototype.changeScore = function() {
         waveTextMeasure = this.overlay_ctx.measureText(waveText);
         this.overlay_ctx.clearRect(0, 0, 400, 70);
         this.overlay_ctx.fillText(waveText, 10, 30);
-        console.log(scoreText);
 	} else {
 		this.overlay_ctx.font="35px Impact";
 		this.overlay_ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
