@@ -41,6 +41,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
 	this.ga = 1;
 	this.background_index = 0;
     this.debug = false;
+    document.title = "Asteroid Defense";
 	this.backgrounds = [AM.getAsset("./images/background2.jpg"),AM.getAsset("./images/background3.jpg"),
 		AM.getAsset("./images/background4.jpg"),AM.getAsset("./images/background5.jpg")];
 		
@@ -89,13 +90,13 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
-    this.changeScore();
     if (this.debug) {
         this.makeProtoEnemies();
     } else {
         //RIGHT HERE
         this.generateWave();
     }
+    this.changeScore();
 }
 
 GameEngine.prototype.drawLives = function(lives) {
@@ -134,13 +135,21 @@ GameEngine.prototype.changeScore = function() {
     this.overlay_ctx.fillStyle = "white";
     var scoreText = "Score: " + this.score + "";
     var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
+    var waveText = "Level: " + this.wave + "";
+    var waveTextMeasure = this.overlay_ctx.measureText(waveText);
 
 	if (!this.gameOver) {
     	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 50, 400, 70);
     	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
+
+        waveTextMeasure = this.overlay_ctx.measureText(waveText);
+        this.overlay_ctx.clearRect(0, 0, 400, 70);
+        this.overlay_ctx.fillText(waveText, 10, 30);
+        console.log(scoreText);
 	} else {
 		this.overlay_ctx.font="35px Impact";
 		this.overlay_ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+
 		scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
     	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 50, 400, 70);
     	this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width / 2 - scoreTextMeasure.width / 2, this.overlay_ctx.canvas.height - 150);
@@ -309,10 +318,7 @@ GameEngine.prototype.loop = function () {
 }
 
 GameEngine.prototype.generateWave = function() {
-   // this.entities = [];
-    //points worth of enemies generated this wave.
     this.wave += 1;
-    document.title = this.wave;
     var waveValue = (this.wave * 7) + 8;
 
     while (waveValue > 0) {

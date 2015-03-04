@@ -399,7 +399,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		if(otherObject instanceof Asteroid) {
 
 			if (otherObject.state != "exploding") {
-				this.setShield(-otherObject.size * 2);
+				this.setShield(-otherObject.size * 5);
 				if (notify) {
 					otherObject.collide(this, false);
 				}
