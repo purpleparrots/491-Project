@@ -12,9 +12,17 @@
 	
 	$result = mysql_query("SELECT MAX(idHighscores) FROM Highscores");
 	$id = mysql_result($result, 0) + 1;
-	$query = "INSERT INTO Highscores VALUES ($id, '$name', $score)";
-	echo $query;
-	$result = mysql_query($query);
 	
+	$query = "INSERT INTO Highscores VALUES ($id, '$name', $score)";
+	$result = mysql_query($query);
+		
+	$query = "SELECT idHighscores FROM Highscores WHERE score = (SELECT Min(score) FROM Highscores)";
+	$result = mysql_query($query);
+	$minID = mysql_result($result, 0);
+
+
+	$query = "DELETE FROM Highscores WHERE idHighscores = $minID";
+	$result = mysql_query($query);
+		
 	mysql_close($dbhandle);
 ?>

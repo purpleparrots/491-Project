@@ -101,6 +101,8 @@
 	<br>
 	<br>
 	<br>
+	<br>
+	<br>
 	<table id="legend">
 			 <thead>
 				 <tr>

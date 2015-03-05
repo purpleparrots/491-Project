@@ -90,13 +90,14 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
+    this.changeScore();
     if (this.debug) {
         this.makeProtoEnemies();
     } else {
         //RIGHT HERE
         this.generateWave();
     }
-    this.changeScore();
+    
 }
 
 GameEngine.prototype.drawLives = function(lives) {
@@ -457,23 +458,21 @@ GameEngine.prototype.checkScore = function() {
 		async: false, 
 		success: function(data){
 			if (that.score > data) {
-				//var nickname = prompt("Highscore! Please enter a name to save your score:");
-				var nickname = "Mitch"
+				var nickname = prompt("Highscore! Please enter a name to save your score:");
 				if (nickname != null) {
 					$.ajax({
 						type: "GET",
 						url: 'update.php',
 						data: {"name":nickname, "score":that.score},
 						dataType: 'json',
-						success: function(that) {
-							
+						success: function() {
 						}
 					})
 				}
 			}
 		}
 	});
-	that.die();
+	this.die();
 }
 
 function Timer() {

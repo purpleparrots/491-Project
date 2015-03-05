@@ -253,9 +253,10 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	
 	this.setLives = function(lives) {
 		this.lives += lives;
+		this.weapon = "default";
 		this.game.drawLives(this.lives);
 		if (this.lives <= 0) {
-			this.game.checkScore();
+			this.game.die();
 		}
 	}
 	
@@ -657,7 +658,7 @@ function Weapon(game, angle, x, y, radius, type) {
 	this.animation = this.animations[this.type["animation"]];
 	
 	if (this.typeName != "bomb") {
-		this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
+		this.velocity = {x: this.type["velocity"] *  Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle) };
 		var vm = this.game.velocityMag(this.velocity);
 		var vx = this.velocity.x / vm;
 		var vy = this.velocity.y / vm;
@@ -687,10 +688,13 @@ function Weapon(game, angle, x, y, radius, type) {
 				this.removeMe = true;
 			}
 		} else {
-			this.radius += 2;
+			this.radius += 4;
 			if (this.radius >= 300) {
 				this.removeMe = true;
 			}
+		}
+		if (Math.abs(this.x) > this.game.surfaceWidth || Math.abs(this.y) > this.game.surfaceHeight){
+			this.removeMe = true;
 		}
 		
 
@@ -726,7 +730,8 @@ function FloatingText(ctx, str) {
 	this.ctx = ctx;
 	this.font_size = 8;
 	this.font_string = null;
-
+	this.text_measure = this.ctx.measureText(this.str);	
+	
 	//this.ctx.font = "48px serif";
 	this.update = function() {
 		timer_curr = new Date().getTime();
