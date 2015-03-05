@@ -90,14 +90,14 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
-    this.changeScore();
+    
     if (this.debug) {
         this.makeProtoEnemies();
     } else {
         //RIGHT HERE
         this.generateWave();
     }
-    
+    this.changeScore();
 }
 
 GameEngine.prototype.drawLives = function(lives) {
