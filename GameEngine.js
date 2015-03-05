@@ -51,7 +51,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
 	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
 		AM.getAsset("./images/playership.png"), 0,0, "default"));
 		
-	that = this;
+	var that = this;
 	this.overlay_ctx.canvas.addEventListener('click', function(){
 		var game;
 		
@@ -62,14 +62,9 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
 		}
 		
 		if (!game.gameOver) {
-			if (game.isPaused) {
-				game.unpause();
-			} else {
-				game.pause();
-			}
+			game.isPaused = !game.isPaused;
 		} else {
-			game.overlay_ctx.clearRect(0,0, game.overlay_ctx.canvas.width, game.overlay_ctx.canvas.height);
-			game.init(game.game_ctx, game.background_ctx, game.overlay_ctx);
+			window.location.reload();
 		}
 	}, false);
 	
@@ -90,14 +85,13 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
-    this.changeScore();
     if (this.debug) {
         this.makeProtoEnemies();
     } else {
         //RIGHT HERE
         this.generateWave();
     }
-    
+    this.changeScore();
 }
 
 GameEngine.prototype.drawLives = function(lives) {
@@ -111,6 +105,7 @@ GameEngine.prototype.die = function() {
 	this.gameOver = true;
     this.changeScore();
 	this.gameOverTxt = new FloatingText(this.overlay_ctx,"Game Over");
+	this.checkScore();
 }
 
 GameEngine.prototype.pause = function() {
@@ -226,26 +221,19 @@ GameEngine.prototype.draw = function () {
 
 GameEngine.prototype.update = function () {
 	if (!this.gameOver) {
-		
-		
 		this.splitEntities = [];
 	    var entitiesCount = this.entities.length;
 	    this.count += 1;
 	    for (var i = 0; i < entitiesCount; i++) {
-        
 	        var entity = this.entities[i];
-
-	        for (var j = i + 1; j < entitiesCount; j++) {
-            
+	        for (var j = i + 1; j < entitiesCount; j++) {      
 	            //if(otherEntity != undefined) {
 	                var otherEntity = this.entities[j];
 
 	                if (this.checkCollision(entity, otherEntity)) {
 	                    entity.collide(otherEntity, true);
-	                } 
-                
-	            //}            
-                         
+	                }              
+	            //}                                   
 	        }
     
 	    if (!entity.removeMe)  entity.update();
@@ -309,15 +297,9 @@ GameEngine.prototype.loop = function () {
             //RIGHT HERE
             if(!this.debug) this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
 	    }
-
-	    this.update();
-	    this.draw();
-	} else {
-		if (this.gameOver) { 
- 			this.update(); 
- 			this.draw(); 
- 		} 
- 	} 
+		this.update();
+		this.draw();
+	}
 }
 
 GameEngine.prototype.generateWave = function() {
@@ -450,7 +432,7 @@ GameEngine.prototype.toRadians = function(degrees) {
 
 GameEngine.prototype.checkScore = function() {
 	var rtn;
-	that = this;
+	var that = this;
     $.ajax({
 		url: 'check.php',
 		data: "",
@@ -458,21 +440,19 @@ GameEngine.prototype.checkScore = function() {
 		async: false, 
 		success: function(data){
 			if (that.score > data) {
+				window.location.reload();
 				var nickname = prompt("Highscore! Please enter a name to save your score:");
 				if (nickname != null) {
 					$.ajax({
 						type: "GET",
 						url: 'update.php',
 						data: {"name":nickname, "score":that.score},
-						dataType: 'json',
-						success: function() {
-						}
+						dataType: 'json'
 					})
 				}
 			}
 		}
 	});
-	this.die();
 }
 
 function Timer() {
