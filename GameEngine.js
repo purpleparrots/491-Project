@@ -440,14 +440,16 @@ GameEngine.prototype.checkScore = function() {
 		async: false, 
 		success: function(data){
 			if (that.score > data) {
-				window.location.reload();
 				var nickname = prompt("Highscore! Please enter a name to save your score:");
 				if (nickname != null) {
 					$.ajax({
 						type: "GET",
 						url: 'update.php',
 						data: {"name":nickname, "score":that.score},
-						dataType: 'json'
+						dataType: 'json',
+						success: function() {
+							window.location.reload();
+						}
 					})
 				}
 			}
