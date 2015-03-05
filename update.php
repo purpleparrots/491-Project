@@ -23,6 +23,6 @@
 
 	$query = "DELETE FROM Highscores WHERE idHighscores = $minID";
 	$result = mysql_query($query);
-		
+	
 	mysql_close($dbhandle);
 ?>

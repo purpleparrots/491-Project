@@ -64,7 +64,7 @@ GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nex
 		if (!game.gameOver) {
 			game.isPaused = !game.isPaused;
 		} else {
-			window.location.reload();
+			window.location.reload(true);
 		}
 	}, false);
 	
@@ -437,7 +437,7 @@ GameEngine.prototype.checkScore = function() {
 		url: 'check.php',
 		data: "",
 		dataType: 'json',
-		async: false, 
+		cache: false,
 		success: function(data){
 			if (that.score > data) {
 				var nickname = prompt("Highscore! Please enter a name to save your score:");
@@ -447,7 +447,9 @@ GameEngine.prototype.checkScore = function() {
 						url: 'update.php',
 						data: {"name":nickname, "score":that.score},
 						dataType: 'json',
-						success: function() {
+           			 	cache: false,
+						complete: function() {
+							console.log("I fired off!");
 							window.location.reload();
 						}
 					})
