@@ -90,7 +90,6 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.game_ctx.canvas);
     })();
-    
     if (this.debug) {
         this.makeProtoEnemies();
     } else {
@@ -458,7 +457,8 @@ GameEngine.prototype.checkScore = function() {
 		async: false, 
 		success: function(data){
 			if (that.score > data) {
-				var nickname = prompt("Highscore! Please enter a name to save your score:");
+				//var nickname = prompt("Highscore! Please enter a name to save your score:");
+				var nickname = "Mitch"
 				if (nickname != null) {
 					$.ajax({
 						type: "GET",
@@ -466,13 +466,14 @@ GameEngine.prototype.checkScore = function() {
 						data: {"name":nickname, "score":that.score},
 						dataType: 'json',
 						success: function(that) {
-							that.die();
+							
 						}
 					})
 				}
 			}
 		}
 	});
+	that.die();
 }
 
 function Timer() {
