@@ -253,7 +253,9 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	
 	this.setLives = function(lives) {
 		this.lives += lives;
-		this.weapon = "default";
+		if (lives < 0) {
+			this.weapon = "default";
+		}
 		this.game.drawLives(this.lives);
 		if (this.lives <= 0) {
 			this.game.die();
