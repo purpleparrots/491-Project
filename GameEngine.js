@@ -297,21 +297,9 @@ GameEngine.prototype.loop = function () {
             //RIGHT HERE
             if(!this.debug) this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
 	    }
-<<<<<<< HEAD
-
-	    this.update();
-	    this.draw();
-	} else {
-        if(this.gameOver) {
-            this.update();
-            this.draw();
-        }
-    }
-=======
 		this.update();
 		this.draw();
 	}
->>>>>>> scores
 }
 
 GameEngine.prototype.generateWave = function() {
@@ -461,7 +449,6 @@ GameEngine.prototype.checkScore = function() {
 						dataType: 'json',
            			 	cache: false,
 						complete: function() {
-							console.log("I fired off!");
 							window.location.reload();
 						}
 					})
