@@ -58,16 +58,6 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y,  drawWidth, drawHeigh
 		xstart = xindex * currentFrameWidth + xstart;
 	}
     
-
-// console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
-    
-    //void ctx.drawImage(image, 
-    //                   sx, sy, 
-    //                   sWidth, sHeight, 
-    //                   dx, dy, 
-    //                   dWidth, 
-    //                   dHeight);
-  //console.log(frame + " "+currentFrameWidth+" "+xstart+ " "+ ystart)
     ctx.drawImage(this.spriteSheet,
                  xstart, ystart,  // selection start point
                  currentFrameWidth, this.frameHeight, //selection rect

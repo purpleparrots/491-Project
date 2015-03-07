@@ -253,6 +253,9 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 	
 	this.setLives = function(lives) {
 		this.lives += lives;
+		if (lives < 0) {
+			this.weapon = "default";
+		}
 		this.game.drawLives(this.lives);
 		if (this.lives <= 0) {
 			this.game.die();
@@ -399,7 +402,7 @@ function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
 		if(otherObject instanceof Asteroid) {
 
 			if (otherObject.state != "exploding") {
-				this.setShield(-otherObject.size * 2);
+				this.setShield(-otherObject.size * 5);
 				if (notify) {
 					otherObject.collide(this, false);
 				}
@@ -499,7 +502,9 @@ function Asteroid(game, angle, velocity, x, y, size) {
 			new_size = this.game.getRandomInt(1, available_size);
 			available_size -= new_size;
 			if (new_size > 0) {
-				this.game.addTempEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(-4,4), y: this.game.getRandomInt(-4,4)},  this.x, this.y, 
+				newpos1 = this.game.getRandomInt(0, this.radius);
+				newpos2 = this.game.getRandomInt(0, this.radius);
+				this.game.addTempEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(-4,4), y: this.game.getRandomInt(-4,4)}, this.x + newpos1, this.y + newpos2, 
 				new_size));
 			}
 			
@@ -534,6 +539,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 	this.powerup_types = {
 		//start powerup types
 		fillShieldPowerUp : {
+			// image set 0
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0, 0, 31, 29, .1, 3, 12, true, false),
 			function: function fillShield() {
 				          that.setShield(100);
@@ -542,6 +548,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		extraLifePowerUp : {
+			// image set 1
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 94, 0, 31, 29, .1, 3, 12, true, false),
 			function: function extraLife() {
 				          that.setLives(1);
@@ -551,6 +558,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		doubleGunPowerUp : {
+			// image set 6
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,116, 31, 29, .1, 3, 12, true, false),
 			function: function doublegun(){ 
 						  that.weapon = "doublegun";
@@ -559,6 +567,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		tripleGunPowerUp : {
+			// image set 2
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,0, 31, 29, .1, 3, 12, true, false),
 			function: function triplegun(){ 
 						  that.weapon = "triplegun";
@@ -567,6 +576,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		backGunPowerUp : {
+			// image set 4
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
 						  that.weapon = "backgun";
@@ -575,6 +585,7 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		bombPowerUp : {
+			//image set 3
 			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,0, 31, 29, .1, 3, 12, true, false),
 			function: function bomb(){ 
 						  that.sec_weapon = "bomb";
@@ -584,7 +595,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		futurePowerUpOne : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
+			// image set 5
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 94,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
 						  that.weapon = "backgun";
 			},
@@ -592,7 +604,8 @@ function PowerUp(game, angle, velocity, x, y, type) {
 		},
 
 		futurePowerUpTwo : {
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
+			// image set 7
+			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,116, 31, 29, .1, 3, 12, true, false),
 			function: function backgun(){ 
 						  that.weapon = "backgun";
 			},
@@ -647,7 +660,7 @@ function Weapon(game, angle, x, y, radius, type) {
 	this.animation = this.animations[this.type["animation"]];
 	
 	if (this.typeName != "bomb") {
-		this.velocity = {x: this.type["velocity"] * Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle)};
+		this.velocity = {x: this.type["velocity"] *  Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle) };
 		var vm = this.game.velocityMag(this.velocity);
 		var vx = this.velocity.x / vm;
 		var vy = this.velocity.y / vm;
@@ -677,10 +690,13 @@ function Weapon(game, angle, x, y, radius, type) {
 				this.removeMe = true;
 			}
 		} else {
-			this.radius += 2;
+			this.radius += 4;
 			if (this.radius >= 300) {
 				this.removeMe = true;
 			}
+		}
+		if (Math.abs(this.x) > this.game.surfaceWidth || Math.abs(this.y) > this.game.surfaceHeight){
+			this.removeMe = true;
 		}
 		
 
@@ -716,7 +732,8 @@ function FloatingText(ctx, str) {
 	this.ctx = ctx;
 	this.font_size = 8;
 	this.font_string = null;
-
+	this.text_measure = this.ctx.measureText(this.str);	
+	
 	//this.ctx.font = "48px serif";
 	this.update = function() {
 		timer_curr = new Date().getTime();
@@ -743,7 +760,3 @@ function FloatingText(ctx, str) {
 	}
 
 };
-
-
-
-

@@ -1,3 +1,4 @@
+
 // Main starts here
 var AM = new AssetManager();
 
@@ -32,4 +33,3 @@ AM.downloadAll(function () {
 	
     game.start();
 });
-
