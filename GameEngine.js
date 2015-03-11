@@ -1,762 +1,485 @@
-var weapon_types = { default: {
-							animation: "default",
-							velocity: 3,
-							radius: 7,
-							height: 15,
-							width: 12,
-							shots: [0],
-							effect: function() {
-								//that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
-							}
-						},
-					  alien: {
-					  		animation: "weaponA",
-					  		velocity: 3,
-					  		radius: 7,
-					  		height: 15,
-					  		width: 12,
-					  		shots:[0],
-					  		effect: function() {
+window.requestAnimFrame = (function () {
+    return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function (/* function */ callback, /* DOMElement */ element) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+})();
 
-					  		}
-					    },
-					  doublegun: {
-							animation: "double",
-							velocity: 3,
-							radius: 7,
-							height: 15,
-							width: 12,
-							shots: [-5,5] 
-						},
-					  triplegun: {
-							animation: "triple",
-							velocity: 3,
-							radius: 7,
-							height: 15,
-							width: 12,
-							shots: [-15,0,15] 
-						},
-					  backgun: {
-							animation: "default",
-							velocity: 3,
-							radius: 7,
-							height: 15,
-							width: 12,
-							shots: [0,180] 
-						},
-					  bomb: {
-							animation: "bomb",
-							velocity: 3,
-							radius: 7,
-							height: 15,
-							width: 12,
-							uses: 0,
-							shots: [0] 
-						},
-					  none: {
-							animation: "default",
-							velocity: 0,
-							radius: 0,
-							height: 0,
-							width: 0,
-							shots: [],
-							effect: function() {
-								//that.game.addEntity(new PowerUp(that.game, 2 * Math.PI,{x:0, y:0}, 100, 0, "bombPowerUp"));
-							}
-						},
-};
 
-//initial angle given in radians, velocity is {x: , y: } vector
-//x, y given in game coords
-function SpaceObject(game, angle, velocity, animation, x, y, value) {
+function GameEngine() {
+	this.isPaused = true;
+}
 
-	this.animation = animation;
-	this.game = game;
-	this.ctx = this.game.game_ctx;
-	this.x = x;
-	this.y = y;
-	this.velocity = velocity;
-	this.angle = angle;
-	this.removeMe = false;
-	this.value = value;
-	
-	SpaceObject.prototype.update = function() {
-		var border = .05 * Math.max(game.surfaceHeight, game.surfaceWidth);
-		this.x += this.velocity.x;
-		this.y += this.velocity.y;
+GameEngine.prototype.init = function (game_ctx, background_ctx, overlay_ctx, nextBackground_ctx) {
+    this.splitEntities = [];
+    this.waveEntities = [];
+	this.entities = [];
+    this.game_ctx = game_ctx;
+    this.background_ctx = background_ctx;
+    this.overlay_ctx = overlay_ctx;
+	this.nextBackground_ctx = nextBackground_ctx;
+    this.surfaceWidth = this.game_ctx.canvas.width / 2;
+    this.surfaceHeight = this.game_ctx.canvas.height / 2;
+    this.startInput();
+    this.timer = new Timer();
+    this.wave = 0;
+    this.waveTick = 0;
+    this.gameTick = 0;
+    this.score = 0;
+    this.active = true;
+    this.count = 0;
+    this.typeMap = {};
+    this.fireLock = false;
+    this.secFireLock = false;
+    this.spawnPU = false;
+	this.gameOver = false;
+    this.speedcap = 8;
+	this.ga = 1;
+	this.background_index = 0;
+    this.debug = false;
+    document.title = "Asteroid Defense";
+	this.backgrounds = [AM.getAsset("./images/background2.jpg"),AM.getAsset("./images/background3.jpg"),
+		AM.getAsset("./images/background4.jpg"),AM.getAsset("./images/background5.jpg")];
 		
-		if (this.y >= game.surfaceHeight + border) {
-			this.y = -game.surfaceHeight - border;
-		} 
-		if (this.x >= game.surfaceWidth + border) {
-			this.x = -game.surfaceWidth - border;
-		}
-		if (this.y < -game.surfaceHeight - border) {
-			this.y = game.surfaceHeight + border;
-		}
-		if (this.x < -game.surfaceWidth - border) {
-			this. x = game.surfaceWidth + border;
+	this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0, this.background_ctx.canvas.width, background_ctx.canvas.height);
+	this.nextBackground_ctx.drawImage(this.backgrounds[this.background_index + 1], 0,0, this.nextBackground_ctx.canvas.width, nextBackground_ctx.canvas.height);
+	
+	this.addEntity(new PlayerShip(this, 0, {x:0,y:0}, 
+		AM.getAsset("./images/playership.png"), 0,0, "default"));
+		
+	var that = this;
+	this.overlay_ctx.canvas.addEventListener('click', function(){
+		var game;
+		
+		if (that instanceof GameEngine) {
+			game = that;
+		} else {
+			game = that.game;
 		}
 		
-	};
-	
-	SpaceObject.prototype.draw = function(drawWidth, drawHeight) {
-		this.animation.drawFrame(this.game.clockTick, this.ctx, this.game.getX(drawWidth, this.x), 
-			this.game.getY(drawHeight, this.y), drawWidth, drawHeight);
-		if(this.game.debug) {
-			var context = this.game.overlay_ctx;
-			context.beginPath();
-
-			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
-						this.game.getY(this.radius * 2, this.y) + this.radius,
-						this.radius, 0, 2 * Math.PI, false);
-			context.strokeStyle = '#003300';
-			context.stroke();
+		if (!game.gameOver) {
+			game.isPaused = !game.isPaused;
+		} else {
+			window.location.reload(true);
 		}
-	};
-} // end of Constructor
+	}, false);
+	
+    for(var i = 0; i < 100; i++) {
+            if(i < 35) this.typeMap[i] = "fillShieldPowerUp";
+            if(i >= 35 && i < 45) this.typeMap[i] = "extraLifePowerUp";
+            if(i >= 45 && i < 60) this.typeMap[i] = "doubleGunPowerUp";
+            if(i >= 60 && i < 65) this.typeMap[i] = "tripleGunPowerUp";
+            if(i >= 65 && i < 80) this.typeMap[i] = "backGunPowerUp";
+            if(i >= 80 && i < 100) this.typeMap[i] = "bombPowerUp";
+    }
+}
 
-function AlienShip(game, velocity, x, y, weapon) {
-	SpaceObject.call(this, game, 0, velocity, null, x, y, 25);
-
-	this.state = "normal";
-	//Animation(spriteSheet, startingX, startingY, frameWidth, frameHeight, frameDuration, columns, frames, loop, reverse)
-	this.animations = {"exploding": new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.08, 8, 8, false, false),
-					   "normal": AM.getAsset("./images/alienship.png")
-					}
-	this.animation = this.animations[this.state];
-	// atan2 returns 0 for (0,1) and PI for (0,-1)
-	// for negative y values, it returns the same values but negative
-	this.angle = Math.atan2(velocity.y,velocity.x);
-	if (this.angle >= 0 && this.angle <= Math.PI) {
-		this.angle = (Math.PI / 2) - this.angle;
-	} else if (this.angle < 0 && this.angle >= - Math.PI) {
-		this.angle = -this.angle;
-		this.angle += Math.PI / 2;
-	} else if (this.angle >= -Math.PI / 2 && this.angle >= - Math.PI) {
-		this.angle = -this.angle;
-		this.angle += Math.PI;
-	}
-
-	this.weapon = weapon;
-	// magic numbers! woohoo! 
-	this.radius = 22;
-	this.mass = 15;
-	this.width = 50;
-	this.height = 50;
-
-	this.draw = function() {
-		//this.ctx.drawImage(this.animation, game.getX(50, this.x), game.getY(50, this.y), 50, 50);
-		if (this.state === "normal") {
-			this.ctx.save();
-			// move to the middle of where we want to draw our image
-			this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
-			this.ctx.translate(this.width / 2, this.height / 2);
+GameEngine.prototype.start = function () {
 	 
-			// rotate around that point, converting our 
+    var that = this;
+    (function gameLoop() {
+        that.loop();
+        requestAnimFrame(gameLoop, that.game_ctx.canvas);
+    })();
+    if (this.debug) {
+        this.makeProtoEnemies();
+    } else {
+        //RIGHT HERE
+        this.generateWave();
+    }
+    this.changeScore();
+}
 
-			this.ctx.rotate(this.angle);//- (Math.PI / 2));
+GameEngine.prototype.drawLives = function(lives) {
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (lives + 1) * 35, 0, this.overlay_ctx.canvas.width, 40);
+    for (var i = 0; i <= lives; i++) {
+        this.overlay_ctx.drawImage(AM.getAsset("./images/playership.png"), this.overlay_ctx.canvas.width - i * 35, 5, 30, 30);
+    }
+}
 
-			// draw it up and to the left by half the width
-			// and height of the image
-			this.ctx.drawImage(this.animation, -25, -25, 50, 50);
-			this.ctx.restore();
-		} else {
-			SpaceObject.prototype.draw.call(this, this.animation.frameWidth * 3, this.animation.frameHeight * 3);
-		}
-		if(this.game.debug) {
-			var context = this.game.overlay_ctx;
-			context.beginPath();
+GameEngine.prototype.die = function() {
+	this.gameOver = true;
+    this.changeScore();
+	this.gameOverTxt = new FloatingText(this.overlay_ctx,"Game Over");
+	this.checkScore();
+}
 
-			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
-						this.game.getY(this.radius * 2, this.y) + this.radius,
-						this.radius, 0, 2 * Math.PI, false);
-			context.strokeStyle = '#003300';
-			context.stroke();
-		}
-	};
-	
-	this.update = function() {
-		this.animation = this.animations[this.state];
-		
-		if (this.state === "normal") {
-			SpaceObject.prototype.update.call(this);
-			if (this.game.gameTick % (50 - this.game.wave) === 0) {
-				for (var shot in weapon_types[this.weapon]["shots"]) {
-					this.game.addEntity(new Weapon(this.game, this.angle - Math.PI / 2, this.x, this.y, 0, this.weapon));
-				}
-			}
-		} else {
-			if (this.animation.isDone()) {
-				this.removeMe = true;
-			}
-		}
-		
+GameEngine.prototype.pause = function() {
+	this.isPaused = true;
+}
 
-	};
+GameEngine.prototype.unpause = function() {
+	this.isPaused = false;
+}
 
-	this.collide = function(otherObject, notify) {
-		if (this.state != "exploding") {
-			if(otherObject instanceof PlayerShip) {
-				this.takeHit();
-				if (notify) otherObject.collide(this, false);
-       		} else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
-       			this.takeHit();
-        		if (notify) otherObject.collide(this, false);
-        	} else {
-        	//ignores powerups, asteroids, and other aliens
-        	}
-        }
-	}
+GameEngine.prototype.moveSlider = function(amount) {
+    var sliderWidth = this.overlay_ctx.canvas.width / 2;
+    var shieldAmount = Math.floor(sliderWidth * (amount / 100));
+    this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 60, sliderWidth, 80);
+    this.overlay_ctx.drawImage(AM.getAsset("./images/shieldbar.jpg"), 0,  0, shieldAmount, 30,
+                                            this.overlay_ctx.canvas.width / 2 - sliderWidth / 2, this.overlay_ctx.canvas.height - 45,
+                                            shieldAmount, 30);
+}
 
-	this.takeHit = function() {
-		this.state = "exploding";
-	}
+GameEngine.prototype.changeScore = function() {
+    this.overlay_ctx.font="25px Impact";
+    this.overlay_ctx.fillStyle = "white";
+    var scoreText = "Score: " + this.score + "";
+    var scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
+    var waveText = "Level: " + this.wave + "";
+    var waveTextMeasure = this.overlay_ctx.measureText(waveText);
 
-} // end of AlienShip
+	if (!this.gameOver) {
+    	this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (200), this.overlay_ctx.canvas.height - 50, 400, 70);
+        this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width - (175), this.overlay_ctx.canvas.height - 20);
 
-function PlayerShip(game, angle, velocity, animation, x, y, weapon) {
-	SpaceObject.call(this, game, angle, velocity, animation, x, y, 0);
-
-	this.weapon = weapon;
-	this.sec_weapon = "none";
-	this.radius = 22;
-	this.shoot = false;
-    this.rotateLeft = false;
-    this.moveForward = false;
-    this.rotateRight = false;
-	this.width = 50;
-	this.height = 50;
-	this.mass = 15;
-	this.lives = 0;
-	this.shield = 100;
-	this.state = "normal";
-
-	this.animations = {"exploding": new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.08, 8, 8, false, false),
-					   "normal": AM.getAsset("./images/playership.png")
-					}
-	this.animation = this.animations[this.state];
-
-	this.setShield = function(amount) {
-		if (this.state === "normal") {
-			this.shield += amount;
-			if (this.shield > 100) {
-				this.shield = 100;
-			} else if (this.shield <= 0) {
-				this.shield = 100;
-				this.setLives(-1);
-				this.state = "exploding";
-			}
-			this.game.moveSlider(this.shield);
-		}
-	}
-	
-	this.setLives = function(lives) {
-		this.lives += lives;
-		if (lives < 0) {
-			this.weapon = "default";
-		}
-		this.game.drawLives(this.lives);
-		if (this.lives <= 0) {
-			this.game.die();
-		}
-	}
-	
-	this.setLives(3);
-	this.setShield(100);
-	
-	this.update = function() {
-		this.animation = this.animations[this.state];
-		
-		if (this.state === "normal") {
-			if(this.game.upkey) this.moveForward = true;
-			if(this.moveForward) {
-				var thrustVel = this.game.resolveVec(this.angle, .2);
-				this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
-
-				this.moveForward = false;
-			}
-
-			if(this.game.downkey) this.moveBackward = true;
-			if(this.moveBackward) {
-				var thrustVel = this.game.resolveVec(Math.PI + this.angle, .2);
-				this.setVelocity(this.game.resultVector(this.velocity, thrustVel));
-			
-				//if the ship is slow enough, hitting back will stop it
-				if (this.game.velocityMag(this.velocity) <= 2) {
-					this.velocity = {x:0,y:0};
-				}
-				this.moveBackward = false;
-			}
-
-			if(this.game.leftkey) this.rotateLeft = true;
-			if(this.rotateLeft) {
-				this.angle -= 4 * Math.PI / 360 % 2 * Math.PI;
-				this.rotateLeft = false;
-			}
-		
-			if(this.game.rightkey) this.rotateRight = true;
-			if(this.rotateRight) {
-				this.angle += 4 * Math.PI / 360 % 2 * Math.PI;
-				this.rotateRight = false;
-			
-			}
-			if(this.game.spacebar && !this.game.fireLock) {
-				for (var shot in weapon_types[this.weapon]["shots"]) {
-					var weap_angle = weapon_types[this.weapon]["shots"][shot];
-					weap_angle = game.toRadians(weap_angle);
-					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.x, this.y, 0, this.weapon));
-				}
-				var sec_effect = weapon_types[this.weapon]["effect"];
-				if (typeof sec_effect === "function") {
-					that = this;
-					sec_effect();
-				}
-				this.game.fireLock = true;
-			}
-			/*
-			if(this.game.spacebar) this.shoot = true;
-			if(this.shoot && !this.game.fireLock) {
-				for (var shot in weapon_types[this.weapon]["shots"]) {
-					var weap_angle = weapon_types[this.weapon]["shots"][shot];
-					weap_angle = game.toRadians(weap_angle);
-					this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.velocity, this.x, this.y, 0, this.weapon));
-					this.game.addEntity(new PowerUp(this.game, 0, {x:0,y:0}, 100, 0, "bombPowerUp"));
-
-				}
-				var sec_effect = weapon_types[this.weapon]["effect"];
-				if (typeof sec_effect === "function") {
-					that = this;
-					sec_effect();
-				}
-				this.shoot = false;
-				this.game.fireLock = true;
-			}
-			*/
-			if (this.sec_weapon != "none") {
-
-				if(this.game.ctrlkey && weapon_types[this.sec_weapon]["uses"] > 0 && !this.game.secFireLock) {
-					for (var shot in weapon_types[this.sec_weapon]["shots"]) {
-						var weap_angle = weapon_types[this.sec_weapon]["shots"][shot];
-						weap_angle = game.toRadians(weap_angle);
-
-						this.game.addEntity(new Weapon(this.game, this.angle + weap_angle, this.x, this.y, 0, this.sec_weapon));
-					}
-					var sec_effect = this.sec_weapon.effect;
-					if (typeof sec_effect === "function") {
-						that = this;
-						sec_effect();
-					}
-					this.game.secFireLock = true;
-					weapon_types[this.sec_weapon]["uses"] -= 1;
-				} if (weapon_types[this.sec_weapon]["uses"] <= 0 ) {
-					this.sec_weapon = "none";
-				}
-			}
-			SpaceObject.prototype.update.call(this);
-		} else {
-			if (this.animation.isDone()) {
-				this.state = "normal";
-				this.animation = this.animations[this.state];
-				this.animations["exploding"] = new Animation(AM.getAsset("./images/alien_explosion.png"), 0, 0, 37, 37, 0.08, 8, 8, false, false);
-			}
-		}
-		
-
-	};
-
-	this.draw = function() {
-		if (this.state === "normal") {
-			// http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
-			// we'll need to use this to make the ship rotate in place.
-			// save the current co-ordinate system 
-			// before we mess with it
-		 	this.ctx.save();
-			// move to the middle of where we want to draw our image
-			this.ctx.translate(this.game.getX(this.width, Math.round(this.x)), this.game.getY(this.height, Math.round(this.y)));
-			this.ctx.translate(this.width / 2, this.height / 2);
-	 
-			// rotate around that point
-			this.ctx.rotate(this.angle);
-
-			// draw it up and to the left by half the width
-			// and height of the image
-			this.ctx.drawImage(this.animation, -25, -25, 50, 50);
-			this.ctx.restore();
-		} else {
-			SpaceObject.prototype.draw.call(this, 4 * this.animation.frameWidth, 4 * this.animation.frameHeight);
-		}
-		if(this.game.debug) {
-			var context = this.game.overlay_ctx;
-			context.beginPath();
-
-			context.arc(this.game.getX(this.radius * 2, this.x) + this.radius,
-						this.game.getY(this.radius * 2, this.y) + this.radius,
-						this.radius, 0, 2 * Math.PI, false);
-			context.strokeStyle = '#003300';
-			context.stroke();
-		}
-	};
-
-	this.collide = function(otherObject, notify) {
-		if(otherObject instanceof Asteroid) {
-
-			if (otherObject.state != "exploding") {
-				this.setShield(-otherObject.size * 5);
-				if (notify) {
-					otherObject.collide(this, false);
-				}
-			}
-        } else if (otherObject instanceof AlienShip) {
-        		if (otherObject.state != "exploding") {
-        		this.setShield(-25);
-        		if (notify) {
-        			otherObject.collide(this, false);
-        		}
-        	}
-        } else if (otherObject instanceof PowerUp) {
-        	that = this;
-        	var doPowerUp = otherObject.getPowerUp;
-        	doPowerUp();
-			this.game.addEntity(new FloatingText(this.game.overlay_ctx, otherObject.text));
-        	if (notify) otherObject.collide(this, false);
-        } else if (otherObject instanceof Weapon && otherObject.typeName === "alien") {
-        	this.setShield(-10);
-        	if (notify) {
-        		otherObject.collide(this, false);
-        	}
-        } else {
-        	//ignores weapons and other playerships
-        }   
-	}
-
-	this.setVelocity = function(newVelocity) {
-		//var thrustVel = this.game.resultVector(this.velocity, this.game.resolveVec(this.angle, .2));
-		if (this.game.velocityMag(newVelocity) > this.game.speedcap) {
-			var tx = newVelocity.x / this.game.velocityMag(newVelocity);
-			var ty = newVelocity.y / this.game.velocityMag(newVelocity);
-			this.velocity = {x: tx * this.game.speedcap,
-							 y: ty * this.game.speedcap};
-		} else {
-			this.velocity = newVelocity;
-		}
-	}
-
-} // end of PlayerShip
-
-
-function Asteroid(game, angle, velocity, x, y, size) {
-	SpaceObject.call(this, game, angle, velocity, null,x, y, size * 2);
-	this.size = size;
-	this.hasSplit = false;
-	
-	if (Math.random() < .5) {
-		this.state = "normal";
+        waveTextMeasure = this.overlay_ctx.measureText(waveText);
+        this.overlay_ctx.clearRect(0, 0, 400, 70);
+        this.overlay_ctx.fillText(waveText, 10, 30);
 	} else {
-		this.state = "reverse";
+		this.overlay_ctx.font="35px Impact";
+        this.overlay_ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        scoreTextMeasure = this.overlay_ctx.measureText(scoreText);
+        this.overlay_ctx.clearRect(this.overlay_ctx.canvas.width - (300), this.overlay_ctx.canvas.height - 50, 400, 70);
+        this.overlay_ctx.fillText(scoreText, this.overlay_ctx.canvas.width / 2 - scoreTextMeasure.width / 2, this.overlay_ctx.canvas.height - 150);
 	}
-	
-	this.radius = 16 * size;
-	this.mass = 10 * size;
-
-	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, false),
-					   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 8, 52, 32, 32, 0.01, 8, 64, true, true),
-					   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};*/
-	this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.05, 8, 64, true, false),
-			           "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 190, 190, 0.05, 8, 64, true, true),
-			   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};
-	/*this.animations = {"normal": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, false),
-			   "reverse": new Animation(AM.getAsset("./images/asteroid.png"), 0, 0, 128, 128, 0.01, 8, 64, true, true),
-			   "exploding": new Animation(AM.getAsset("./images/asteroid_explosion.png"), 2, 2, 85, 84, 0.03, 4, 16, false, false)};*/
-	this.animation = this.animations[this.state];
-
-	
-	this.draw = function() {
-	//	this.ctx.save();
-	//	this.ctx.translate(this.game.getX(this.width/ 2, Math.round(this.x)), this.game.getY(this.height/2, Math.round(this.y)));
-	//	this.ctx.translate(this.width / 2, this.height / 2);
-	//	this.ctx.scale(this.size, this.size);
-		SpaceObject.prototype.draw.call(this, size * 50, size * 50);
-	//	this.ctx.restore();
-	};
-	
-	this.update = function() {
-		this.animation = this.animations[this.state];
-		if (this.state != "exploding") {
-			SpaceObject.prototype.update.call(this);
-		} else {
-			if (!this.hasSplit) {
-				this.hasSplit = true;
-				this.split();
-			}
-			if (this.animation.isDone()) {
-				this.removeMe = true;
-			}
-		}
-		
-	};
-	
-	this.split = function() {
-		var available_size = this.size;
-		while (available_size > 1) {
-			new_size = this.game.getRandomInt(1, available_size);
-			available_size -= new_size;
-			if (new_size > 0) {
-				newpos1 = this.game.getRandomInt(0, this.radius);
-				newpos2 = this.game.getRandomInt(0, this.radius);
-				this.game.addTempEntity(new Asteroid(this.game, 0, {x: this.game.getRandomInt(-4,4), y: this.game.getRandomInt(-4,4)}, this.x + newpos1, this.y + newpos2, 
-				new_size));
-			}
-			
-		}
-	};
-	
-	this.collide = function(otherObject, notify) {
-		that = this;
-		if(this.state != "exploding") {
-			if(otherObject instanceof PlayerShip) {
-				this.state = "exploding";
-				if (notify) otherObject.collide(this, false);
-      	  	} else if (otherObject instanceof Asteroid) {
-       	 		if (notify) {
-       	 			var newVels = this.game.resolveCollision(this.velocity, this.mass, otherObject.velocity, otherObject.mass);
-       	 			this.velocity = newVels[0];
-       	 			otherObject.velocity = newVels[1];
-       	 			otherObject.collide(this, false);
-       	 		}
-        	} else if (otherObject instanceof Weapon && otherObject.typeName != "alien") {
-        		otherObject.removeMe = true;
-        		this.state = "exploding";
-			}
-        	if (notify) otherObject.collide(this, false);
-		}
-	}
-
-}; // end of Asteroid
-
-function PowerUp(game, angle, velocity, x, y, type) {
-
-	this.powerup_types = {
-		//start powerup types
-		fillShieldPowerUp : {
-			// image set 0
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0, 0, 31, 29, .1, 3, 12, true, false),
-			function: function fillShield() {
-				          that.setShield(100);
-					  },
-			text: "Shields Filled"
-		},
-
-		extraLifePowerUp : {
-			// image set 1
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 94, 0, 31, 29, .1, 3, 12, true, false),
-			function: function extraLife() {
-				          that.setLives(1);
-					  },
-			text: "+1 Life"
-					
-		},
-
-		doubleGunPowerUp : {
-			// image set 6
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,116, 31, 29, .1, 3, 12, true, false),
-			function: function doublegun(){ 
-						  that.weapon = "doublegun";
-			},
-			text: "Two Shot"
-		},
-
-		tripleGunPowerUp : {
-			// image set 2
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 187,0, 31, 29, .1, 3, 12, true, false),
-			function: function triplegun(){ 
-						  that.weapon = "triplegun";
-			},
-			text: "Three Shot"
-		},
-
-		backGunPowerUp : {
-			// image set 4
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 0,116, 31, 29, .1, 3, 12, true, false),
-			function: function backgun(){ 
-						  that.weapon = "backgun";
-			},
-			text: "Rear Fire"
-		},
-
-		bombPowerUp : {
-			//image set 3
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,0, 31, 29, .1, 3, 12, true, false),
-			function: function bomb(){ 
-						  that.sec_weapon = "bomb";
-						  weapon_types[that.sec_weapon]["uses"] += 1;
-			},
-			text: "+1 Bomb Use"
-		},
-
-		futurePowerUpOne : {
-			// image set 5
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 94,116, 31, 29, .1, 3, 12, true, false),
-			function: function backgun(){ 
-						  that.weapon = "backgun";
-			},
-			text: ""
-		},
-
-		futurePowerUpTwo : {
-			// image set 7
-			animation: new Animation(AM.getAsset("./images/crystals.png"), 281,116, 31, 29, .1, 3, 12, true, false),
-			function: function backgun(){ 
-						  that.weapon = "backgun";
-			},
-			text: ""
-		},
-		//end powerup types	
-	};
-
-	this.animation = this.powerup_types[type]["animation"];
-	this.getPowerUp = this.powerup_types[type]["function"];
-	this.text = this.powerup_types[type]["text"];
-	
-	SpaceObject.call(this, game, angle, velocity, this.animation,x, y, 0);
-
-	this.radius = 10;
-
-	this.update = function() {
-		SpaceObject.prototype.update.call(this);
-
-	};
-	
-	this.draw = function() {
-		SpaceObject.prototype.draw.call(this, this.animation.frameWidth, this.animation.frameHeight);
-	};
-
-	this.collide = function(otherObject, notify) {
-		
-		if(otherObject instanceof PlayerShip) {
-			this.removeMe = true;
-			if (notify) otherObject.collide(this, false);
-        } else {
-        	//ignores alienships, asteroids, weapons, and other powerups
-        }
-        
-	}
-} // end of PowerUp
+}
 
 
-			
-function Weapon(game, angle, x, y, radius, type) {
-	SpaceObject.call(this, game, angle, null , null, x, y, 0);
-	
-	this.animations = {"default" : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 80, false, false),
-					   "double"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 60, false, false),
-					   "triple"  : new Animation(AM.getAsset("./images/weapon3.png"), 0, 0, 31, 44, .02, 8, 40, false, false),
-					   "weaponA" : new Animation(AM.getAsset("./images/weaponA.png"), 0, 0, 31, 44, .02, 8, 144, false, false),
-					   "bomb" : AM.getAsset("./images/weapon4.png")};
+GameEngine.prototype.startInput = function () {
+    var that = this;
 
-	this.type = weapon_types[type];	
-	this.typeName = type;
-
-	this.animation = this.animations[this.type["animation"]];
-	
-	if (this.typeName != "bomb") {
-		this.velocity = {x: this.type["velocity"] *  Math.cos(this.angle), y: this.type["velocity"] * -Math.sin(this.angle) };
-		var vm = this.game.velocityMag(this.velocity);
-		var vx = this.velocity.x / vm;
-		var vy = this.velocity.y / vm;
-
-		this.velocity.x = vx * (this.game.speedcap + 3);
-		this.velocity.y = vy * (this.game.speedcap + 3);
-	} else {
-		this.velocity = {x:0,y:0};
-	}
-
-	this.height = this.type["height"];
-	this.width = this.type["width"];
-	this.radius = this.type["radius"];
-
-	this.draw = function() {
-		if ( this.animation instanceof Animation) {
-			SpaceObject.prototype.draw.call(this, this.animation.frameWidth, this.animation.frameHeight);
-		} else {
-			this.ctx.drawImage(this.animation, this.game.getX(this.radius * 2, this.x), this.game.getY(this.radius * 2, this.y), 2 * this.radius, 2 * this.radius);
-		}
-	};
-	
-	this.update = function() {
-		SpaceObject.prototype.update.call(this);
-		if (this.animation instanceof Animation) {
-			if (this.animation.isDone()) {
-				this.removeMe = true;
-			}
-		} else {
-			this.radius += 4;
-			if (this.radius >= 300) {
-				this.removeMe = true;
-			}
-		}
-		if (Math.abs(this.x) > this.game.surfaceWidth || Math.abs(this.y) > this.game.surfaceHeight){
-			this.removeMe = true;
-		}
-		
-
-	};
-
-	this.collide = function(otherObject, notify) {
-		
-		if(otherObject instanceof Asteroid && this.typeName != "alien") {
-			if(otherObject.state != "exploding") {
-				this.removeMe = true;
-				if (notify) otherObject.collide(this, false);
-			}
-        } else if (otherObject instanceof AlienShip && this.typeName != "alien") {
-        	this.removeMe = true;
-        	if (notify) otherObject.collide(this, false);
-        } else if (otherObject instanceof PlayerShip && this.typeName === "alien" ) {
-        	this.removeMe = true;
-        	if (notify) otherObject.collide(this, false);
-        } else {
-        	//ignores playerships, powerups, and other weapons
-        }
-        
-		if (this.typeName == "bomb") {
-			this.removeMe = false;
-		}
-	}
+    that.overlay_ctx.canvas.addEventListener("keydown", function (e) {
+        if (String.fromCharCode(e.which) === ' ') that.spacebar = true;
+        if (e.keyCode === 17) that.ctrlkey = true;
+        if (e.keyCode === 37) that.leftkey = true;
+        if (e.keyCode === 38) that.upkey = true;
+        if (e.keyCode === 39) that.rightkey = true;
+        if (e.keyCode === 40) that.downkey = true;
+        e.preventDefault();
+    }, false);
+    
+    that.overlay_ctx.canvas.addEventListener("keyup", function (e) {
+        if (String.fromCharCode(e.which) === ' ') that.spacebar = false;
+        if (e.keyCode === 17) that.ctrlkey = false;
+        if (e.keyCode === 37) that.leftkey = false;
+        if (e.keyCode === 38) that.upkey = false;
+        if (e.keyCode === 39) that.rightkey = false;
+        if (e.keyCode === 40) that.downkey = false;
+        e.preventDefault();
+    }, false);
 
 }
 
-function FloatingText(ctx, str) {
-	this.timer_start = new Date().getTime();
-	this.str = str;
-	this.ctx = ctx;
-	this.font_size = 8;
-	this.font_string = null;
-	this.text_measure = this.ctx.measureText(this.str);	
-	
-	//this.ctx.font = "48px serif";
-	this.update = function() {
-		timer_curr = new Date().getTime();
-		if (timer_curr - this.timer_start < 1200) {
-			this.font_size += 2;
-			this.font_string = this.font_size + "px Impact";
-		} else {
-			this.removeMe = true;
-			this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, 
-				this.text_measure.width, this.font_size + 5);
-		}	
-	}
-	
-	this.draw = function() {
-		this.ctx.save();
-		this.ctx.font = this.font_string;
-		this.text_measure = this.ctx.measureText(this.str);	
-		this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-		this.ctx.strokeStyle = "rgba(255,255, 255, 0.5)";
-		this.ctx.clearRect(this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2 - this.font_size, this.text_measure.width, this.font_size + 5);
-		this.ctx.fillText(this.str, this.ctx.canvas.width / 2 - this.text_measure.width / 2 , this.ctx.canvas.height / 2);
-		this.ctx.restore();
-		
-	}
+GameEngine.prototype.addEntity = function (entity) {
+    this.entities.push(entity);
+}
 
+GameEngine.prototype.addTempEntity = function(entity) {
+    this.splitEntities.push(entity);
+}
+
+GameEngine.prototype.draw = function () {
+    this.game_ctx.clearRect(0, 0, this.surfaceWidth * 2, this.surfaceHeight * 2);
+    this.game_ctx.save();
+	if (this.count > 0 && (this.count % 1000 === 0 || this.ga < 1)) {
+		this.ga -= .002;
+		this.background_ctx.globalAlpha = this.ga;
+		this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+		this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+		if (this.ga <= 0) {
+			this.ga = 1;
+			this.background_ctx.globalAlpha = this.ga;
+			this.background_index = (this.background_index + 1) % this.backgrounds.length;
+			this.background_ctx.clearRect(0,0,this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+			this.nextBackground_ctx.clearRect(0,0,this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
+			this.background_ctx.drawImage(this.backgrounds[this.background_index], 0,0, this.background_ctx.canvas.width, this.background_ctx.canvas.height);
+			this.nextBackground_ctx.drawImage(this.backgrounds[(this.background_index + 1) % this.backgrounds.length], 0,0, this.nextBackground_ctx.canvas.width, this.nextBackground_ctx.canvas.height);
+		}
+    }
+    for (var i = 0; i < this.entities.length; i++) {
+        if (this.entities[i].removeMe) {
+            if(this.score % 200 > 25 && (((this.score + this.entities[i].value) % 200) < 25)) {
+                this.spawnPU = true;
+            }
+            if (this.entities[i].value > 0) {
+                this.score += this.entities[i].value;
+                this.changeScore();
+            }
+            
+            this.entities.splice(i,1);
+        } else {
+            this.entities[i].draw(this.ctx);
+        }
+    }
+    this.game_ctx.restore();
+}
+
+GameEngine.prototype.update = function () {
+	if (!this.gameOver) {
+		this.splitEntities = [];
+	    var entitiesCount = this.entities.length;
+	    this.count += 1;
+	    for (var i = 0; i < entitiesCount; i++) {
+	        var entity = this.entities[i];
+	        for (var j = i + 1; j < entitiesCount; j++) {      
+	            //if(otherEntity != undefined) {
+	                var otherEntity = this.entities[j];
+
+	                if (this.checkCollision(entity, otherEntity)) {
+	                    entity.collide(otherEntity, true);
+	                }              
+	            //}                                   
+	        }
+    
+	    if (!entity.removeMe)  entity.update();
+	    }
+	    var newEntitiesCount = this.splitEntities.length;
+	    for(var k = 0; k < newEntitiesCount; k++) {
+	        this.addEntity(this.splitEntities[k]);
+	    }
+	} else {
+        this.gameOverTxt.update();
+        this.gameOverTxt.draw();
+    }
+}
+
+GameEngine.prototype.checkCollision = function(entity1, entity2) {
+    return this.absoluteDistance(entity1, entity2) <= (entity1.radius + entity2.radius);
+}
+
+GameEngine.prototype.absoluteDistance = function(entity1, entity2) {
+    return Math.sqrt(Math.pow((entity1.x - entity2.x), 2) + Math.pow((entity1.y - entity2.y), 2));
+}
+
+GameEngine.prototype.loop = function () {
+	if (!this.isPaused) {
+	    this.clockTick = this.timer.tick();
+
+        this.gameTick += 1;
+	    this.waveTick += 1;
+
+	    if (this.waveTick > (75 * this.wave) + 600) {
+	        this.waveTick = 0;
+            //RIGHT HERE
+            if (!this.debug) this.generateWave();
+	    }
+
+	    if (this.waveTick % 48 === 0) {
+	        if(this.waveEntities.length > 0) {
+	            this.addEntity(this.waveEntities.pop());
+	        }
+	    }
+
+	    if (this.gameTick % 8 === 0) this.fireLock = false;
+
+        if(this.gameTick % 60 === 0) this.secFireLock = false;
+
+
+	    if(this.spawnPU) {
+	        var vel = {x: this.getRandomInt(-2,2),
+	                   y: this.getRandomInt(-2,2)};
+            if (vel.x === 0) vel.x += 1;
+            if (vel.y === 0) vel.y += 1;
+	        var x = this.randOffScreenPoint(0);
+	        var y = this.randOffScreenPoint(1);
+	        this.addEntity(new PowerUp(this, 0, vel, x, y,
+	            this.typeMap[this.getRandomInt(0,100)]));
+	        this.spawnPU = false;
+	    }
+
+	    if (this.gameTick % 500 === 0) {
+	        var data = this.newObjectData();
+            //RIGHT HERE
+            if(!this.debug) this.addEntity(new AlienShip(this, data[0], data[2], data[3], "alien"));
+	    }
+		this.update();
+		this.draw();
+	}
+}
+
+GameEngine.prototype.generateWave = function() {
+    this.wave += 1;
+    var waveValue = (this.wave * 5) + 6;
+
+    while (waveValue > 0) {
+        var data = this.newObjectData();
+        this.waveEntities.push(new Asteroid(this, data[1], data[0], data[2], data[3], data[4]));
+        waveValue -= data[4];
+    }
+}
+
+GameEngine.prototype.newObjectData = function() {
+    var sizeMax = Math.floor(this.wave * .1) + 4;
+    var velMax = Math.floor(this.wave * .2) + 2;
+    var velocity = this.getNonZeroVel(,velMax);
+	
+    var angle = this.getRandomInt(0,2) * Math.PI;
+    var x = this.randOffScreenPoint(0);
+    var y = this.randOffScreenPoint(1);
+    var size = this.getRandomInt(1,sizeMax);
+
+    return [velocity, angle, x, y, size];
+}
+
+GameEngine.prototype.getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+GameEngine.prototype.getRandomIntNonZero = function(min, max) {
+    var rand = Math.floor(Math.random() * (max - min)) + min;
+    while (rand === 0) {
+        rand = Math.floor(Math.random() * (max - min)) + min;
+    }
+    return rand;
+}
+
+GameEngine.prototype.getNonZeroVel = function(maxVel) {
+	var velX = Math.random() * maxVel;
+	var velY = Math.random() * maxVel;
+	
+	while (velX === 0 || velY ===0) {
+		velX = Math.random() * maxVel;
+		velY = Math.random() * maxVel;
+	}
+	
+	return {x: velX, y: velY};
+}
+
+GameEngine.prototype.randOffScreenPoint = function(dim) {
+    var side = Math.round(Math.random());
+    if (dim === 0) {
+        if (side === 0) {
+            return 0 - this.getRandomInt(this.surfaceWidth + 25, this.surfaceWidth + 50);
+        } else {
+            return this.getRandomInt(this.surfaceWidth + 25, this.surfaceWidth + 50);
+        }
+    } else {
+        if (side === 0) {
+            return 0 - this.getRandomInt(this.surfaceHeight + 25, this.surfaceHeight + 50);
+        } else {
+            return this.getRandomInt(this.surfaceHeight + 25, this.surfaceHeight + 50);
+        }
+    }
+}
+
+GameEngine.prototype.getX = function(width, x) {
+    return this.surfaceWidth + x - (width / 2);
+}
+
+GameEngine.prototype.getY = function(height, y) {
+    return this.surfaceHeight - y - (height / 2);
+}
+
+GameEngine.prototype.end = function() {
+    this.changeState();
+}
+
+GameEngine.prototype.increment = function(target, amount) {
+    this.target += amount;
+}
+
+GameEngine.prototype.changeState = function() {
+    if(active) {
+        this.wave = 0;
+        this.score = 0;
+    }
+    active = !active;
+}
+
+GameEngine.prototype.makeProtoEnemies = function() {
+    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, -400, 0, 3));
+    this.addEntity(new Asteroid(this, 0, {x: 0, y: 0}, 200, 0, 5));
+    //this.addEntity(new Weapon(this, 0, -100, 54, 0, "default"));
+    //this.addEntity(new Weapon(this, 0, -100, -54, 0, "default"));
+
+    /*
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -0, "bombPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -100, "fillShieldPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, -200, "extraLifePowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 100, "tripleGunPowerUp"));
+    this.addEntity(new PowerUp(this, 2 * Math.PI,{x:1, y:0}, -100, 200, "backGunPowerUp"));
+    */
+    //this.addEntity(new AlienShip(this, {x:0, y:0}, -100, 28, "alien"));
+    //this.addEntity(new AlienShip(this, {x:1, y:0}, -100, 45, "none"));
+}
+    
+GameEngine.prototype.resultVector = function(orig_vec, force_vec) {
+    var ret = {};
+    ret.x = orig_vec.x + force_vec.x;
+    ret.y = orig_vec.y - force_vec.y;
+    return ret; 
+}
+
+GameEngine.prototype.resolveVec = function(angle, mag) {
+    var ret = {};
+    ret.x = mag * Math.cos(angle);
+    ret.y = mag * Math.sin(angle);
+    return ret;
+}
+
+GameEngine.prototype.resolveCollision = function(entity1V, entity1M, entity2V, entity2M) {
+	  var v3 = {};
+	  v3.x = (entity1V.x * (entity1M - entity2M) + 2 * entity2M * entity2V.x) / (entity1M + entity2M);
+	  v3.y = (entity1V.y * (entity1M - entity2M) + 2 * entity2M * entity2V.y) / (entity1M + entity2M);
+	  var v4 = {};
+	  v4.x = (entity2V.x * (entity2M - entity1M) + 2 * entity1M * entity1V.x) / (entity1M + entity2M);
+	  v4.y = (entity2V.y * (entity2M - entity1M) + 2 * entity1M * entity1V.y) / (entity1M + entity2M);
+	  return [v3, v4];
 };
+
+GameEngine.prototype.velocityMag = function(vel) {
+    return Math.sqrt(vel.x * vel.x + vel.y * vel.y);
+}
+
+GameEngine.prototype.toRadians = function(degrees) {
+    return degrees * (Math.PI / 180);	
+}
+
+GameEngine.prototype.checkScore = function() {
+	var rtn;
+	var that = this;
+    $.ajax({
+		url: 'check.php',
+		data: "",
+		dataType: 'json',
+		cache: false,
+		success: function(data){
+			if (that.score > data) {
+				var nickname = prompt("Highscore! Please enter a name to save your score:");
+				if (nickname != null) {
+					$.ajax({
+						type: "POST",
+						url: 'update.php',
+						data: {"name":nickname, "score":that.score},
+						dataType: 'json',
+           			 	cache: false,
+						complete: function() {
+							window.location.reload();
+						}
+					})
+				}
+			}
+		}
+	});
+}
+
+function Timer() {
+    this.gameTime = 0;
+    this.maxStep = 0.05;
+    this.wallLastTimestamp = 0;
+}
+
+Timer.prototype.tick = function () {
+    var wallCurrent = Date.now();
+    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+    this.wallLastTimestamp = wallCurrent;
+
+    var gameDelta = Math.min(wallDelta, this.maxStep);
+    this.gameTime += gameDelta;
+    return gameDelta;
+}
