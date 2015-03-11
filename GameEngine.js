@@ -443,7 +443,7 @@ GameEngine.prototype.checkScore = function() {
 				var nickname = prompt("Highscore! Please enter a name to save your score:");
 				if (nickname != null) {
 					$.ajax({
-						type: "GET",
+						type: "POST",
 						url: 'update.php',
 						data: {"name":nickname, "score":that.score},
 						dataType: 'json',
