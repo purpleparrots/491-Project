@@ -1,28 +1,33 @@
 <?php
-	$name = $_GET["name"];
-	$score = $_GET["score"];
 	
-	$username = "alpertmd";
-	$password = "yofer`";
-	$hostname = "repos.insttech.washington.edu";
+	if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'){
+		$username = "alpertmd";
+		$password = "yofer`";
+		$hostname = "repos.insttech.washington.edu";
 
-	$dbhandle = mysql_connect($hostname, $username, $password) or die("Unable to connect to MySQL");
+		$dbhandle = mysqli_connect($hostname, $username, $password) or die("Unable to connect to MySQL");
+	
+		$selected = mysqli_select_db($dbhandle,$username) or die("Could not select high score db");
+	
+		$result = mysqli_query($dbhandle, "SELECT MAX(idHighscores) FROM Highscores");
+	
+		$id = mysqli_fetch_row($result)[0] + 1;
+		$name = $_POST["name"];
+		$score = $_POST["score"];
 
-	$selected = mysql_select_db("alpertmd", $dbhandle) or die("Could not select high score db");
+		$query =  mysqli_prepare($dbhandle, "INSERT INTO Highscores Values (?, ?, ?)");
 	
-	$result = mysql_query("SELECT MAX(idHighscores) FROM Highscores");
-	$id = mysql_result($result, 0) + 1;
-	
-	$query = "INSERT INTO Highscores VALUES ($id, '$name', $score)";
-	$result = mysql_query($query);
+		mysqli_stmt_bind_param($query, 'isi', $id, $name, $score);
+		mysqli_stmt_execute($query);
+		mysqli_stmt_close($query);
 		
-	$query = "SELECT idHighscores FROM Highscores WHERE score = (SELECT Min(score) FROM Highscores)";
-	$result = mysql_query($query);
-	$minID = mysql_result($result, 0);
+		$query = "SELECT idHighscores FROM Highscores WHERE score = (SELECT Min(score) FROM Highscores)";
+		$result = mysqli_query($dbhandle, $query);
+		$minID = mysqli_fetch_row($result)[0];
 
-
-	$query = "DELETE FROM Highscores WHERE idHighscores = $minID";
-	$result = mysql_query($query);
+		$query = "DELETE FROM Highscores WHERE idHighscores = $minID";
+		$result = mysqli_query($dbhandle, $query);
 	
-	mysql_close($dbhandle);
+		mysqli_close($dbhandle);
+	}
 ?>
